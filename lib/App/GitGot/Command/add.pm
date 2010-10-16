@@ -1,5 +1,4 @@
 package App::GitGot::Command::add;
-
 use Moose;
 extends 'App::GitGot::BaseCommand';
 
@@ -36,6 +35,7 @@ sub execute {
   $name = $term->readline( 'Name: ' , $name );
   $repo = $term->readline( ' URL: ' , $repo );
   $path = $term->readline( 'Path: ' , $path );
+  $tags = $term->readline( 'Tags: ' , $tags );
 
   my $entry = {
     repo => $repo ,
