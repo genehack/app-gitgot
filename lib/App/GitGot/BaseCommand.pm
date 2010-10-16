@@ -36,6 +36,12 @@ has 'quiet' => (
   traits        => [ qw/ Getopt / ] ,
 );
 
+has 'repos' => (
+  is     => 'rw' ,
+  isa    => 'ArrayRef[HashRef]' ,
+  traits => [ qw/ NoGetopt / ] ,
+);
+
 has 'tags' => (
   is     => 'rw' ,
   isa    => 'ArrayRef[Str]' ,
@@ -48,6 +54,49 @@ has 'verbose' => (
   documentation => 'bring th\' noise' ,
   traits        => [ qw/ Getopt / ] ,
 );
+
+
+sub build_repo_list_from_args {
+  my( $self , $args ) = @_;
+
+  my $list = $self->expand_arg_list( $args );
+
+  my @repos;
+ REPO: foreach my $repo ( @{ $self->config }) {
+    my( $number , $name ) = @{ $repo }{qw/ number name /};
+
+    if ( grep { $_ eq $number or $_ eq $name } @$list ) {
+      push @repos , $repo;
+      next REPO;
+    }
+
+    if ( $self->tags ) {
+      foreach my $tag ( @{ $self->tags }) {
+        if ( grep { $repo->{tags} =~ /\b$_\b/ } $tag ) {
+          push @repos , $repo;
+          next REPO;
+        }
+      }
+    }
+  }
+  return \@repos;
+}
+
+sub expand_arg_list {
+  my( $self , $args ) = @_;
+
+  return [
+    map {
+      s!/$!!;
+      if (/^(\d+)-(\d+)?$/) {
+        ($1..$2);
+      } else {
+        ($_);
+      }
+    } @$args
+  ];
+
+}
 
 sub load_config {
   my $self = shift;
@@ -107,6 +156,21 @@ sub read_config {
       die $_;
     }
   };
+}
+
+sub validate_args {
+  my( $self , $opt , $args ) = @_;
+
+  $self->load_config;
+
+  return $self->repos( $self->config )
+    if ( $self->all );
+
+  my $repo_list = ( $self->tags || @$args ) ?
+    $self->build_repo_list_from_args( $args )
+      : $self->config;
+
+  return $self->repos( $repo_list );
 }
 
 sub write_config {

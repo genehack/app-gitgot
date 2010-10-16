@@ -9,7 +9,7 @@ sub execute {
 
   $self->load_config();
 
-  for my $entry ( @{ $self->config }) {
+  for my $entry ( @{ $self->repos }) {
     my $msg = sprintf "%-25s %-4s %-50s\n" ,
       $entry->{name} , $entry->{type} , $entry->{repo};
 
