@@ -8,6 +8,12 @@ use Storable   qw/ dclone /;
 use Try::Tiny;
 use YAML       qw/ DumpFile LoadFile /;
 
+has 'all' => (
+  is     => 'rw' ,
+  isa    => 'Bool' ,
+  traits => [ qw/ Getopt / ],
+);
+
 has 'config' => (
   is     => 'rw' ,
   isa    => 'ArrayRef[HashRef]' ,
@@ -28,6 +34,12 @@ has 'quiet' => (
   isa           => 'Bool' ,
   documentation => 'keep it down' ,
   traits        => [ qw/ Getopt / ] ,
+);
+
+has 'tags' => (
+  is     => 'rw' ,
+  isa    => 'ArrayRef[Str]' ,
+  traits => [ qw/ Getopt / ] ,
 );
 
 has 'verbose' => (
