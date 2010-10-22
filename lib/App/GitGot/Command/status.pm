@@ -20,21 +20,23 @@ sub execute {
 
     unless ( -d $path ) {
       say "${msg}ERROR: repo '$name' does not exist"
-        if $self->verbose;
+        unless $self->quiet;
       next REPO;
     }
 
-    print $msg;
-
-    my $fxn = undef;
+    my( $status , $fxn );
 
     given( $entry->{type} ) {
       when( 'git' ) { $fxn = 'git_status' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
-      default { say "ERROR: repo type '$_' not supported" }
+      default { $status = "ERROR: repo type '$_' not supported" }
     }
 
-    say $self->$fxn( $entry ) if ( $fxn );
+    $status = $self->$fxn( $entry ) if ( $fxn );
+
+    next REPO if $self->quiet and ! $status;
+
+    say "$msg$status";
   }
 }
 
@@ -44,7 +46,7 @@ sub git_status {
 
   my $path = $entry->{path};
 
-  my $msg;
+  my $msg = '';
 
   if ( -d "$path/.git" ) {
     my( $o , $e ) = capture { system( "cd $path && git status" ) };
@@ -53,7 +55,7 @@ sub git_status {
       if ( $o =~ /Your branch is ahead .*? by (\d+) / ) {
         $msg .= "Ahead by $1";
       }
-      else {$msg .= 'OK' }
+      else {$msg .= 'OK' unless $self->quiet }
     }
     elsif ( $e ) { $msg .= 'ERROR' }
     else { $msg .= 'Dirty' }
