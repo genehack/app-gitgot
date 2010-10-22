@@ -114,6 +114,8 @@ sub parse_config {
 
   my $repo_count = 1;
 
+  @{$self->config} = sort { $a->{name} cmp $b->{name} } @{$self->config};
+
   foreach my $entry ( @{ $self->config } ) {
     my $repo = $entry->{repo}
       or die "No 'repo' field for entry $repo_count";
