@@ -6,6 +6,8 @@ use 5.010;
 
 use Capture::Tiny qw/ capture /;
 
+sub command_names { qw/ status st / }
+
 sub execute {
   my( $self , $opt , $args ) = @_;
 

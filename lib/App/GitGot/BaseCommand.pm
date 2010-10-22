@@ -11,6 +11,7 @@ use YAML       qw/ DumpFile LoadFile /;
 has 'all' => (
   is     => 'rw' ,
   isa    => 'Bool' ,
+  cmd_aliases   => 'a' ,
   traits => [ qw/ Getopt / ],
 );
 
@@ -33,6 +34,7 @@ has 'quiet' => (
   is            => 'rw' ,
   isa           => 'Bool' ,
   documentation => 'keep it down' ,
+  cmd_aliases   => 'q' ,
   traits        => [ qw/ Getopt / ] ,
 );
 
@@ -45,6 +47,7 @@ has 'repos' => (
 has 'tags' => (
   is     => 'rw' ,
   isa    => 'ArrayRef[Str]' ,
+  cmd_aliases   => 't' ,
   traits => [ qw/ Getopt / ] ,
 );
 
@@ -52,6 +55,7 @@ has 'verbose' => (
   is            => 'rw' ,
   isa           => 'Bool' ,
   documentation => 'bring th\' noise' ,
+  cmd_aliases   => 'v' ,
   traits        => [ qw/ Getopt / ] ,
 );
 

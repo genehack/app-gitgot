@@ -4,6 +4,8 @@ extends 'App::GitGot::BaseCommand';
 
 use 5.010;
 
+sub command_names { qw/ list ls / }
+
 sub execute {
   my( $self , $opt , $args ) = @_;
 
