@@ -193,14 +193,20 @@ sub write_config {
   my( $self ) = @_;
 
   my $config_copy = dclone $self->config;
+  my $config_to_write = [];
   foreach my $entry ( @{ $config_copy }) {
     delete $entry->{number};
+
+    next unless keys %$entry;
+
     foreach ( qw/ name type tags /) {
       delete $entry->{$_} unless $entry->{$_};
     }
+
+    push @$config_to_write , $entry;
   }
 
-  DumpFile( $self->configfile , $config_copy );
+  DumpFile( $self->configfile , $config_to_write );
 }
 
 1;
