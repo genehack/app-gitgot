@@ -154,8 +154,10 @@ sub read_config {
 
   my $config;
 
-  try   { $config = LoadFile( $self->configfile ) }
-  catch { say "Failed to parse config..." ; exit  };
+  if( -e $self->configfile ) {
+    try   { $config = LoadFile( $self->configfile ) }
+    catch { say "Failed to parse config..." ; exit  };
+  }
 
   # if the config is completely empty, bootstrap _something_
   $config //= [{}];
