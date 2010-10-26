@@ -117,6 +117,11 @@ sub parse_config {
   @{$self->config} = sort { $a->{name} cmp $b->{name} } @{$self->config};
 
   foreach my $entry ( @{ $self->config } ) {
+
+    # a completely empty entry is okay (this will happen when there's no
+    # config at all...)
+    keys %$entry or next;
+
     my $repo = $entry->{repo}
       or die "No 'repo' field for entry $repo_count";
 
@@ -151,6 +156,9 @@ sub read_config {
 
   try   { $config = LoadFile( $self->configfile ) }
   catch { say "Failed to parse config..." ; exit  };
+
+  # if the config is completely empty, bootstrap _something_
+  $config //= [{}];
 
   try   { $self->config($config) }
   catch {
