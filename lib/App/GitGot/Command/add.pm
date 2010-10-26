@@ -37,16 +37,24 @@ sub execute {
   $path = $term->readline( 'Path: ' , $path );
   $tags = $term->readline( 'Tags: ' , $tags );
 
-  my $entry = {
+  my $new_entry = {
     repo => $repo ,
     name => $name ,
     type => $type ,
     path => $path ,
   };
 
-  $entry->{tags} = $tags if $tags;
+  $new_entry->{tags} = $tags if $tags;
 
-  push @{ $self->config } , $entry;
+ REPO: foreach my $entry ( @{ $self->config } ) {
+    foreach ( qw/ name repo type path / ) {
+      next REPO unless $entry->{$_} eq $new_entry->{$_}
+    };
+    say "ERROR: Not adding entry for '$name'; exact duplicate already exists.";
+    exit;
+  }
+
+  push @{ $self->config } , $new_entry;
   $self->write_config;
 }
 
