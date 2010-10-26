@@ -14,6 +14,8 @@ sub execute {
   $self->load_config();
 
  REPO: for my $entry ( @{ $self->repos }) {
+    next REPO unless $entry->{repo};
+
     my( $name , $number , $path ) = @{$entry}{qw/name number path/};
 
     my $msg = sprintf "%3d) %-25s : " , $number , $name;
