@@ -7,6 +7,7 @@ use 5.010;
 use Config::INI::Reader;
 use Cwd;
 use Term::ReadLine;
+use Term::ReadLine::Perl;
 
 sub execute {
   my( $self , $opt , $args ) = @_;
