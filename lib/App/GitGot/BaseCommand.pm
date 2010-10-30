@@ -4,80 +4,80 @@ extends 'MooseX::App::Cmd::Command';
 
 use 5.010;
 
-use Storable   qw/ dclone /;
+use Storable qw/ dclone /;
 use Try::Tiny;
-use YAML       qw/ DumpFile LoadFile /;
+use YAML qw/ DumpFile LoadFile /;
 
 has 'all' => (
-  is     => 'rw' ,
-  isa    => 'Bool' ,
-  cmd_aliases   => 'a' ,
-  traits => [ qw/ Getopt / ],
+  is          => 'rw',
+  isa         => 'Bool',
+  cmd_aliases => 'a',
+  traits      => [qw/ Getopt /],
 );
 
 has 'config' => (
-  is     => 'rw' ,
-  isa    => 'ArrayRef[HashRef]' ,
-  traits => [ qw/ NoGetopt / ] ,
+  is     => 'rw',
+  isa    => 'ArrayRef[HashRef]',
+  traits => [qw/ NoGetopt /],
 );
 
 has 'configfile' => (
-  is            => 'rw' ,
-  isa           => 'Str' ,
-  documentation => 'path to config file' ,
-  default       => "$ENV{HOME}/.gitgot" ,
-  traits        => [ qw/ Getopt /] ,
-  required      => 1 ,
+  is            => 'rw',
+  isa           => 'Str',
+  documentation => 'path to config file',
+  default       => "$ENV{HOME}/.gitgot",
+  traits        => [qw/ Getopt /],
+  required      => 1,
 );
 
 has 'quiet' => (
-  is            => 'rw' ,
-  isa           => 'Bool' ,
-  documentation => 'keep it down' ,
-  cmd_aliases   => 'q' ,
-  traits        => [ qw/ Getopt / ] ,
+  is            => 'rw',
+  isa           => 'Bool',
+  documentation => 'keep it down',
+  cmd_aliases   => 'q',
+  traits        => [qw/ Getopt /],
 );
 
 has 'repos' => (
-  is     => 'rw' ,
-  isa    => 'ArrayRef[HashRef]' ,
-  traits => [ qw/ NoGetopt / ] ,
+  is     => 'rw',
+  isa    => 'ArrayRef[HashRef]',
+  traits => [qw/ NoGetopt /],
 );
 
 has 'tags' => (
-  is     => 'rw' ,
-  isa    => 'ArrayRef[Str]' ,
-  cmd_aliases   => 't' ,
-  traits => [ qw/ Getopt / ] ,
+  is          => 'rw',
+  isa         => 'ArrayRef[Str]',
+  cmd_aliases => 't',
+  traits      => [qw/ Getopt /],
 );
 
 has 'verbose' => (
-  is            => 'rw' ,
-  isa           => 'Bool' ,
-  documentation => 'bring th\' noise' ,
-  cmd_aliases   => 'v' ,
-  traits        => [ qw/ Getopt / ] ,
+  is            => 'rw',
+  isa           => 'Bool',
+  documentation => 'bring th\' noise',
+  cmd_aliases   => 'v',
+  traits        => [qw/ Getopt /],
 );
 
 
 sub build_repo_list_from_args {
-  my( $self , $args ) = @_;
+  my ( $self, $args ) = @_;
 
-  my $list = $self->expand_arg_list( $args );
+  my $list = $self->expand_arg_list($args);
 
   my @repos;
- REPO: foreach my $repo ( @{ $self->config }) {
-    my( $number , $name ) = @{ $repo }{qw/ number name /};
+REPO: foreach my $repo ( @{ $self->config } ) {
+    my ( $number, $name ) = @{$repo}{qw/ number name /};
 
     if ( grep { $_ eq $number or $_ eq $name } @$list ) {
-      push @repos , $repo;
+      push @repos, $repo;
       next REPO;
     }
 
     if ( $self->tags ) {
-      foreach my $tag ( @{ $self->tags }) {
+      foreach my $tag ( @{ $self->tags } ) {
         if ( grep { $repo->{tags} =~ /\b$_\b/ } $tag ) {
-          push @repos , $repo;
+          push @repos, $repo;
           next REPO;
         }
       }
@@ -87,17 +87,18 @@ sub build_repo_list_from_args {
 }
 
 sub expand_arg_list {
-  my( $self , $args ) = @_;
+  my ( $self, $args ) = @_;
 
   return [
     map {
       s!/$!!;
       if (/^(\d+)-(\d+)?$/) {
-        ($1..$2);
-      } else {
+        ( $1 .. $2 );
+      }
+      else {
         ($_);
       }
-    } @$args
+      } @$args
   ];
 
 }
@@ -114,7 +115,7 @@ sub parse_config {
 
   my $repo_count = 1;
 
-  @{$self->config} = sort { $a->{name} cmp $b->{name} } @{$self->config};
+  @{ $self->config } = sort { $a->{name} cmp $b->{name} } @{ $self->config };
 
   foreach my $entry ( @{ $self->config } ) {
 
@@ -131,9 +132,10 @@ sub parse_config {
     $entry->{number} = $repo_count++;
 
     unless ( defined $entry->{name} ) {
-      if ($repo =~ m|([^/]+).git$|) {
+      if ( $repo =~ m|([^/]+).git$| ) {
         $entry->{name} = $1;
-      } else {
+      }
+      else {
         $entry->{name} = '';
       }
     }
@@ -141,9 +143,10 @@ sub parse_config {
     $entry->{tags} //= '';
 
     $entry->{type} //= '';
-    if ($repo =~ /\.git$/) {
+    if ( $repo =~ /\.git$/ ) {
       $entry->{type} = 'git';
-    } elsif ($repo =~ /svn/) {
+    }
+    elsif ( $repo =~ /svn/ ) {
       $entry->{type} = 'svn';
     }
   }
@@ -154,17 +157,17 @@ sub read_config {
 
   my $config;
 
-  if( -e $self->configfile ) {
-    try   { $config = LoadFile( $self->configfile ) }
-    catch { say "Failed to parse config..." ; exit  };
+  if ( -e $self->configfile ) {
+    try { $config = LoadFile( $self->configfile ) }
+    catch { say "Failed to parse config..."; exit };
   }
 
   # if the config is completely empty, bootstrap _something_
-  $config //= [{}];
+  $config //= [ {} ];
 
-  try   { $self->config($config) }
+  try { $self->config($config) }
   catch {
-    if ( /Attribute \(config\) does not pass the type constraint/ ) {
+    if (/Attribute \(config\) does not pass the type constraint/) {
       say "Config file must be a list of hashrefs.";
       exit;
     }
@@ -175,38 +178,43 @@ sub read_config {
 }
 
 sub validate_args {
-  my( $self , $opt , $args ) = @_;
+  my ( $self, $opt, $args ) = @_;
 
   $self->load_config;
 
   return $self->repos( $self->config )
     if ( $self->all );
 
-  my $repo_list = ( $self->tags || @$args ) ?
-    $self->build_repo_list_from_args( $args )
-      : $self->config;
+  my $repo_list =
+    ( $self->tags || @$args )
+    ? $self->build_repo_list_from_args($args)
+    : $self->config;
 
-  return $self->repos( $repo_list );
+  return $self->repos($repo_list);
 }
 
 sub write_config {
-  my( $self ) = @_;
+  my ($self) = @_;
 
-  my $config_copy = dclone $self->config;
+  # use a copy because we're going to destructively modify it
+  my $config = dclone $self->config;
+
   my $config_to_write = [];
-  foreach my $entry ( @{ $config_copy }) {
+
+  foreach my $entry (@$config) {
     delete $entry->{number};
 
+    # skip empty entries
     next unless keys %$entry;
 
-    foreach ( qw/ name type tags /) {
+    foreach (qw/ name type tags /) {
       delete $entry->{$_} unless $entry->{$_};
     }
 
-    push @$config_to_write , $entry;
+    push @$config_to_write, $entry;
   }
 
-  DumpFile( $self->configfile , $config_to_write );
+  DumpFile( $self->configfile, $config_to_write );
 }
 
 1;

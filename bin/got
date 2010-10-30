@@ -1,7 +1,5 @@
 #! /opt/perl/bin/perl
-
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use App::GitGot;
 App::GitGot->run;
-

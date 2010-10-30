@@ -7,19 +7,19 @@ use 5.010;
 sub command_names { qw/ list ls / }
 
 sub execute {
-  my( $self , $opt , $args ) = @_;
+  my ( $self, $opt, $args ) = @_;
 
   $self->load_config();
 
-  for my $entry ( @{ $self->repos }) {
+  for my $entry ( @{ $self->repos } ) {
     next unless $entry->{repo};
 
-    my $msg = sprintf "%-25s %-4s %-50s\n" ,
-      $entry->{name} , $entry->{type} , $entry->{repo};
+    my $msg = sprintf "%-25s %-4s %-50s\n",
+      $entry->{name}, $entry->{type}, $entry->{repo};
 
-    printf "%3d) " , $entry->{number};
+    printf "%3d) ", $entry->{number};
 
-    if ( $self->quiet) { say $entry->{name} }
+    if ( $self->quiet ) { say $entry->{name} }
     elsif ( $self->verbose ) {
       print "$msg    tags: $entry->{tags}\n";
     }
