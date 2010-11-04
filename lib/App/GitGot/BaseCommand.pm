@@ -32,6 +32,12 @@ has 'configfile' => (
   required      => 1,
 );
 
+has 'parsed_config' => (
+  is     => 'rw' ,
+  isa    => 'ArrayRef[App::GitGot::Repo]' ,
+  traits => [ qw/ NoGetopt / ] ,
+);
+
 has 'quiet' => (
   is            => 'rw',
   isa           => 'Bool',
@@ -42,7 +48,7 @@ has 'quiet' => (
 
 has 'repos' => (
   is     => 'rw',
-  isa    => 'ArrayRef[HashRef]',
+  isa    => 'ArrayRef[App::GitGot::Repo]',
   traits => [qw/ NoGetopt /],
 );
 
@@ -62,15 +68,15 @@ has 'verbose' => (
   traits        => [qw/ Getopt /],
 );
 
-
 sub build_repo_list_from_args {
   my ( $self, $args ) = @_;
 
   my $list = _expand_arg_list( $args );
 
   my @repos;
-REPO: foreach my $repo ( @{ $self->config } ) {
-    my ( $number, $name ) = @{$repo}{qw/ number name /};
+ REPO: foreach my $repo ( @{ $self->parsed_config } ) {
+    my $number = $repo->number;
+    my $name   = $repo->name;
 
     if ( grep { $_ eq $number or $_ eq $name } @$list ) {
       push @repos, $repo;
@@ -79,7 +85,7 @@ REPO: foreach my $repo ( @{ $self->config } ) {
 
     if ( $self->tags ) {
       foreach my $tag ( @{ $self->tags } ) {
-        if ( grep { $repo->{tags} =~ /\b$_\b/ } $tag ) {
+        if ( grep { $repo->tags =~ /\b$_\b/ } $tag ) {
           push @repos, $repo;
           next REPO;
         }
@@ -103,39 +109,21 @@ sub parse_config {
 
   @{ $self->config } = sort { $a->{name} cmp $b->{name} } @{ $self->config };
 
+  my @parsed_config;
+
   foreach my $entry ( @{ $self->config } ) {
 
     # a completely empty entry is okay (this will happen when there's no
     # config at all...)
     keys %$entry or next;
 
-    my $repo = $entry->{repo}
-      or die "No 'repo' field for entry $repo_count";
-
-    defined $entry->{path}
-      or die "No 'path' field for repo $repo";
-
-    $entry->{number} = $repo_count++;
-
-    unless ( defined $entry->{name} ) {
-      if ( $repo =~ m|([^/]+).git$| ) {
-        $entry->{name} = $1;
-      }
-      else {
-        $entry->{name} = '';
-      }
-    }
-
-    $entry->{tags} //= '';
-
-    $entry->{type} //= '';
-    if ( $repo =~ /\.git$/ ) {
-      $entry->{type} = 'git';
-    }
-    elsif ( $repo =~ /svn/ ) {
-      $entry->{type} = 'svn';
-    }
+    push @parsed_config , App::GitGot::Repo->new({
+      entry => $entry ,
+      count => $repo_count++ ,
+    });
   }
+
+  $self->parsed_config( \@parsed_config );
 }
 
 sub read_config {
@@ -174,7 +162,7 @@ sub validate_args {
   my $repo_list =
     ( $self->tags || @$args )
     ? $self->build_repo_list_from_args($args)
-    : $self->config;
+    : $self->parsed_config;
 
   return $self->repos($repo_list);
 }
@@ -182,22 +170,10 @@ sub validate_args {
 sub write_config {
   my ($self) = @_;
 
-  # use a copy because we're going to destructively modify it
-  my $config = dclone $self->config;
-
   my $config_to_write = [];
 
-  foreach my $entry (@$config) {
-    delete $entry->{number};
-
-    # skip empty entries
-    next unless keys %$entry;
-
-    foreach (qw/ name type tags /) {
-      delete $entry->{$_} unless $entry->{$_};
-    }
-
-    push @$config_to_write, $entry;
+  foreach my $repo_obj( @{ $self->parsed_config } ) {
+    push @$config_to_write , $repo_obj->in_writable_format;
   }
 
   DumpFile( $self->configfile, $config_to_write );
@@ -216,6 +192,93 @@ sub _expand_arg_list {
       }
     } @$args
   ];
+}
+
+
+
+package App::GitGot::Repo;
+use Moose;
+
+use 5.010;
+use namespace::autoclean;
+
+has 'name' => (
+  is          => 'ro',
+  isa         => 'Str',
+  required    => 1 ,
+);
+
+has 'number' => (
+  is          => 'ro',
+  isa         => 'Int',
+  required    => 1 ,
+);
+
+has 'path' => (
+  is          => 'ro',
+  isa         => 'Str',
+  required    => 1 ,
+);
+
+has 'repo' => (
+  is          => 'ro',
+  isa         => 'Str',
+);
+
+has 'tags' => (
+  is          => 'ro',
+  isa         => 'Str',
+);
+
+has 'type' => (
+  is          => 'ro',
+  isa         => 'Str',
+  required    => 1 ,
+);
+
+sub BUILDARGS {
+  my( $class , $args ) = @_;
+
+  my $count = $args->{count} || 0;
+  my $entry = $args->{entry};
+
+  my $repo = $entry->{repo} //= '';
+
+  $entry->{type} //= '';
+  given( $repo ) {
+    when( /\.git$/ ) { $entry->{type} = 'git' }
+    when( /svn/    ) { $entry->{type} = 'svn' }
+  }
+
+  if ( ! defined $entry->{name} ) {
+    $entry->{name} = ( $repo =~ m|([^/]+).git$| ) ? $1 : '';
+  }
+
+  $entry->{tags} //= '';
+
+  return {
+    number => $count ,
+    name   => $entry->{name} ,
+    path   => $entry->{path} ,
+    repo   => $repo ,
+    type   => $entry->{type} ,
+    tags   => $entry->{tags} ,
+  };
+}
+
+sub in_writable_format {
+  my $self = shift;
+
+  my $writeable = {
+    name => $self->name ,
+    path => $self->path ,
+  };
+
+  foreach ( qw/ repo tags type /) {
+    $writeable->{$_} = $self->$_ if $self->$_;
+  }
+
+  return $writeable;
 }
 
 1;
