@@ -10,10 +10,11 @@ use YAML qw/ DumpFile LoadFile /;
 use namespace::autoclean;
 
 has 'all' => (
-  is          => 'rw',
-  isa         => 'Bool',
-  cmd_aliases => 'a',
-  traits      => [qw/ Getopt /],
+  is            => 'rw',
+  isa           => 'Bool',
+  documentation => 'use all available repositories' ,
+  cmd_aliases   => 'a',
+  traits        => [qw/ Getopt /],
 );
 
 has 'config' => (
@@ -46,10 +47,11 @@ has 'repos' => (
 );
 
 has 'tags' => (
-  is          => 'rw',
-  isa         => 'ArrayRef[Str]',
-  cmd_aliases => 't',
-  traits      => [qw/ Getopt /],
+  is            => 'rw',
+  isa           => 'ArrayRef[Str]',
+  documentation => 'select repositories tagged with these words' ,
+  cmd_aliases   => 't',
+  traits        => [qw/ Getopt /],
 );
 
 has 'verbose' => (
