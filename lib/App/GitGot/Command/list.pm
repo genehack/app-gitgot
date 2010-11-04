@@ -12,16 +12,16 @@ sub execute {
   $self->load_config();
 
   for my $entry ( @{ $self->repos } ) {
-    next unless $entry->{repo};
+    next unless $entry->repo;
 
     my $msg = sprintf "%-25s %-4s %-50s\n",
-      $entry->{name}, $entry->{type}, $entry->{repo};
+      $entry->name, $entry->type, $entry->repo;
 
-    printf "%3d) ", $entry->{number};
+    printf "%3d) ", $entry->number;
 
-    if ( $self->quiet ) { say $entry->{name} }
+    if ( $self->quiet ) { say $entry->name }
     elsif ( $self->verbose ) {
-      print "$msg    tags: $entry->{tags}\n";
+      printf "$msg    tags: %s\n" , $entry->tags;
     }
     else { print $msg}
   }
