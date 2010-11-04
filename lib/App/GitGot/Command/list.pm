@@ -6,10 +6,8 @@ use 5.010;
 
 sub command_names { qw/ list ls / }
 
-sub execute {
+sub _execute {
   my( $self, $opt, $args ) = @_;
-
-  $self->args( $args ); ### FIXME this is stupid
 
   for my $repo ( $self->active_repos ) {
     my $msg = sprintf "%-25s %-4s %-50s\n",

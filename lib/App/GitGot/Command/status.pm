@@ -8,10 +8,8 @@ use Capture::Tiny qw/ capture /;
 
 sub command_names { qw/ status st / }
 
-sub execute {
+sub _execute {
   my ( $self, $opt, $args ) = @_;
-
-  $self->args( $args );         ### FIXME this is stupid
 
  REPO: for my $repo ( $self->active_repos ) {
     my $msg = sprintf "%3d) %-25s : ", $repo->number, $repo->name;

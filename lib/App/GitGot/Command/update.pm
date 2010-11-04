@@ -8,10 +8,8 @@ use Capture::Tiny qw/ capture /;
 
 sub command_names { qw/ update up / }
 
-sub execute {
+sub _execute {
   my ( $self, $opt, $args ) = @_;
-
-  $self->args( $args );         ### FIXME this is stupid
 
  REPO: for my $repo ( $self->active_repos ) {
     next REPO unless $repo->repo;

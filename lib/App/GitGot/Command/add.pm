@@ -16,7 +16,7 @@ has 'defaults' => (
   traits      => [qw/ Getopt /],
 );
 
-sub execute {
+sub _execute {
   my ( $self, $opt, $args ) = @_;
 
   my $new_entry = $self->build_new_entry_from_user_input();

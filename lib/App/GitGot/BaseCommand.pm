@@ -79,6 +79,12 @@ has 'full_repo_list' => (
   } ,
 );
 
+sub execute {
+  my( $self , $opt , $args ) = @_;
+  $self->args( $args );
+  $self->_execute($opt,$args);
+}
+
 sub write_config {
   my ($self) = @_;
 
