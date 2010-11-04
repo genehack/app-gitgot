@@ -100,7 +100,8 @@ sub write_config {
 sub _build_active_repo_list {
   my ( $self ) = @_;
 
-  return $self->full_repo_list if $self->all or ! @{ $self->args };
+  return $self->full_repo_list
+    if $self->all or ! $self->tags and ! @{ $self->args };
 
   my $list = _expand_arg_list( $self->args );
 
