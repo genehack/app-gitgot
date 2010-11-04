@@ -14,9 +14,11 @@ sub execute {
   $self->load_config();
 
 REPO: for my $entry ( @{ $self->repos } ) {
-    next REPO unless $entry->{repo};
+    next REPO unless $entry->repo;
 
-    my ( $name, $number, $path ) = @{$entry}{qw/name number path/};
+    my $name   = $entry->name;
+    my $number = $entry->number;
+    my $path   = $entry->path;
 
     my $msg = sprintf "%3d) %-25s : ", $number, $name;
 
@@ -28,7 +30,7 @@ REPO: for my $entry ( @{ $self->repos } ) {
 
     my ( $status, $fxn );
 
-    given ( $entry->{type} ) {
+    given ( $entry->type ) {
       when ('git') { $fxn = 'git_update' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_update' }
       default { $status = "ERROR: repo type '$_' not supported" }
