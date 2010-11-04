@@ -66,7 +66,7 @@ has 'verbose' => (
 sub build_repo_list_from_args {
   my ( $self, $args ) = @_;
 
-  my $list = $self->expand_arg_list($args);
+  my $list = _expand_arg_list( $args );
 
   my @repos;
 REPO: foreach my $repo ( @{ $self->config } ) {
@@ -87,23 +87,6 @@ REPO: foreach my $repo ( @{ $self->config } ) {
     }
   }
   return \@repos;
-}
-
-sub expand_arg_list {
-  my ( $self, $args ) = @_;
-
-  return [
-    map {
-      s!/$!!;
-      if (/^(\d+)-(\d+)?$/) {
-        ( $1 .. $2 );
-      }
-      else {
-        ($_);
-      }
-      } @$args
-  ];
-
 }
 
 sub load_config {
@@ -218,6 +201,21 @@ sub write_config {
   }
 
   DumpFile( $self->configfile, $config_to_write );
+}
+
+sub _expand_arg_list {
+  my $args = shift;
+
+  return [
+    map {
+      s!/$!!;
+      if (/^(\d+)-(\d+)?$/) {
+        ( $1 .. $2 );
+      } else {
+        ($_);
+      }
+    } @$args
+  ];
 }
 
 1;
