@@ -19,7 +19,7 @@ has 'all' => (
 
 has 'config' => (
   is     => 'rw',
-  isa    => 'ArrayRef[HashRef]',
+  isa    => 'ArrayRef[App::GitGot::Repo]' ,
   traits => [qw/ NoGetopt /],
 );
 
@@ -30,12 +30,6 @@ has 'configfile' => (
   default       => "$ENV{HOME}/.gitgot",
   traits        => [qw/ Getopt /],
   required      => 1,
-);
-
-has 'parsed_config' => (
-  is     => 'rw' ,
-  isa    => 'ArrayRef[App::GitGot::Repo]' ,
-  traits => [ qw/ NoGetopt / ] ,
 );
 
 has 'quiet' => (
@@ -74,7 +68,7 @@ sub build_repo_list_from_args {
   my $list = _expand_arg_list( $args );
 
   my @repos;
- REPO: foreach my $repo ( @{ $self->parsed_config } ) {
+ REPO: foreach my $repo ( @{ $self->config } ) {
     my $number = $repo->number;
     my $name   = $repo->name;
 
@@ -98,20 +92,18 @@ sub build_repo_list_from_args {
 sub load_config {
   my $self = shift;
 
-  $self->read_config;
-  $self->parse_config;
+  my $config = $self->read_config;
+  $self->parse_config( $config );
 }
 
 sub parse_config {
-  my $self = shift;
+  my( $self , $config ) = @_;
 
   my $repo_count = 1;
 
-  @{ $self->config } = sort { $a->{name} cmp $b->{name} } @{ $self->config };
-
   my @parsed_config;
 
-  foreach my $entry ( @{ $self->config } ) {
+  foreach my $entry ( sort { $a->{name} cmp $b->{name} } @$config ) {
 
     # a completely empty entry is okay (this will happen when there's no
     # config at all...)
@@ -123,7 +115,7 @@ sub parse_config {
     });
   }
 
-  $self->parsed_config( \@parsed_config );
+  $self->config( \@parsed_config );
 }
 
 sub read_config {
@@ -137,18 +129,7 @@ sub read_config {
   }
 
   # if the config is completely empty, bootstrap _something_
-  $config //= [ {} ];
-
-  try { $self->config($config) }
-  catch {
-    if (/Attribute \(config\) does not pass the type constraint/) {
-      say "Config file must be a list of hashrefs.";
-      exit;
-    }
-    else {
-      die $_;
-    }
-  };
+  return $config // [ {} ];
 }
 
 sub validate_args {
@@ -162,7 +143,7 @@ sub validate_args {
   my $repo_list =
     ( $self->tags || @$args )
     ? $self->build_repo_list_from_args($args)
-    : $self->parsed_config;
+    : $self->config;
 
   return $self->repos($repo_list);
 }
@@ -172,7 +153,7 @@ sub write_config {
 
   my $config_to_write = [];
 
-  foreach my $repo_obj( @{ $self->parsed_config } ) {
+  foreach my $repo_obj( @{ $self->config } ) {
     push @$config_to_write , $repo_obj->in_writable_format;
   }
 
