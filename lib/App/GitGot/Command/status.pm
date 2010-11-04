@@ -13,10 +13,11 @@ sub execute {
 
   $self->load_config();
 
-REPO: for my $entry ( @{ $self->repos } ) {
-    my ( $name, $path ) = @{$entry}{qw/name path/};
+ REPO: for my $entry ( @{ $self->repos } ) {
+    my $name = $entry->name;
+    my $path = $entry->path;
 
-    my $msg = sprintf "%3d) %-25s : ", $entry->{number}, $entry->{name};
+    my $msg = sprintf "%3d) %-25s : ", $entry->number, $entry->name;
 
     unless ( -d $path ) {
       say "${msg}ERROR: repo '$name' does not exist"
@@ -26,7 +27,7 @@ REPO: for my $entry ( @{ $self->repos } ) {
 
     my ( $status, $fxn );
 
-    given ( $entry->{type} ) {
+    given ( $entry->type ) {
       when ('git') { $fxn = 'git_status' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
       default { $status = "ERROR: repo type '$_' not supported" }
