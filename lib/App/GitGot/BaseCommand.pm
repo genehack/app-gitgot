@@ -7,6 +7,7 @@ use 5.010;
 use Storable qw/ dclone /;
 use Try::Tiny;
 use YAML qw/ DumpFile LoadFile /;
+use namespace::autoclean;
 
 has 'all' => (
   is          => 'rw',
