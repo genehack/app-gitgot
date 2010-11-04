@@ -24,7 +24,7 @@ sub execute {
   # this will exit if the new_entry duplicates an existing repo in the config
   $self->check_for_dupe_entries($new_entry);
 
-  push @{ $self->config }, $new_entry;
+  push @{ $self->parsed_config }, $new_entry;
   $self->write_config;
 }
 
@@ -64,16 +64,16 @@ sub build_new_entry_from_user_input {
 
   $new_entry->{tags} = $tags if $tags;
 
-  return $new_entry;
+  return App::GitGot::Repo->new({ entry => $new_entry });
 }
 
 sub check_for_dupe_entries {
   my ( $self, $new_entry ) = @_;
 
   $self->load_config();
-REPO: foreach my $entry ( @{ $self->config } ) {
+REPO: foreach my $entry ( @{ $self->parsed_config } ) {
     foreach (qw/ name repo type path /) {
-      next REPO unless $entry->{$_} and $entry->{$_} eq $new_entry->{$_};
+      next REPO unless $entry->$_ and $entry->$_ eq $new_entry->$_;
     }
     say
 "ERROR: Not adding entry for '$entry->{name}'; exact duplicate already exists.";
