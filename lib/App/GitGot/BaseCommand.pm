@@ -1,7 +1,7 @@
 package App::GitGot::BaseCommand;
 use Moose;
 extends 'MooseX::App::Cmd::Command';
-
+# ABSTRACT: Base class for App::GitGot commands
 use 5.010;
 
 use Storable qw/ dclone /;
