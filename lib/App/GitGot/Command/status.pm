@@ -11,15 +11,13 @@ sub command_names { qw/ status st / }
 sub execute {
   my ( $self, $opt, $args ) = @_;
 
-  $self->load_config();
+  $self->args( $args );         ### FIXME this is stupid
 
- REPO: for my $entry ( @{ $self->repos } ) {
-    my $name = $entry->name;
-    my $path = $entry->path;
+ REPO: for my $repo ( $self->active_repos ) {
+    my $msg = sprintf "%3d) %-25s : ", $repo->number, $repo->name;
 
-    my $msg = sprintf "%3d) %-25s : ", $entry->number, $entry->name;
-
-    unless ( -d $path ) {
+    unless ( -d $repo->path ) {
+      my $name = $repo->name;
       say "${msg}ERROR: repo '$name' does not exist"
         unless $self->quiet;
       next REPO;
@@ -27,13 +25,13 @@ sub execute {
 
     my ( $status, $fxn );
 
-    given ( $entry->type ) {
+    given ( $repo->type ) {
       when ('git') { $fxn = 'git_status' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
       default { $status = "ERROR: repo type '$_' not supported" }
     }
 
-    $status = $self->$fxn($entry) if ($fxn);
+    $status = $self->$fxn($repo) if ($fxn);
 
     next REPO if $self->quiet and !$status;
 

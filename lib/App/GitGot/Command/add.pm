@@ -24,7 +24,7 @@ sub execute {
   # this will exit if the new_entry duplicates an existing repo in the config
   $self->check_for_dupe_entries($new_entry);
 
-  push @{ $self->config }, $new_entry;
+  $self->add_repo( $new_entry );
   $self->write_config;
 }
 
@@ -70,8 +70,7 @@ sub build_new_entry_from_user_input {
 sub check_for_dupe_entries {
   my ( $self, $new_entry ) = @_;
 
-  $self->load_config();
-REPO: foreach my $entry ( @{ $self->config } ) {
+REPO: foreach my $entry ( $self->all_repos ) {
     foreach (qw/ name repo type path /) {
       next REPO unless $entry->$_ and $entry->$_ eq $new_entry->$_;
     }

@@ -9,18 +9,13 @@ use Try::Tiny;
 use YAML qw/ DumpFile LoadFile /;
 use namespace::autoclean;
 
+# option attrs
 has 'all' => (
   is            => 'rw',
   isa           => 'Bool',
   documentation => 'use all available repositories' ,
   cmd_aliases   => 'a',
   traits        => [qw/ Getopt /],
-);
-
-has 'config' => (
-  is     => 'rw',
-  isa    => 'ArrayRef[App::GitGot::Repo]' ,
-  traits => [qw/ NoGetopt /],
 );
 
 has 'configfile' => (
@@ -40,12 +35,6 @@ has 'quiet' => (
   traits        => [qw/ Getopt /],
 );
 
-has 'repos' => (
-  is     => 'rw',
-  isa    => 'ArrayRef[App::GitGot::Repo]',
-  traits => [qw/ NoGetopt /],
-);
-
 has 'tags' => (
   is            => 'rw',
   isa           => 'ArrayRef[Str]',
@@ -62,17 +51,56 @@ has 'verbose' => (
   traits        => [qw/ Getopt /],
 );
 
-sub build_repo_list_from_args {
-  my ( $self, $args ) = @_;
+# non-option attrs
+has 'active_repo_list' => (
+  is         => 'rw',
+  isa        => 'ArrayRef[App::GitGot::Repo]' ,
+  traits     => [qw/ NoGetopt Array /],
+  lazy_build => 1 ,
+  handles    => {
+    active_repos => 'elements' ,
+  } ,
+);
 
-  my $list = _expand_arg_list( $args );
+has 'args' => (
+  is => 'rw' ,
+  isa => 'ArrayRef' ,
+  traits => [ qw/ NoGetopt / ] ,
+);
+
+has 'full_repo_list' => (
+  is         => 'rw',
+  isa        => 'ArrayRef[App::GitGot::Repo]' ,
+  traits     => [qw/ NoGetopt Array /],
+  lazy_build => 1 ,
+  handles    => {
+    add_repo  => 'push' ,
+    all_repos => 'elements' ,
+  } ,
+);
+
+sub write_config {
+  my ($self) = @_;
+
+  DumpFile(
+    $self->configfile,
+    [
+      sort { $a->{name} cmp $b->{name} }
+      map { $_->in_writable_format } $self->all_repos
+    ] ,
+  );
+}
+
+sub _build_active_repo_list {
+  my ( $self ) = @_;
+
+  return $self->full_repo_list if $self->all or ! @{ $self->args };
+
+  my $list = _expand_arg_list( $self->args );
 
   my @repos;
- REPO: foreach my $repo ( @{ $self->config } ) {
-    my $number = $repo->number;
-    my $name   = $repo->name;
-
-    if ( grep { $_ eq $number or $_ eq $name } @$list ) {
+ REPO: foreach my $repo ( $self->all_repos ) {
+    if ( grep { $_ eq $repo->number or $_ eq $repo->name } @$list ) {
       push @repos, $repo;
       next REPO;
     }
@@ -86,18 +114,14 @@ sub build_repo_list_from_args {
       }
     }
   }
+
   return \@repos;
 }
 
-sub load_config {
+sub _build_full_repo_list {
   my $self = shift;
 
-  my $config = $self->read_config;
-  $self->parse_config( $config );
-}
-
-sub parse_config {
-  my( $self , $config ) = @_;
+  my $config = _read_config( $self->configfile );
 
   my $repo_count = 1;
 
@@ -115,49 +139,7 @@ sub parse_config {
     });
   }
 
-  $self->config( \@parsed_config );
-}
-
-sub read_config {
-  my $self = shift;
-
-  my $config;
-
-  if ( -e $self->configfile ) {
-    try { $config = LoadFile( $self->configfile ) }
-    catch { say "Failed to parse config..."; exit };
-  }
-
-  # if the config is completely empty, bootstrap _something_
-  return $config // [ {} ];
-}
-
-sub validate_args {
-  my ( $self, $opt, $args ) = @_;
-
-  $self->load_config;
-
-  return $self->repos( $self->config )
-    if ( $self->all );
-
-  my $repo_list =
-    ( $self->tags || @$args )
-    ? $self->build_repo_list_from_args($args)
-    : $self->config;
-
-  return $self->repos($repo_list);
-}
-
-sub write_config {
-  my ($self) = @_;
-
-  my $config_to_write = [];
-
-  foreach my $repo_obj( @{ $self->config } ) {
-    push @$config_to_write , $repo_obj->in_writable_format;
-  }
-
-  DumpFile( $self->configfile, $config_to_write );
+  return \@parsed_config;
 }
 
 sub _expand_arg_list {
@@ -175,6 +157,20 @@ sub _expand_arg_list {
   ];
 }
 
+
+sub _read_config {
+  my $file = shift;
+
+  my $config;
+
+  if ( -e $file ) {
+    try { $config = LoadFile( $file ) }
+      catch { say "Failed to parse config..."; exit };
+  }
+
+  # if the config is completely empty, bootstrap _something_
+  return $config // [ {} ];
+}
 
 
 package App::GitGot::Repo;
