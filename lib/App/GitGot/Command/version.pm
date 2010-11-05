@@ -4,7 +4,7 @@ package App::GitGot::Command::version;
 use Moose;
 extends 'App::GitGot::BaseCommand';
 use 5.010;
-use App::GitGot;
+
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
