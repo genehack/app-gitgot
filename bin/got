@@ -1,4 +1,5 @@
 #! /opt/perl/bin/perl
+# PODNAME: got
 use FindBin;
 use lib "$FindBin::RealBin/../lib";
 use App::GitGot;
