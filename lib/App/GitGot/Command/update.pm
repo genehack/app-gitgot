@@ -19,13 +19,6 @@ sub _execute {
 
     my $msg = sprintf "%3d) %-25s : ", $repo->number, $repo->name;
 
-    unless ( -d $repo->path ) {
-      my $name = $repo->name;
-      say "${msg}ERROR: repo '$name' does not exist"
-        unless $self->quiet;
-      next REPO;
-    }
-
     my ( $status, $fxn );
 
     given ( $repo->type ) {
