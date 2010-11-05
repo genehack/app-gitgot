@@ -152,6 +152,8 @@ sub _build_full_repo_list {
 sub _expand_arg_list {
   my $args = shift;
 
+  ## no critic
+
   return [
     map {
       s!/$!!;
@@ -162,6 +164,8 @@ sub _expand_arg_list {
       }
     } @$args
   ];
+
+  ## use critic
 }
 
 

@@ -1,6 +1,10 @@
 #! /opt/perl/bin/perl
 # ABSTRACT: run 'got help'
 # PODNAME: got
+use strict;
+use warnings;
+use 5.010;
+
 use FindBin;
 use lib "$FindBin::RealBin/../lib";
 use App::GitGot;
