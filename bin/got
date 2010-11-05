@@ -1,4 +1,5 @@
 #! /opt/perl/bin/perl
+# ABSTRACT: run 'got help'
 # PODNAME: got
 use FindBin;
 use lib "$FindBin::RealBin/../lib";
