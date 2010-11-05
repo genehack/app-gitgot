@@ -29,7 +29,7 @@ sub _execute {
     my ( $status, $fxn );
 
     given ( $repo->type ) {
-      when ('git') { $fxn = 'git_update' }
+      when ('git') { $fxn = '_git_update' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_update' }
       default { $status = "ERROR: repo type '$_' not supported" }
     }
@@ -42,7 +42,7 @@ sub _execute {
   }
 }
 
-sub git_update {
+sub _git_update {
   my ( $self, $entry ) = @_
     or die "Need entry";
 

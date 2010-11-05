@@ -19,16 +19,16 @@ has 'defaults' => (
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
-  my $new_entry = $self->build_new_entry_from_user_input();
+  my $new_entry = $self->_build_new_entry_from_user_input();
 
   # this will exit if the new_entry duplicates an existing repo in the config
-  $self->check_for_dupe_entries($new_entry);
+  $self->_check_for_dupe_entries($new_entry);
 
   $self->add_repo( $new_entry );
   $self->write_config;
 }
 
-sub build_new_entry_from_user_input {
+sub _build_new_entry_from_user_input {
   my ($self) = @_;
 
   my ( $repo, $name, $type, $tags, $path );
@@ -67,7 +67,7 @@ sub build_new_entry_from_user_input {
   return App::GitGot::Repo->new({ entry => $new_entry });
 }
 
-sub check_for_dupe_entries {
+sub _check_for_dupe_entries {
   my ( $self, $new_entry ) = @_;
 
 REPO: foreach my $entry ( $self->all_repos ) {

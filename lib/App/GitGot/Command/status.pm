@@ -25,7 +25,7 @@ sub _execute {
     my ( $status, $fxn );
 
     given ( $repo->type ) {
-      when ('git') { $fxn = 'git_status' }
+      when ('git') { $fxn = '_git_status' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
       default { $status = "ERROR: repo type '$_' not supported" }
     }
@@ -38,7 +38,7 @@ sub _execute {
   }
 }
 
-sub git_status {
+sub _git_status {
   my ( $self, $entry ) = @_
     or die "Need entry";
 
