@@ -1,7 +1,8 @@
 package App::GitGot::BaseCommand;
+# ABSTRACT: Base class for App::GitGot commands
+
 use Moose;
 extends 'MooseX::App::Cmd::Command';
-# ABSTRACT: Base class for App::GitGot commands
 use 5.010;
 
 use Storable qw/ dclone /;
@@ -84,6 +85,12 @@ sub execute {
   $self->args( $args );
   $self->_execute($opt,$args);
 }
+
+=method write_config
+
+Dumps configuration out to disk.
+
+=cut
 
 sub write_config {
   my ($self) = @_;

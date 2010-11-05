@@ -1,7 +1,8 @@
 package App::GitGot::Command::version;
+# ABSTRACT: display application version
+
 use Moose;
 extends 'App::GitGot::BaseCommand';
-
 use 5.010;
 use App::GitGot;
 sub _execute {
@@ -11,9 +12,3 @@ sub _execute {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-App::GitGot::Command::version - display application version

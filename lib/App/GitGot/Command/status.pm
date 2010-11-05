@@ -1,7 +1,8 @@
 package App::GitGot::Command::status;
+# ABSTRACT: print status info about repos
+
 use Moose;
 extends 'App::GitGot::BaseCommand';
-
 use 5.010;
 
 use Capture::Tiny qw/ capture /;
@@ -62,9 +63,3 @@ sub git_status {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-App::GitGot::Command::status - print status info about repos

@@ -1,7 +1,8 @@
 package App::GitGot::Command::update;
+# ABSTRACT: update managed repositories
+
 use Moose;
 extends 'App::GitGot::BaseCommand';
-
 use 5.010;
 
 use Capture::Tiny qw/ capture /;
@@ -80,9 +81,3 @@ sub git_update {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-App::GitGot::Command::update - update managed repositories

@@ -1,7 +1,8 @@
 package App::GitGot::Command::add;
+# ABSTRACT: add a new repo to your config
+
 use Moose;
 extends 'App::GitGot::BaseCommand';
-
 use 5.010;
 
 use Config::INI::Reader;
@@ -97,9 +98,3 @@ sub _init_for_git {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-App::GitGot::Command::add - add a new repo to your config
