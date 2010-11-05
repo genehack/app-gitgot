@@ -7,7 +7,6 @@ use 5.010;
 use Config::INI::Reader;
 use Cwd;
 use Term::ReadLine;
-use Term::ReadLine::Perl;    # this is listed so we pull it in as a dep
 
 has 'defaults' => (
   is          => 'rw',
