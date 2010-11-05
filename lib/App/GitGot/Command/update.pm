@@ -56,7 +56,7 @@ sub _git_update {
     my ( $o, $e ) = capture { system("git clone $repo $path") };
 
     if ( $e =~ /\S/ ) {
-      $msg .= 'ERROR';
+      $msg .= "ERROR: $e";
     }
     else {
       $msg .= 'Checked out';
