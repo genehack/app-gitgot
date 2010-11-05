@@ -13,30 +13,32 @@ sub _execute {
   my ( $self, $opt, $args ) = @_;
 
  REPO: for my $repo ( $self->active_repos ) {
-    my $msg = sprintf "%3d) %-25s : ", $repo->number, $repo->name;
-
-    unless ( -d $repo->path ) {
-      my $name = $repo->name;
-      say "${msg}ERROR: repo '$name' does not exist"
-        unless $self->quiet;
-      next REPO;
-    }
+    my $msg = sprintf "%3d) %-35s : ", $repo->number, $repo->name;
 
     my ( $status, $fxn );
 
-    given ( $repo->type ) {
-      when ('git') { $fxn = '_git_status' }
-      ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
-      default { $status = "ERROR: repo type '$_' not supported" }
+    if ( -d $repo->path ) {
+      given ( $repo->type ) {
+        when ('git') { $fxn = '_git_status' }
+        ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
+        default { $status = "ERROR: repo type '$_' not supported" }
+      }
+
+      $status = $self->$fxn($repo) if ($fxn);
+
+      next REPO if $self->quiet and !$status;
     }
-
-    $status = $self->$fxn($repo) if ($fxn);
-
-    next REPO if $self->quiet and !$status;
+    elsif ( $repo->repo ) {
+      $status = 'Not checked out';
+    }
+    else {
+      my $name = $repo->name;
+      $status = "ERROR: repo '$name' does not exist";
+    }
 
     say "$msg$status";
   }
-}
+  }
 
 sub _git_status {
   my ( $self, $entry ) = @_
