@@ -1,6 +1,13 @@
 #! /opt/perl/bin/perl
-# ABSTRACT: run 'got help'
+# ABSTRACT: A tool to make it easier to manage multiple code repositories using different VCSen
 # PODNAME: got
+
+=head1 SYNOPSIS
+
+run 'got help'
+
+=cut
+
 use strict;
 use warnings;
 use 5.010;
