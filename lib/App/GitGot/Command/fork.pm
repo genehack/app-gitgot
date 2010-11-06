@@ -2,7 +2,7 @@ package App::GitGot::Command::fork;
 # ABSTRACT: fork a github repo
 
 use Moose;
-extends 'App::GitGot::BaseCommand';
+extends 'App::GitGot::Command';
 use 5.010;
 
 use autodie;
@@ -49,9 +49,9 @@ sub _parse_github_identity {
   die "Can't find ~/.github-identity"
     unless -e $file;
 
-  open( IN , '<' , $file );
-  my @lines = <IN>;
-  close( IN );
+  open( my $IN , '<' , $file );
+  my @lines = <$IN>;
+  close( $IN );
 
   my %config;
   foreach ( @lines ) {

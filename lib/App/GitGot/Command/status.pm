@@ -2,7 +2,7 @@ package App::GitGot::Command::status;
 # ABSTRACT: print status info about repos
 
 use Moose;
-extends 'App::GitGot::BaseCommand';
+extends 'App::GitGot::Command';
 use 5.010;
 
 use Capture::Tiny qw/ capture /;
