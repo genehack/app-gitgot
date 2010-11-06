@@ -1,4 +1,4 @@
-package App::GitGot::BaseCommand;
+package App::GitGot::Command;
 # ABSTRACT: Base class for App::GitGot commands
 
 use Moose;
@@ -84,6 +84,21 @@ sub execute {
   my( $self , $opt , $args ) = @_;
   $self->args( $args );
   $self->_execute($opt,$args);
+}
+
+=method prompt_yn
+
+Takes a message argument and uses it to prompt for a yes/no response.
+
+Response defaults to 'no'.
+
+=cut
+
+sub prompt_yn {
+  my( $self , $message ) = @_;
+  printf '%s [y/N]: ' , $message;
+  chomp( my $response = <STDIN> );
+  return lc($response) eq 'y';
 }
 
 =method write_config
