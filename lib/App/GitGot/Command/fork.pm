@@ -49,9 +49,9 @@ sub _parse_github_identity {
   die "Can't find ~/.github-identity"
     unless -e $file;
 
-  open( IN , '<' , $file );
-  my @lines = <IN>;
-  close( IN );
+  open( my $IN , '<' , $file );
+  my @lines = <$IN>;
+  close( $IN );
 
   my %config;
   foreach ( @lines ) {
