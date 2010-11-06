@@ -19,7 +19,7 @@ sub command_names { qw/ remove rm / }
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
-  unless ( @$args and $self->active_repos ) {
+  unless ( $self->active_repos and @$args or $self->tags) {
     say "You need to select one or more repos to remove";
     exit;
   }
