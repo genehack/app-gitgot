@@ -2,7 +2,7 @@ package App::GitGot::Command::fork;
 # ABSTRACT: fork a github repo
 
 use Moose;
-extends 'App::GitGot::BaseCommand';
+extends 'App::GitGot::Command';
 use 5.010;
 
 use autodie;

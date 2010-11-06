@@ -2,7 +2,7 @@ package App::GitGot::Command::remove;
 # ABSTRACT: remove a managed repository from your config
 
 use Moose;
-extends 'App::GitGot::BaseCommand';
+extends 'App::GitGot::Command';
 use 5.010;
 
 use List::MoreUtils qw/ any /;

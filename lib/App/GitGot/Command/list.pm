@@ -2,7 +2,7 @@ package App::GitGot::Command::list;
 # ABSTRACT: list managed repositories
 
 use Moose;
-extends 'App::GitGot::BaseCommand';
+extends 'App::GitGot::Command';
 use 5.010;
 
 sub command_names { qw/ list ls / }

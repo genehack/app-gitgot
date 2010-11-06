@@ -1,4 +1,4 @@
-package App::GitGot::BaseCommand;
+package App::GitGot::Command;
 # ABSTRACT: Base class for App::GitGot commands
 
 use Moose;
