@@ -1,6 +1,120 @@
 #! /opt/perl/bin/perl
-# ABSTRACT: run 'got help'
+# ABSTRACT: A tool to make it easier to manage multiple code repositories using different VCSen
 # PODNAME: got
+
+=head1 DESCRIPTION
+
+C<got> is a script to make it easier to manage all the version controlled
+repositories you have on all the computers you use. It can operate on all,
+some, or just one repo at a time, to both check the status of the repo (up to
+date, pending changes, dirty, etc.) and sync it with any upstream master.
+
+got also supports forking a GitHub repo and adding it to the list of managed
+repositories.
+
+=head1 SYNOPSIS
+
+    cd some/proj/in/a/vcs
+
+    got add
+    # answer prompts for various information
+    # or run with '-D' to take all defaults
+
+    # show managed repositories
+    got list
+    got ls
+
+    # remove repo #1 from the list
+    got remove 1
+
+    # remove repo named 'bar' from the list
+    got remove bar
+
+    # remove all repos tagged 'foo' without confirmation prompts
+    got rm -f -t foo
+
+    # remove repo #3 without confirmation prompts and be noisy about it
+    got rm -f -v 3
+
+    # show status (up-to-date, dirty, etc.) for all repos
+    got status
+
+    # show status for repo #3
+    got st 3
+
+    # update all repos with configured remotes
+    got update
+
+    # update repo named 'bar'
+    got up bar
+
+    # Note: if a repo is in the list but doesn't have a local checkout, 'got
+    # update' will create directories as needed and do the initial check out.
+
+    # fork a github repo and add it to your list of repos
+    got fork https://github.com/somebodies/repo_name
+
+    # note: this doesn't actually check out the repo, but running 'got up
+    # repo_name' will work as described above.
+
+    # also note: the default path to a repo added via 'fork' is a directory
+    # named 'repo_name' in the current working directory
+
+    # show version of got
+    got version
+
+=head1 OPTIONS
+
+In addition to the subcommand-specific options illustrated in the SYNOPSIS,
+all the subcommands accept the following options:
+
+=over 4
+
+=item * C<--verbose / -v>
+
+Be more verbose about what is happening behind the scenes
+
+=item * C<--quiet / -q>
+
+Be more quiet
+
+=item * C<--tags / -t>
+
+Select all repositories that have the given tag. May be given multiple
+times. Multiple args are (effectively) 'and'-ed together.
+
+=item * repo name, repo number, range
+
+Commands may be limited to a subset of repositories by giving a combination of
+additional arguments, consisting of either repository names, repository
+numbers (as reported by the 'C<list>' subcommand), or number ranges (e.g., C<2-4>
+will operate on repository numbers 2, 3, and 4).
+
+Note that if you have a repository whose name is an integer number, bad things
+are going probably going to happen. Don't do that.
+
+=back
+
+=head1 SEE ALSO/CREDITS
+
+=over
+
+=item L<http://github.com/ingydotnet/app-aycabtu-pm/>
+
+Seeing Ingy döt Net speak about AYCABTU at PPW2010 was a major factor in the
+development of this script -- earlier (unreleased) versions did not have any way
+to limit operations to a subset of managed repositories; they also didn't deal
+well managing output. After lifting his interface (virtually wholesale) I
+ended up with something that I thought was worth releasing.
+
+=back
+
+=head1 LIMITATIONS
+
+Currently git is the only supported VCS.
+
+=cut
+
 use strict;
 use warnings;
 use 5.010;
