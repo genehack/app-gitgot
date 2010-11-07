@@ -9,5 +9,4 @@ See C<perldoc got> for usage information.
 
 =cut
 
-use version; our $VERSION = qv("v0.01");
 1;
