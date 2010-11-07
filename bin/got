@@ -4,7 +4,7 @@
 
 =head1 DESCRIPTION
 
-got is a script to make it easier to manage all the version controlled
+C<got> is a script to make it easier to manage all the version controlled
 repositories you have on all the computers you use. It can operate on all,
 some, or just one repo at a time, to both check the status of the repo (up to
 date, pending changes, dirty, etc.) and sync it with any upstream master.
@@ -15,6 +15,7 @@ repositories.
 =head1 SYNOPSIS
 
     cd some/proj/in/a/vcs
+
     got add
     # answer prompts for various information
     # or run with '-D' to take all defaults
@@ -32,7 +33,7 @@ repositories.
     # remove all repos tagged 'foo' without confirmation prompts
     got rm -f -t foo
 
-    # remove  repos #3 without confirmation prompts and be noisy about it
+    # remove repo #3 without confirmation prompts and be noisy about it
     got rm -f -v 3
 
     # show status (up-to-date, dirty, etc.) for all repos
@@ -69,15 +70,15 @@ all the subcommands accept the following options:
 
 =over 4
 
-=item * --verbose / -v
+=item * C<--verbose / -v>
 
 Be more verbose about what is happening behind the scenes
 
-=item * --quiet / -q
+=item * C<--quiet / -q>
 
 Be more quiet
 
-=item * --tags / -t
+=item * C<--tags / -t>
 
 Select all repositories that have the given tag. May be given multiple
 times. Multiple args are (effectively) 'and'-ed together.
@@ -86,7 +87,7 @@ times. Multiple args are (effectively) 'and'-ed together.
 
 Commands may be limited to a subset of repositories by giving a combination of
 additional arguments, consisting of either repository names, repository
-numbers (as reported by the 'list' subcommand), or number ranges (e.g., C<2-4>
+numbers (as reported by the 'C<list>' subcommand), or number ranges (e.g., C<2-4>
 will operate on repository numbers 2, 3, and 4).
 
 Note that if you have a repository whose name is an integer number, bad things
