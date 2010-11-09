@@ -58,14 +58,11 @@ sub _git_update {
   elsif ( -d "$path/.git" ) {
     my ( $o, $e ) = capture { system("cd $path && git pull") };
 
-    if ( $o =~ /^Already up-to-date/m and !$e ) {
+    if ( $o =~ /^Already up-to-date/ ) {
       $msg .= 'Up to date' unless $self->quiet;
     }
-    elsif ( $e =~ /\S/ ) {
-      $msg .= 'ERROR';
-    }
     else {
-      $msg .= 'Updated';
+      $msg .= "\n$o$e";
     }
 
     return ( $self->verbose ) ? "$msg\n$o$e" : $msg;
