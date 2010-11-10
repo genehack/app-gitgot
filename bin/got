@@ -24,6 +24,9 @@ repositories.
     got list
     got ls
 
+    # show managed repositories sorted by path (default = sort by name)
+    got ls -p
+
     # remove repo #1 from the list
     got remove 1
 

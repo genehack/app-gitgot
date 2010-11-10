@@ -93,11 +93,15 @@ Returns the length of the longest name in the active repo list.
 
 =cut
 
-sub max_length_of_an_active_repo_name {
-  my $self = shift;
+sub max_length_of_an_active_repo_name { return shift->_maxlen('name') }
 
-  return max ( map { length $_->name } $self->active_repos);
-}
+=method max_length_of_an_active_repo_path
+
+Returns the length of the longest path in the active repo list.
+
+=cut
+
+sub max_length_of_an_active_repo_path { return shift->_maxlen('path') }
 
 =method prompt_yn
 
@@ -112,6 +116,28 @@ sub prompt_yn {
   printf '%s [y/N]: ' , $message;
   chomp( my $response = <STDIN> );
   return lc($response) eq 'y';
+}
+
+=method resort_repos_by_path
+
+Resorts repo objects by the value of the 'path' key, and renumbers them
+accordingly. Rebuilds the active_repo_list attribute after the resorting.
+
+=cut
+
+sub resort_repos_by_path {
+  my $self = shift;
+
+  my @newly_sorted_list;
+
+  my $count = 1;
+  foreach my $entry ( sort { $a->path cmp $b->path } $self->all_repos ) {
+    $entry->number( $count++ );
+    push @newly_sorted_list , $entry;
+  }
+
+  $self->full_repo_list( \@newly_sorted_list );
+  $self->active_repo_list( $self->_build_active_repo_list );
 }
 
 =method write_config
@@ -203,6 +229,12 @@ sub _expand_arg_list {
   ## use critic
 }
 
+sub _maxlen {
+  my( $self , $thing ) = @_;
+
+  return max ( map { length $_->$thing } $self->active_repos);
+}
+
 sub _read_config {
   my $file = shift;
 
@@ -231,7 +263,7 @@ has 'name' => (
 );
 
 has 'number' => (
-  is          => 'ro',
+  is          => 'rw',
   isa         => 'Int',
   required    => 1 ,
 );
