@@ -60,6 +60,12 @@ repositories.
     # also note: the default path to a repo added via 'fork' is a directory
     # named 'repo_name' in the current working directory
 
+    # fork a subshell with working directory set to 'path' of repo #1
+    got chdir 1
+
+    # fork a subshell with working directory set to 'path' of repo foo
+    got cd foo
+
     # show version of got
     got version
 
