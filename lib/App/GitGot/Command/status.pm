@@ -12,8 +12,10 @@ sub command_names { qw/ status st / }
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
+  my $max_len = $self->max_length_of_an_active_repo_name;
+
  REPO: for my $repo ( $self->active_repos ) {
-    my $msg = sprintf "%3d) %-35s : ", $repo->number, $repo->name;
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->name;
 
     my ( $status, $fxn );
 
@@ -38,7 +40,7 @@ sub _execute {
 
     say "$msg$status";
   }
-  }
+}
 
 sub _git_status {
   my ( $self, $entry ) = @_

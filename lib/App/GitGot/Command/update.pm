@@ -12,12 +12,14 @@ sub command_names { qw/ update up / }
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
+  my $max_len = $self->max_length_of_an_active_repo_name;
+
  REPO: for my $repo ( $self->active_repos ) {
     next REPO unless $repo->repo;
 
     my $name = $repo->name;
 
-    my $msg = sprintf "%3d) %-25s : ", $repo->number, $repo->name;
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->name;
 
     my ( $status, $fxn );
 

@@ -5,6 +5,7 @@ use Moose;
 extends 'MooseX::App::Cmd::Command';
 use 5.010;
 
+use List::Util qw/ max /;
 use Storable qw/ dclone /;
 use Try::Tiny;
 use YAML qw/ DumpFile LoadFile /;
@@ -84,6 +85,18 @@ sub execute {
   my( $self , $opt , $args ) = @_;
   $self->args( $args );
   $self->_execute($opt,$args);
+}
+
+=method max_length_of_an_active_repo_name
+
+Returns the length of the longest name in the active repo list.
+
+=cut
+
+sub max_length_of_an_active_repo_name {
+  my $self = shift;
+
+  return max ( map { length $_->name } $self->active_repos);
 }
 
 =method prompt_yn
@@ -189,7 +202,6 @@ sub _expand_arg_list {
 
   ## use critic
 }
-
 
 sub _read_config {
   my $file = shift;
