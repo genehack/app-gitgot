@@ -30,7 +30,7 @@ sub _execute {
     my $number = $repo->number;
 
     if ( any { $number == $_->number } $self->active_repos ) {
-      my $name = $repo->name;
+      my $name = $repo->label;
 
       if ( $self->force or $self->prompt_yn( "got rm: remove '$name'?" )) {
         say "Removed repo '$name'" if $self->verbose;
