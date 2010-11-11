@@ -12,10 +12,10 @@ sub command_names { qw/ status st / }
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
-  my $max_len = $self->max_length_of_an_active_repo_name;
+  my $max_len = $self->max_length_of_an_active_repo_label;
 
  REPO: for my $repo ( $self->active_repos ) {
-    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->name;
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->label;
 
     my ( $status, $fxn );
 
@@ -34,7 +34,7 @@ sub _execute {
       $status = 'Not checked out';
     }
     else {
-      my $name = $repo->name;
+      my $name = $repo->label;
       $status = "ERROR: repo '$name' does not exist";
     }
 
@@ -46,7 +46,7 @@ sub _git_status {
   my ( $self, $entry ) = @_
     or die "Need entry";
 
-  my $path = $entry->{path};
+  my $path = $entry->path;
 
   my $msg = '';
 
