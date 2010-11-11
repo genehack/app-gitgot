@@ -20,6 +20,13 @@ has 'all' => (
   traits        => [qw/ Getopt /],
 );
 
+has 'by_path' => (
+  is          => 'rw' ,
+  isa         => 'Bool' ,
+  cmd_aliases => 'p',
+  traits      => [qw/ Getopt /],
+);
+
 has 'configfile' => (
   is            => 'rw',
   isa           => 'Str',
@@ -87,21 +94,19 @@ sub execute {
   $self->_execute($opt,$args);
 }
 
-=method max_length_of_an_active_repo_name
+=method max_length_of_an_active_repo_label
 
 Returns the length of the longest name in the active repo list.
 
 =cut
 
-sub max_length_of_an_active_repo_name { return shift->_maxlen('name') }
+sub max_length_of_an_active_repo_label {
+  my( $self ) = @_;
 
-=method max_length_of_an_active_repo_path
+  my $sort_key = $self->by_path ? 'path' : 'name';
 
-Returns the length of the longest path in the active repo list.
-
-=cut
-
-sub max_length_of_an_active_repo_path { return shift->_maxlen('path') }
+  return max ( map { length $_->$sort_key } $self->active_repos);
+}
 
 =method prompt_yn
 
@@ -116,28 +121,6 @@ sub prompt_yn {
   printf '%s [y/N]: ' , $message;
   chomp( my $response = <STDIN> );
   return lc($response) eq 'y';
-}
-
-=method resort_repos_by_path
-
-Resorts repo objects by the value of the 'path' key, and renumbers them
-accordingly. Rebuilds the active_repo_list attribute after the resorting.
-
-=cut
-
-sub resort_repos_by_path {
-  my $self = shift;
-
-  my @newly_sorted_list;
-
-  my $count = 1;
-  foreach my $entry ( sort { $a->path cmp $b->path } $self->all_repos ) {
-    $entry->number( $count++ );
-    push @newly_sorted_list , $entry;
-  }
-
-  $self->full_repo_list( \@newly_sorted_list );
-  $self->active_repo_list( $self->_build_active_repo_list );
 }
 
 =method write_config
@@ -193,15 +176,18 @@ sub _build_full_repo_list {
 
   my $repo_count = 1;
 
+  my $sort_key = $self->by_path ? 'path' : 'name';
+
   my @parsed_config;
 
-  foreach my $entry ( sort { $a->{name} cmp $b->{name} } @$config ) {
+  foreach my $entry ( sort { $a->{$sort_key} cmp $b->{$sort_key} } @$config ) {
 
     # a completely empty entry is okay (this will happen when there's no
     # config at all...)
     keys %$entry or next;
 
     push @parsed_config , App::GitGot::Repo->new({
+      label => ( $self->by_path ) ? $entry->{path} : $entry->{name} ,
       entry => $entry ,
       count => $repo_count++ ,
     });
@@ -229,12 +215,6 @@ sub _expand_arg_list {
   ## use critic
 }
 
-sub _maxlen {
-  my( $self , $thing ) = @_;
-
-  return max ( map { length $_->$thing } $self->active_repos);
-}
-
 sub _read_config {
   my $file = shift;
 
@@ -256,6 +236,12 @@ use Moose;
 use 5.010;
 use namespace::autoclean;
 
+has 'label' => (
+  is       => 'ro' ,
+  isa      => 'Str' ,
+  required => 1 ,
+);
+
 has 'name' => (
   is          => 'ro',
   isa         => 'Str',
@@ -263,7 +249,7 @@ has 'name' => (
 );
 
 has 'number' => (
-  is          => 'rw',
+  is          => 'ro',
   isa         => 'Int',
   required    => 1 ,
 );
@@ -311,6 +297,7 @@ sub BUILDARGS {
   $entry->{tags} //= '';
 
   return {
+    label  => $args->{label} ,
     number => $count ,
     name   => $entry->{name} ,
     path   => $entry->{path} ,
