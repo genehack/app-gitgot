@@ -12,14 +12,14 @@ sub command_names { qw/ update up / }
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
-  my $max_len = $self->max_length_of_an_active_repo_name;
+  my $max_len = $self->max_length_of_an_active_repo_label;
 
  REPO: for my $repo ( $self->active_repos ) {
     next REPO unless $repo->repo;
 
     my $name = $repo->name;
 
-    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->name;
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->label;
 
     my ( $status, $fxn );
 
@@ -41,12 +41,12 @@ sub _git_update {
   my ( $self, $entry ) = @_
     or die "Need entry";
 
-  my $path = $entry->{path};
+  my $path = $entry->path;
 
   my $msg = '';
 
   if ( !-d $path ) {
-    my $repo = $entry->{repo};
+    my $repo = $entry->repo;
 
     my ( $o, $e ) = capture { system("git clone $repo $path") };
 
