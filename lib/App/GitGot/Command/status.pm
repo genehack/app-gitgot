@@ -6,6 +6,7 @@ extends 'App::GitGot::Command';
 use 5.010;
 
 use Capture::Tiny qw/ capture /;
+use Term::ANSIColor;
 
 sub command_names { qw/ status st / }
 
@@ -15,7 +16,9 @@ sub _execute {
   my $max_len = $self->max_length_of_an_active_repo_label;
 
  REPO: for my $repo ( $self->active_repos ) {
-    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->label;
+    my $label = $repo->label;
+
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $label;
 
     my ( $status, $fxn );
 
@@ -23,7 +26,9 @@ sub _execute {
       given ( $repo->type ) {
         when ('git') { $fxn = '_git_status' }
         ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
-        default { $status = "ERROR: repo type '$_' not supported" }
+        default {
+          $status = colored("ERROR: repo type '$_' not supported", 'bold white on_red' );
+        }
       }
 
       $status = $self->$fxn($repo) if ($fxn);
@@ -34,8 +39,7 @@ sub _execute {
       $status = 'Not checked out';
     }
     else {
-      my $name = $repo->label;
-      $status = "ERROR: repo '$name' does not exist";
+      $status = colored("ERROR: repo '$label' does not exist",'bold white on_red' );
     }
 
     say "$msg$status";
@@ -55,12 +59,12 @@ sub _git_status {
 
     if ( $o =~ /^nothing to commit/m and !$e ) {
       if ( $o =~ /Your branch is ahead .*? by (\d+) / ) {
-        $msg .= "Ahead by $1";
+        $msg .= colored("Ahead by $1",'bold black on_green');
       }
-      else { $msg .= 'OK' unless $self->quiet }
+      else { $msg .= colored('OK','green' ) unless $self->quiet }
     }
-    elsif ($e) { $msg .= 'ERROR' }
-    else       { $msg .= 'Dirty' }
+    elsif ($e) { $msg .= colored('ERROR','bold white on_red') }
+    else       { $msg .= colored('Dirty','bold black on_bright_yellow') }
 
     return ( $self->verbose ) ? "$msg\n$o$e" : $msg;
   }

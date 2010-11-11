@@ -6,6 +6,7 @@ extends 'App::GitGot::Command';
 use 5.010;
 
 use Capture::Tiny qw/ capture /;
+use Term::ANSIColor;
 
 sub command_names { qw/ update up / }
 
@@ -26,7 +27,9 @@ sub _execute {
     given ( $repo->type ) {
       when ('git') { $fxn = '_git_update' }
       ### FIXME      when( 'svn' ) { $fxn = 'svn_update' }
-      default { $status = "ERROR: repo type '$_' not supported" }
+      default {
+        $status = colored("ERROR: repo type '$_' not supported",'bold white on_red');
+      }
     }
 
     $status = $self->$fxn($repo) if ($fxn);
@@ -51,17 +54,17 @@ sub _git_update {
     my ( $o, $e ) = capture { system("git clone $repo $path") };
 
     if ( $e =~ /\S/ ) {
-      $msg .= "ERROR: $e";
+      $msg .= colored("ERROR: ",'bold white on_red').$e;
     }
     else {
-      $msg .= 'Checked out';
+      $msg .= colored('Checked out','bold white on_green');
     }
   }
   elsif ( -d "$path/.git" ) {
     my ( $o, $e ) = capture { system("cd $path && git pull") };
 
     if ( $o =~ /^Already up-to-date/ ) {
-      $msg .= 'Up to date' unless $self->quiet;
+      $msg .= colored('Up to date','green') unless $self->quiet;
     }
     else {
       $msg .= "\n$o$e";
