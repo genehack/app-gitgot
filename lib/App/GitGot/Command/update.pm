@@ -5,8 +5,10 @@ use Moose;
 extends 'App::GitGot::Command';
 use 5.010;
 
-use Capture::Tiny qw/ capture /;
+use File::Path 2.08 qw/ make_path /;
+use Git::Wrapper;
 use Term::ANSIColor;
+use Try::Tiny;
 
 sub command_names { qw/ update up / }
 
@@ -45,34 +47,34 @@ sub _git_update {
     or die "Need entry";
 
   my $path = $entry->path;
+  my $repo = Git::Wrapper->new( $path );
 
   my $msg = '';
 
   if ( !-d $path ) {
-    my $repo = $entry->repo;
+    make_path $path;
 
-    my ( $o, $e ) = capture { system("git clone $repo $path") };
-
-    if ( $e =~ /\S/ ) {
-      $msg .= colored("ERROR: ",'bold white on_red').$e;
-    }
-    else {
+    try {
+      $repo->clone( $entry->repo , './' );
       $msg .= colored('Checked out','bold white on_green');
     }
+    catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
   }
   elsif ( -d "$path/.git" ) {
-    my ( $o, $e ) = capture { system("cd $path && git pull") };
-
-    if ( $o =~ /^Already up-to-date/ ) {
-      $msg .= colored('Up to date','green') unless $self->quiet;
+    try {
+      my @o = $repo->pull;
+      if ( $o[0] eq 'Already up-to-date.' ) {
+        $msg .= colored('Up to date','green') unless $self->quiet;
+      }
+      else {
+        $msg .= colored('Updated','bold black on_green');
+        $msg .= "\n" . join("\n",@o) unless $self->quiet;
+      }
     }
-    else {
-      $msg .= "\n$o$e";
-    }
-
-    return ( $self->verbose ) ? "$msg\n$o$e" : $msg;
   }
+  catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
 
+  return $msg;
 }
 
 1;
