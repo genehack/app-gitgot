@@ -5,8 +5,9 @@ use Moose;
 extends 'App::GitGot::Command';
 use 5.010;
 
-use Capture::Tiny qw/ capture /;
+use Git::Wrapper;
 use Term::ANSIColor;
+use Try::Tiny;
 
 sub command_names { qw/ status st / }
 
@@ -50,24 +51,48 @@ sub _git_status {
   my ( $self, $entry ) = @_
     or die "Need entry";
 
-  my $path = $entry->path;
+  my $repo = Git::Wrapper->new( $entry->path );
 
   my $msg = '';
+  my $verbose_msg = '';
 
-  if ( -d "$path/.git" ) {
-    my ( $o, $e ) = capture { system("cd $path && git status") };
+  my %types = (
+    indexed  => 'Changes to be committed' ,
+    changed  => 'Changed but not updated' ,
+    unknown  => 'Untracked files' ,
+    conflict => 'Files with conflicts' ,
+  );
 
-    if ( $o =~ /^nothing to commit/m and !$e ) {
-      if ( $o =~ /Your branch is ahead .*? by (\d+) / ) {
-        $msg .= colored("Ahead by $1",'bold black on_green');
+  try {
+    my $status = $repo->status;
+    if ( keys %$status ) { $msg .= colored('Dirty','bold black on_bright_yellow') . ' ' }
+    else                 { $msg .= colored('OK ','green' ) unless $self->quiet }
+
+    if ( $self->verbose ) {
+    TYPE: for my $type ( keys %types ) {
+        my @states = $status->get( $type ) or next TYPE;
+        $verbose_msg .= "\n** $types{$type}:\n";
+        for ( @states ) {
+          $verbose_msg .= sprintf '  %-12s %s' , $_->mode , $_->from;
+          $verbose_msg .= sprintf ' -> %s' , $_->to
+            if $_->mode eq 'renamed';
+          $verbose_msg .= "\n";
+        }
       }
-      else { $msg .= colored('OK','green' ) unless $self->quiet }
+      $verbose_msg = "\n$verbose_msg" if $verbose_msg;
     }
-    elsif ($e) { $msg .= colored('ERROR','bold white on_red') }
-    else       { $msg .= colored('Dirty','bold black on_bright_yellow') }
-
-    return ( $self->verbose ) ? "$msg\n$o$e" : $msg;
   }
+  catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
+
+  try {
+    my $cherry = $repo->cherry;
+    if ( $cherry > 0 ) {
+      $msg .= colored("Ahead by $cherry",'bold black on_green');
+    }
+  }
+  catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
+
+  return ( $self->verbose ) ? "$msg$verbose_msg" : $msg;
 }
 
 1;
