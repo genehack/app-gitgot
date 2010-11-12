@@ -85,9 +85,11 @@ sub _git_status {
   catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
 
   try {
-    my $cherry = $repo->cherry;
-    if ( $cherry > 0 ) {
-      $msg .= colored("Ahead by $cherry",'bold black on_green');
+    if ( $repo->remote ) {
+      my $cherry = $repo->cherry;
+      if ( $cherry > 0 ) {
+        $msg .= colored("Ahead by $cherry",'bold black on_green');
+      }
     }
   }
   catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
