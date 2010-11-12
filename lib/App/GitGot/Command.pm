@@ -239,7 +239,6 @@ use namespace::autoclean;
 has 'label' => (
   is       => 'ro' ,
   isa      => 'Str' ,
-  required => 1 ,
 );
 
 has 'name' => (
@@ -296,8 +295,7 @@ sub BUILDARGS {
 
   $entry->{tags} //= '';
 
-  return {
-    label  => $args->{label} ,
+  my $return = {
     number => $count ,
     name   => $entry->{name} ,
     path   => $entry->{path} ,
@@ -305,6 +303,10 @@ sub BUILDARGS {
     type   => $entry->{type} ,
     tags   => $entry->{tags} ,
   };
+
+  $return->{label} = $args->{label} if $args->{label};
+
+  return $return;
 }
 
 sub in_writable_format {
