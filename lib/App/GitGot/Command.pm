@@ -91,6 +91,15 @@ has 'full_repo_list' => (
 sub execute {
   my( $self , $opt , $args ) = @_;
   $self->args( $args );
+
+  # set up colored output if we page thru less
+  # also exit pager immediately if <1 page of output
+  $ENV{LESS} = 'RF';
+
+  # don't catch any errors here; if this fails we just output stuff like
+  # normal and nobody is the wiser.
+  eval 'use IO::Page';
+
   $self->_execute($opt,$args);
 }
 
