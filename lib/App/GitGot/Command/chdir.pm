@@ -1,5 +1,5 @@
 package App::GitGot::Command::chdir;
-# ABSTRACT: fork a subshell in a selected project
+# ABSTRACT: open a subshell in a selected project
 
 use Moose;
 extends 'App::GitGot::Command';
