@@ -241,9 +241,10 @@ sub _read_config {
 
 package App::GitGot::Repo;
 use Moose;
-
 use 5.010;
+
 use namespace::autoclean;
+use Git::Wrapper;
 
 has 'label' => (
   is       => 'ro' ,
@@ -283,6 +284,28 @@ has 'type' => (
   isa         => 'Str',
   required    => 1 ,
 );
+
+has '_wrapper' => (
+  is         => 'ro' ,
+  isa        => 'Git::Wrapper' ,
+  lazy_build => 1 ,
+  handles    => [ qw/
+                      cherry
+                      clone
+                      config
+                      pull
+                      remote
+                      status
+                      symbolic_ref
+                    / ] ,
+);
+
+sub _build__wrapper {
+  my $self = shift;
+
+  return Git::Wrapper->new( $self->path )
+    or die "Can't make Git::Wrapper";
+}
 
 sub BUILDARGS {
   my( $class , $args ) = @_;

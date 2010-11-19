@@ -5,7 +5,6 @@ use Moose;
 extends 'App::GitGot::Command';
 use 5.010;
 
-use Git::Wrapper;
 use Term::ANSIColor;
 use Try::Tiny;
 
@@ -61,13 +60,12 @@ sub _git_status {
 sub _run_git_cherry {
   my( $self , $entry ) = @_;
 
-  my $repo = Git::Wrapper->new( $entry->path );
 
   my $msg = '';
 
   try {
-    if ( $repo->remote ) {
-      my $cherry = $repo->cherry;
+    if ( $entry->remote ) {
+      my $cherry = $entry->cherry;
       if ( $cherry > 0 ) {
         $msg = colored("Ahead by $cherry",'bold black on_green');
       }
@@ -81,8 +79,6 @@ sub _run_git_cherry {
 sub _run_git_status {
   my( $self , $entry ) = @_;
 
-  my $repo = Git::Wrapper->new( $entry->path );
-
   my %types = (
     indexed  => 'Changes to be committed' ,
     changed  => 'Changed but not updated' ,
@@ -93,7 +89,7 @@ sub _run_git_status {
   my( $msg , $verbose_msg ) = ('','');
 
   try {
-    my $status = $repo->status;
+    my $status = $entry->status;
     if ( keys %$status ) { $msg .= colored('Dirty','bold black on_bright_yellow') . ' ' }
     else                 { $msg .= colored('OK ','green' ) unless $self->quiet }
 

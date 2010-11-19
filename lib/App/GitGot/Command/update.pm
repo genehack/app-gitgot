@@ -6,7 +6,6 @@ extends 'App::GitGot::Command';
 use 5.010;
 
 use File::Path 2.08 qw/ make_path /;
-use Git::Wrapper;
 use Term::ANSIColor;
 use Try::Tiny;
 
@@ -46,23 +45,22 @@ sub _git_update {
   my ( $self, $entry ) = @_
     or die "Need entry";
 
-  my $path = $entry->path;
-  my $repo = Git::Wrapper->new( $path );
-
   my $msg = '';
+
+  my $path = $entry->path;
 
   if ( !-d $path ) {
     make_path $path;
 
     try {
-      $repo->clone( $entry->repo , './' );
+      $entry->clone( $entry->repo , './' );
       $msg .= colored('Checked out','bold white on_green');
     }
     catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
   }
   elsif ( -d "$path/.git" ) {
     try {
-      my @o = $repo->pull;
+      my @o = $entry->pull;
       if ( $o[0] eq 'Already up-to-date.' ) {
         $msg .= colored('Up to date','green') unless $self->quiet;
       }
