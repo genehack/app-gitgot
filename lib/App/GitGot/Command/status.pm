@@ -52,14 +52,34 @@ sub _git_status {
 
   my( $msg , $verbose_msg ) = $self->_run_git_status( $entry );
 
-  $msg .= $self->_run_git_cherry( $entry );
+  $msg .= $self->_run_git_cherry( $entry )
+    if $self->_repo_has_remote_tracking_branch( $entry );
 
   return ( $self->verbose ) ? "$msg$verbose_msg" : $msg;
 }
 
-sub _run_git_cherry {
+sub _repo_has_remote_tracking_branch {
   my( $self , $entry ) = @_;
 
+  my( $branch ) = $entry->symbolic_ref( 'HEAD' );
+
+  $branch =~ s|^refs/heads/||;
+
+  my $remote;
+
+  try {
+    ( $remote ) = $entry->config( "branch.${branch}.remote" );
+  }
+  catch {
+    ## not the most informative return....
+    return 0 if $_->isa('Git::Wrapper::Exception') && $_->{status} eq '1';
+  };
+
+  return $remote;
+}
+
+sub _run_git_cherry {
+  my( $self , $entry ) = @_;
 
   my $msg = '';
 
