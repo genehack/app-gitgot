@@ -245,6 +245,7 @@ use 5.010;
 
 use namespace::autoclean;
 use Git::Wrapper;
+use Try::Tiny;
 
 has 'label' => (
   is       => 'ro' ,
@@ -339,6 +340,33 @@ sub BUILDARGS {
   $return->{label} = $args->{label} if $args->{label};
 
   return $return;
+}
+
+sub current_branch {
+  my $self = shift;
+
+  my( $branch ) = $self->symbolic_ref( 'HEAD' );
+
+  $branch =~ s|^refs/heads/||;
+
+  return $branch;
+}
+
+sub current_remote_branch {
+  my( $self ) = shift;
+
+  my $branch = $self->current_branch;
+
+  my $remote;
+  try {
+    ( $remote ) = $self->config( "branch.$branch.remote" );
+  }
+    catch {
+      ## not the most informative return....
+      return 0 if $_ && $_->isa('Git::Wrapper::Exception') && $_->{status} eq '1';
+    };
+
+  return $remote;
 }
 
 sub in_writable_format {
