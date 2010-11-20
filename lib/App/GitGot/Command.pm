@@ -345,9 +345,16 @@ sub BUILDARGS {
 sub current_branch {
   my $self = shift;
 
-  my( $branch ) = $self->symbolic_ref( 'HEAD' );
+  my $branch;
 
-  $branch =~ s|^refs/heads/||;
+  try {
+    my( $branch ) = $self->symbolic_ref( 'HEAD' );
+    $branch =~ s|^refs/heads/||;
+  }
+  catch {
+    die $_ unless $_ && $_->isa('Git::Wrapper::Exception')
+      && $_->error eq "fatal: ref HEAD is not a symbolic ref\n"
+  };
 
   return $branch;
 }
@@ -355,16 +362,17 @@ sub current_branch {
 sub current_remote_branch {
   my( $self ) = shift;
 
-  my $branch = $self->current_branch;
-
   my $remote;
-  try {
-    ( $remote ) = $self->config( "branch.$branch.remote" );
-  }
+
+  if ( my $branch = $self->current_branch ) {
+    try {
+      ( $remote ) = $self->config( "branch.$branch.remote" );
+    }
     catch {
       ## not the most informative return....
       return 0 if $_ && $_->isa('Git::Wrapper::Exception') && $_->{status} eq '1';
     };
+  }
 
   return $remote;
 }
