@@ -27,7 +27,7 @@ sub _execute {
         when ('git') { $fxn = '_git_status' }
         ### FIXME      when( 'svn' ) { $fxn = 'svn_status' }
         default {
-          $status = colored("ERROR: repo type '$_' not supported", 'bold white on_red' );
+          $status = $self->error("ERROR: repo type '$_' not supported");
         }
       }
 
@@ -39,7 +39,7 @@ sub _execute {
       $status = 'Not checked out';
     }
     else {
-      $status = colored("ERROR: repo '$label' does not exist",'bold white on_red' );
+      $status = $self->error("ERROR: repo '$label' does not exist");
     }
 
     say "$msg$status";
@@ -67,11 +67,11 @@ sub _run_git_cherry {
     if ( $entry->remote ) {
       my $cherry = $entry->cherry;
       if ( $cherry > 0 ) {
-        $msg = colored("Ahead by $cherry",'bold black on_green');
+        $msg = $self->major_change("Ahead by $cherry");
       }
     }
   }
-  catch { $msg = colored('ERROR','bold white on_red') . "\n$_" };
+  catch { $msg = $self->error('ERROR') . "\n$_" };
 
   return $msg
 }
@@ -90,8 +90,8 @@ sub _run_git_status {
 
   try {
     my $status = $entry->status;
-    if ( keys %$status ) { $msg .= colored('Dirty','bold black on_bright_yellow') . ' ' }
-    else                 { $msg .= colored('OK ','green' ) unless $self->quiet }
+    if ( keys %$status ) { $msg .= $self->warning('Dirty') . ' ' }
+    else                 { $msg .= $self->minor_change('OK ') unless $self->quiet }
 
     if ( $self->verbose ) {
     TYPE: for my $type ( keys %types ) {
@@ -106,7 +106,7 @@ sub _run_git_status {
       $verbose_msg = "\n$verbose_msg" if $verbose_msg;
     }
   }
-  catch { $msg .= colored('ERROR','bold white on_red') . "\n$_" };
+  catch { $msg .= $self->error('ERROR') . "\n$_" };
 
   return( $msg , $verbose_msg );
 }

@@ -27,6 +27,15 @@ has 'by_path' => (
   traits      => [qw/ Getopt /],
 );
 
+has 'color_scheme' => (
+  is            => 'rw',
+  isa           => 'Str',
+  documentation => 'name of color scheme to use',
+  default       => 'dark',
+  cmd_aliases   => 'c' ,
+  traits        => [qw/ Getopt /],
+);
+
 has 'configfile' => (
   is            => 'rw',
   isa           => 'Str',
@@ -34,6 +43,15 @@ has 'configfile' => (
   default       => "$ENV{HOME}/.gitgot",
   traits        => [qw/ Getopt /],
   required      => 1,
+);
+
+has 'no_color' => (
+  is            => 'rw',
+  isa           => 'Bool',
+  documentation => 'do not use colored output',
+  default       => 0,
+  cmd_aliases   => 'C',
+  traits        => [qw/ Getopt /],
 );
 
 has 'quiet' => (
@@ -86,6 +104,19 @@ has 'full_repo_list' => (
     add_repo  => 'push' ,
     all_repos => 'elements' ,
   } ,
+);
+
+has 'outputter' => (
+  is => 'ro' ,
+  isa => 'App::GitGot::Outputter' ,
+  traits => [ qw/ NoGetopt / ] ,
+  lazy_build => 1 ,
+  handles => [
+    'error' ,
+    'warning' ,
+    'major_change' ,
+    'minor_change' ,
+  ] ,
 );
 
 sub execute {
@@ -203,6 +234,30 @@ sub _build_full_repo_list {
   }
 
   return \@parsed_config;
+}
+
+sub _build_outputter {
+  my $self = shift;
+
+  my $scheme = $self->color_scheme;
+
+  if ( $scheme =~ /^\+/ ) {
+    $scheme =~ s/^\+//;
+  }
+  else {
+    $scheme = "App::GitGot::Outputter::$scheme"
+  }
+
+  try {
+    eval "use $scheme";
+    die $@ if $@;
+  }
+  catch {
+    say "Failed to load color scheme '$scheme'.\nExitting now.\n";
+    exit(5);
+  };
+
+  return $scheme->new({ no_color => $self->no_color });
 }
 
 sub _expand_arg_list {
