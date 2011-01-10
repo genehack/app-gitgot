@@ -11,6 +11,9 @@ has 'color_error' => (
   default => 'bold red'
 );
 
+# Color choices by drdrang based on a conversation that started with
+# <http://www.leancrew.com/all-this/2010/12/batch-comparison-of-git-repositories/>
+
 has 'color_warning' => (
   is      => 'ro' ,
   isa     => 'Str' ,

@@ -143,6 +143,13 @@ to limit operations to a subset of managed repositories; they also didn't deal
 well managing output. After lifting his interface (virtually wholesale) I
 ended up with something that I thought was worth releasing.
 
+=item L<http://www.leancrew.com/all-this/2010/12/batch-comparison-of-git-repositories/>
+
+drdrang prodded me about making the color configuration more friendly to those
+that weren't dark backrgound terminal people. The colors in
+C<App::GitGot::Outputter::light> are based on a couple of patches that drdrang
+sent me.
+
 =item L<The Wire|http://en.wikipedia.org/wiki/The_Wire>
 
 =back
