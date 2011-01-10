@@ -1,4 +1,4 @@
-package App::GitGot::Outputter::Dark;
+package App::GitGot::Outputter::dark;
 # ABSTRACT: Color scheme appropriate for dark terminal backgrounds
 
 use Moose;
