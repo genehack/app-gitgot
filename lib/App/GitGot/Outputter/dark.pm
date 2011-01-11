@@ -14,7 +14,7 @@ has 'color_error' => (
 has 'color_warning' => (
   is      => 'ro' ,
   isa     => 'Str' ,
-  default => 'bold black on_bright_yellow'
+  default => 'bold black on_yellow'
 );
 
 has 'color_major_change' => (
