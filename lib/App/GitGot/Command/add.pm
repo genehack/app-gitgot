@@ -40,7 +40,7 @@ sub _build_new_entry_from_user_input {
   }
   else {
     say "ERROR: Non-git repos not supported at this time.";
-    exit;
+    exit(1);
   }
 
   if ( $self->defaults ) {
@@ -81,7 +81,7 @@ REPO: foreach my $entry ( $self->all_repos ) {
     }
     say
 "ERROR: Not adding entry for '$entry->{name}'; exact duplicate already exists.";
-    exit;
+    exit(1);
   }
 }
 
