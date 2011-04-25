@@ -77,7 +77,9 @@ sub _check_for_dupe_entries {
 
 REPO: foreach my $entry ( $self->all_repos ) {
     foreach (qw/ name repo type path /) {
-      next REPO unless $entry->$_ and $entry->$_ eq $new_entry->$_;
+      if ( $new_entry->$_ ) {
+        next REPO unless $entry->$_ and $entry->$_ eq $new_entry->$_;
+      }
     }
     say
 "ERROR: Not adding entry for '$entry->{name}'; exact duplicate already exists.";
