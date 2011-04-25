@@ -5,6 +5,7 @@ use Moose;
 extends 'App::GitGot::Command';
 use 5.010;
 
+use App::GitGot::Repo::Git;
 use Cwd;
 use File::Basename;
 use File::Spec;
@@ -41,7 +42,7 @@ sub _execute {
     $tags = $term->readline( 'Tags: ', $tags );
   }
 
-  my $new_entry = App::GitGot::Repo->new({ entry => {
+  my $new_entry = App::GitGot::Repo::Git->new({ entry => {
     repo => $repo,
     name => $name,
     type => 'git',

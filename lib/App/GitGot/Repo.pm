@@ -1,10 +1,9 @@
 package App::GitGot::Repo;
+# ABSTRACT: Base repository objects
 use Moose;
 use 5.010;
 
 use namespace::autoclean;
-use Git::Wrapper;
-use Try::Tiny;
 
 has 'label' => (
   is       => 'ro' ,
@@ -45,41 +44,15 @@ has 'type' => (
   required    => 1 ,
 );
 
-has '_wrapper' => (
-  is         => 'ro' ,
-  isa        => 'Git::Wrapper' ,
-  lazy_build => 1 ,
-  handles    => [ qw/
-                      cherry
-                      clone
-                      config
-                      pull
-                      remote
-                      status
-                      symbolic_ref
-                    / ] ,
-);
-
-sub _build__wrapper {
-  my $self = shift;
-
-  return Git::Wrapper->new( $self->path )
-    or die "Can't make Git::Wrapper";
-}
-
 sub BUILDARGS {
   my( $class , $args ) = @_;
 
   my $count = $args->{count} || 0;
-  my $entry = $args->{entry};
+
+  die "Must provide entry" unless
+    my $entry = $args->{entry};
 
   my $repo = $entry->{repo} //= '';
-
-  $entry->{type} //= '';
-  given( $repo ) {
-    when( /\.git$/ ) { $entry->{type} = 'git' }
-    when( /svn/    ) { $entry->{type} = 'svn' }
-  }
 
   if ( ! defined $entry->{name} ) {
     $entry->{name} = ( $repo =~ m|([^/]+).git$| ) ? $1 : '';
@@ -101,41 +74,13 @@ sub BUILDARGS {
   return $return;
 }
 
-sub current_branch {
-  my $self = shift;
 
-  my $branch;
+=method in_writable_format
 
-  try {
-    my( $branch ) = $self->symbolic_ref( 'HEAD' );
-    $branch =~ s|^refs/heads/||;
-  }
-    catch {
-      die $_ unless $_ && $_->isa('Git::Wrapper::Exception')
-        && $_->error eq "fatal: ref HEAD is not a symbolic ref\n"
-      };
+Returns a serialized representation of the repository for writing out in a
+config file.
 
-  return $branch;
-}
-
-sub current_remote_branch {
-  my( $self ) = shift;
-
-  my $remote;
-
-  if ( my $branch = $self->current_branch ) {
-    try {
-      ( $remote ) = $self->config( "branch.$branch.remote" );
-    }
-      catch {
-        ## not the most informative return....
-        return 0 if $_ && $_->isa('Git::Wrapper::Exception') && $_->{status} eq '1';
-      };
-  }
-
-  return $remote;
-}
-
+=cut
 sub in_writable_format {
   my $self = shift;
 
@@ -151,4 +96,6 @@ sub in_writable_format {
   return $writeable;
 }
 
+
+__PACKAGE__->meta->make_immutable;
 1;

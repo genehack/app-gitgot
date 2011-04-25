@@ -5,6 +5,7 @@ use Moose;
 extends 'App::GitGot::Command';
 use 5.010;
 
+use App::GitGot::Repo::Git;
 use Config::INI::Reader;
 use Cwd;
 use File::Basename;
@@ -68,7 +69,7 @@ sub _build_new_entry_from_user_input {
 
   $new_entry->{tags} = $tags if $tags;
 
-  return App::GitGot::Repo->new({ entry => $new_entry });
+  return App::GitGot::Repo::Git->new({ entry => $new_entry });
 }
 
 sub _check_for_dupe_entries {

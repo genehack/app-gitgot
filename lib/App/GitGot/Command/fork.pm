@@ -6,6 +6,7 @@ extends 'App::GitGot::Command';
 use 5.010;
 
 use autodie;
+use App::GitGot::Repo::Git;
 use Cwd;
 use Net::GitHub::V2::Repositories;
 
@@ -39,7 +40,7 @@ sub _execute {
     repo => $new_repo_url ,
     type => 'git' ,
   };
-  my $new_repo = App::GitGot::Repo->new({ entry => $entry });
+  my $new_repo = App::GitGot::Repo::Git->new({ entry => $entry });
   $self->add_repo( $new_repo );
   $self->write_config;
 }

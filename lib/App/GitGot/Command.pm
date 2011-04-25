@@ -81,7 +81,7 @@ has 'verbose' => (
 # non-option attrs
 has 'active_repo_list' => (
   is         => 'rw',
-  isa        => 'ArrayRef[App::GitGot::Repo]' ,
+  isa        => 'ArrayRef[App::GitGot::Repo::Git]' ,
   traits     => [qw/ NoGetopt Array /],
   lazy_build => 1 ,
   handles    => {
@@ -97,7 +97,7 @@ has 'args' => (
 
 has 'full_repo_list' => (
   is         => 'rw',
-  isa        => 'ArrayRef[App::GitGot::Repo]' ,
+  isa        => 'ArrayRef[App::GitGot::Repo::Git]' ,
   traits     => [qw/ NoGetopt Array /],
   lazy_build => 1 ,
   handles    => {
@@ -226,7 +226,7 @@ sub _build_full_repo_list {
     # config at all...)
     keys %$entry or next;
 
-    push @parsed_config , App::GitGot::Repo->new({
+    push @parsed_config , App::GitGot::Repo::Git->new({
       label => ( $self->by_path ) ? $entry->{path} : $entry->{name} ,
       entry => $entry ,
       count => $repo_count++ ,
