@@ -7,7 +7,6 @@ use 5.010;
 
 use App::GitGot::Repo;
 use List::Util qw/ max /;
-use Storable qw/ dclone /;
 use Try::Tiny;
 use YAML qw/ DumpFile LoadFile /;
 use namespace::autoclean;
