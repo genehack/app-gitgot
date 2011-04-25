@@ -22,10 +22,11 @@ sub _execute {
   my ( $self, $opt, $args ) = @_;
   my ( $repo , $path ) = @$args;
 
-  $repo // die "Need the URL to clone!";
+  $repo // ( say STDERR 'ERROR: Need the URL to clone!' and exit(1) );
 
   my $cwd = getcwd
-    or die "ERROR: Couldn't determine path";
+    or( say STDERR "ERROR: Couldn't determine path" and exit(1) );
+
 
   my $name = basename $repo;
   $name =~ s/.git$//;

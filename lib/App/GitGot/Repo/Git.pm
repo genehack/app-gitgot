@@ -6,6 +6,7 @@ use 5.010;
 
 use namespace::autoclean;
 use Git::Wrapper;
+use Test::MockObject;
 use Try::Tiny;
 
 has '+type' => ( default => 'git' );
@@ -28,8 +29,20 @@ has '_wrapper' => (
 sub _build__wrapper {
   my $self = shift;
 
-  return Git::Wrapper->new( $self->path )
-    or die "Can't make Git::Wrapper";
+  # for testing...
+  if ( $ENV{GITGOT_FAKE_GIT_WRAPPER} ) {
+    my $mock = Test::MockObject->new;
+    $mock->set_isa( 'Git::Wrapper' );
+    foreach my $method ( qw/ cherry clone config pull remote
+                             status symbolic_ref / ) {
+      $mock->mock( $method => sub { return "Called $method" });
+    }
+    return $mock
+  }
+  else {
+    return Git::Wrapper->new( $self->path )
+      or die "Can't make Git::Wrapper";
+  }
 }
 
 
