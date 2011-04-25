@@ -44,7 +44,7 @@ sub current_branch {
   my $branch;
 
   try {
-    my( $branch ) = $self->symbolic_ref( 'HEAD' );
+    ( $branch ) = $self->symbolic_ref( 'HEAD' );
     $branch =~ s|^refs/heads/||;
   }
   catch {
