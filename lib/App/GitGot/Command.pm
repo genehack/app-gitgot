@@ -125,7 +125,7 @@ sub execute {
 
   # set up colored output if we page thru less
   # also exit pager immediately if <1 page of output
-  $ENV{LESS} = 'RF';
+  $ENV{LESS} = 'RFX';
 
   # don't catch any errors here; if this fails we just output stuff like
   # normal and nobody is the wiser.
