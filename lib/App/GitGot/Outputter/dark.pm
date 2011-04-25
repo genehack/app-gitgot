@@ -30,3 +30,4 @@ has 'color_minor_change' => (
 );
 
 __PACKAGE__->meta->make_immutable;
+1;

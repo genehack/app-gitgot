@@ -102,4 +102,5 @@ sub _init_for_git {
   return ( $repo, $name, $type );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

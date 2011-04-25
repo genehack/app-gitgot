@@ -75,4 +75,5 @@ sub _git_update {
   return $msg;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

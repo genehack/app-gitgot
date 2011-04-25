@@ -44,4 +44,5 @@ sub _execute {
   $self->write_config();
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

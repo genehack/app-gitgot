@@ -111,4 +111,5 @@ sub _run_git_status {
   return( $msg , $verbose_msg );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

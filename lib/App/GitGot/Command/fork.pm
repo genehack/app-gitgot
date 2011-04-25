@@ -78,4 +78,5 @@ sub _parse_github_url {
   return( $1 , $2 );
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
