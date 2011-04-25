@@ -39,7 +39,7 @@ sub _build_new_entry_from_user_input {
     ( $repo, $name, $type ) = _init_for_git();
   }
   else {
-    say "ERROR: Non-git repos not supported at this time.";
+    say STDERR "ERROR: Non-git repos not supported at this time.";
     exit(1);
   }
 
@@ -81,7 +81,7 @@ REPO: foreach my $entry ( $self->all_repos ) {
         next REPO unless $entry->$_ and $entry->$_ eq $new_entry->$_;
       }
     }
-    say
+    say STDERR
 "ERROR: Not adding entry for '$entry->{name}'; exact duplicate already exists.";
     exit(1);
   }
