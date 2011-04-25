@@ -11,13 +11,15 @@ sub _execute {
   my( $self, $opt, $args ) = @_;
 
   unless ( $self->active_repos and $self->active_repos == 1 ) {
-    say "You need to select a single repo";
-    exit;
+    say STDERR 'ERROR: You need to select a single repo';
+    exit(1);
   }
 
   my( $repo ) = $self->active_repos;
 
-  chdir $repo->path;
+  chdir $repo->path
+    or say STDERR "ERROR: Failed to chdir to repo ($!)" and exit(1);
+
   exec $ENV{SHELL};
 }
 
