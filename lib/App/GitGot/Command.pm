@@ -41,6 +41,7 @@ has 'configfile' => (
   isa           => 'Str',
   documentation => 'path to config file',
   default       => "$ENV{HOME}/.gitgot",
+  cmd_aliases   => 'f' ,
   traits        => [qw/ Getopt /],
   required      => 1,
 );
