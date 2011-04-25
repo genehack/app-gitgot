@@ -5,10 +5,10 @@ use Moose;
 extends 'MooseX::App::Cmd::Command';
 use 5.010;
 
-use App::GitGot::Repo;
-use List::Util qw/ max /;
+use App::GitGot::Repo::Git;
+use List::Util              qw/ max /;
 use Try::Tiny;
-use YAML qw/ DumpFile LoadFile /;
+use YAML                    qw/ DumpFile LoadFile /;
 use namespace::autoclean;
 
 # option attrs
@@ -90,8 +90,8 @@ has 'active_repo_list' => (
 );
 
 has 'args' => (
-  is => 'rw' ,
-  isa => 'ArrayRef' ,
+  is     => 'rw' ,
+  isa    => 'ArrayRef' ,
   traits => [ qw/ NoGetopt / ] ,
 );
 
@@ -107,11 +107,11 @@ has 'full_repo_list' => (
 );
 
 has 'outputter' => (
-  is => 'ro' ,
-  isa => 'App::GitGot::Outputter' ,
-  traits => [ qw/ NoGetopt / ] ,
+  is         => 'ro' ,
+  isa        => 'App::GitGot::Outputter' ,
+  traits     => [ qw/ NoGetopt / ] ,
   lazy_build => 1 ,
-  handles => [
+  handles    => [
     'error' ,
     'warning' ,
     'major_change' ,
@@ -268,11 +268,8 @@ sub _expand_arg_list {
   return [
     map {
       s!/$!!;
-      if (/^(\d+)-(\d+)?$/) {
-        ( $1 .. $2 );
-      } else {
-        ($_);
-      }
+      if (/^(\d+)-(\d+)?$/) { ( $1 .. $2 ) }
+      else { ($_) }
     } @$args
   ];
 
@@ -286,7 +283,7 @@ sub _read_config {
 
   if ( -e $file ) {
     try { $config = LoadFile( $file ) }
-      catch { say "Failed to parse config..."; exit };
+    catch { say "Failed to parse config..."; exit };
   }
 
   # if the config is completely empty, bootstrap _something_

@@ -56,9 +56,8 @@ sub minor_change {
 sub _colored {
   my( $self , $message , $color_string ) = @_;
 
-  return ( $self->no_color || $color_string eq 'uncolored' ) ?
-    $message :
-      colored( $message , $color_string );
+  return ( $self->no_color || $color_string eq 'uncolored' ) ? $message
+    : colored( $message , $color_string );
 }
 
 __PACKAGE__->meta->make_immutable;
