@@ -8,6 +8,7 @@ use 5.010;
 use autodie;
 use App::GitGot::Repo::Git;
 use Cwd;
+use File::Slurp;
 use Net::GitHub::V2::Repositories;
 
 sub _execute {
@@ -50,15 +51,10 @@ sub _parse_github_identity {
 
   -e $file or
     say STDERR "ERROR: Can't find $ENV{HOME}/.github-identity" and exit(1);
-  open( my $IN , '<' , $file );
-  my @lines = <$IN>;
-  close( $IN );
 
-  my %config;
-  foreach ( @lines ) {
-    my( $key , $value ) = split /\s/;
-    $config{$key} = $value;
-  }
+  my @lines = read_file( $file );
+
+  my %config = map { my( @x ) = split /\s/; { $x[0] => $x[1] } } @lines;
 
   my $user = $config{login}
     or say STDERR "Couldn't parse login info from ~/.github_identity" and exit(1);
