@@ -21,27 +21,23 @@ sub _execute {
 
   my( $owner , $repo_name ) = _parse_github_url( $github_url );
 
-  my $repo = Net::GitHub::V2::Repositories->new(
+  Net::GitHub::V2::Repositories->new(
     owner => $owner ,
     repo  => $repo_name ,
     login => $user ,
     token => $pass ,
-  );
-
-  $repo->fork; ## hardcore forking action!
+  )->fork; ## hardcore forking action!
 
   my $new_repo_url = $github_url;
   $new_repo_url =~ s/$owner/$user/;
 
-  my $cwd = cwd();
-
-  my $entry = {
+  my $new_repo = App::GitGot::Repo::Git->new({ entry => {
     name => $repo_name ,
-    path => "$cwd/$repo_name" ,
+    path => cwd() . "/$repo_name" ,
     repo => $new_repo_url ,
     type => 'git' ,
-  };
-  my $new_repo = App::GitGot::Repo::Git->new({ entry => $entry });
+  }});
+
   $self->add_repo( $new_repo );
   $self->write_config;
 }
