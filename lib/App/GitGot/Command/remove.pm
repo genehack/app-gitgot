@@ -19,8 +19,8 @@ sub _execute {
   my( $self, $opt, $args ) = @_;
 
   unless ( $self->active_repos and @$args or $self->tags) {
-    say "You need to select one or more repos to remove";
-    exit;
+    say STDERR "ERROR: You need to select one or more repos to remove";
+    exit(1);
   }
 
   my @new_repo_list;
