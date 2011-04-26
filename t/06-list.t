@@ -4,61 +4,54 @@ use autodie;
 use strict;
 use warnings;
 
+use lib 't/lib';
+use Test::BASE;
 use Test::More;
 
 use App::Cmd::Tester;
 use App::GitGot;
-use File::Temp        qw/ tempdir tempfile /;
 use YAML              qw/ DumpFile /;
 
-my $dir           = tempdir(CLEANUP=>1);
-my( $fn , $name ) = tempfile();
-
-my $config = [{
-  name => 'foo.git' ,
-  path => "$dir/foo.git" ,
-  type => 'git' ,
-  tags => 'foo' ,
-},{
-  name => 'bar.git' ,
-  path => "$dir/bar.git" ,
-  repo => 'github@github.com:genehack/bar.git' ,
-  type => 'git'
-}];
-DumpFile( $name , $config );
+my( $config , $dir ) = Test::BASE::write_fake_config();
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'list' , '-f' , $name ]);
+  my $result = test_app( 'App::GitGot' => [ 'list' , '-f' , $config ]);
 
-  my $out = $result->stdout;
+  like $result->stdout ,
+    qr|1\)\s*bar\.git\s*git\s*github\@github.com:genehack/bar.git\s*\(Not checked out\)| ,
+    'first repo';
 
-  like $out , qr|1\)\s*bar\.git\s*git\s*github\@github.com:genehack/bar.git\s*\(Not checked out\)| , 'first repo';
-  like $out , qr|2\)\s*foo\.git\s*git\s*ERROR: No remote and no repo\?\!| , 'second repo';
+  like $result->stdout ,
+    qr|2\)\s*foo\.git\s*git\s*ERROR: No remote and no repo\?\!| ,
+    'second repo';
 
-  is $result->stderr , '' , 'nothing on STDERR';
-  is $result->exit_code , 0 , 'exit with 0';
+  is $result->stderr    , '' , 'nothing on STDERR';
+  is $result->exit_code , 0  , 'exit with 0';
 }
+
 {
-  my $result = test_app( 'App::GitGot' => [ 'list' , '-f' , $name , '-q' ]);
+  my $result = test_app( 'App::GitGot' => [ 'list' , '-f' , $config , '-q' ]);
 
-  my $out = $result->stdout;
+  like $result->stdout , qr|1\)\s*bar\.git| , 'first repo';
+  like $result->stdout , qr|2\)\s*foo\.git| , 'second repo';
 
-  like $out , qr|1\)\s*bar\.git| , 'first repo';
-  like $out , qr|2\)\s*foo\.git| , 'second repo';
-
-  is $result->stderr , '' , 'nothing on STDERR';
-  is $result->exit_code , 0 , 'exit with 0';
+  is $result->stderr    , '' , 'nothing on STDERR';
+  is $result->exit_code , 0  , 'exit with 0';
 }
+
 {
-  my $result = test_app( 'App::GitGot' => [ 'list' , '-f' , $name , '-v' ]);
+  my $result = test_app( 'App::GitGot' => [ 'list' , '-f' , $config , '-v' ]);
 
-  my $out = $result->stdout;
+  like $result->stdout ,
+    qr|1\)\s*bar\.git\s*git\s*github\@github.com:genehack/bar.git\s*\(Not checked out\)| ,
+    'first repo';
 
-  like $out , qr|1\)\s*bar\.git\s*git\s*github\@github.com:genehack/bar.git\s*\(Not checked out\)| , 'first repo';
-  like $out , qr|2\)\s*foo\.git\s*git\s*ERROR: No remote and no repo\?\!| , 'second repo';
+  like $result->stdout ,
+    qr|2\)\s*foo\.git\s*git\s*ERROR: No remote and no repo\?\!| ,
+    'second repo';
 
-  is $result->stderr , '' , 'nothing on STDERR';
-  is $result->exit_code , 0 , 'exit with 0';
+  is $result->stderr    , '' , 'nothing on STDERR';
+  is $result->exit_code , 0  , 'exit with 0';
 }
 
 done_testing();

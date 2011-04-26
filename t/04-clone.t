@@ -4,18 +4,17 @@ use autodie;
 use strict;
 use warnings;
 
+use lib 't/lib';
+use Test::BASE;
 use Test::File;
 use Test::More;
 
 use App::Cmd::Tester;
 use App::GitGot;
 use Cwd               qw/ abs_path /;
-use File::Temp        qw/ tempdir  /;
 use YAML              qw/ LoadFile /;
 
-my $dir    = tempdir(CLEANUP=>1);
-chdir $dir;
-
+my $dir    = Test::BASE::create_tempdir_and_chdir();
 my $config = abs_path( "$dir/gitgot" );
 file_not_exists_ok $config , 'config does not exist';
 
@@ -23,11 +22,13 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
 
 {
   my $result = test_app( 'App::GitGot' => [ 'clone' , '-f' , $config ]);
-  is $result->stdout , '' , 'nothing on STDOUT';
-  like $result->stderr ,
+
+  is   $result->stdout    , '' , 'nothing on STDOUT';
+  like $result->stderr    ,
     qr/ERROR: Need the URL to clone/ ,
     'need to give a URL';
-  is $result->exit_code , 1 , 'exit with 1';
+  is   $result->exit_code , 1  , 'exit with 1';
+
   file_not_exists_ok $config , 'failed command does not create config';
 }
 
@@ -46,6 +47,5 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
   is( $entry->[0]{type} , 'git'                            , 'expected type' );
   is( $entry->[0]{path} , abs_path( "$dir/fake-git-repo" ) , 'expected path' );
 }
-
 
 done_testing();

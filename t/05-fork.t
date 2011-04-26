@@ -4,6 +4,8 @@ use autodie;
 use strict;
 use warnings;
 
+use lib 't/lib';
+use Test::BASE;
 use Test::File;
 use Test::MockObject;
 use Test::More;
@@ -21,11 +23,9 @@ BEGIN {
 use App::Cmd::Tester;
 use App::GitGot;
 use Cwd               qw/ abs_path /;
-use File::Temp        qw/ tempdir /;
 use YAML              qw/ LoadFile /;
 
-my $dir    = tempdir(CLEANUP=>1);
-chdir $dir;
+my $dir    = Test::BASE::create_tempdir_and_chdir();
 my $config = abs_path( "$dir/gitgot" );
 file_not_exists_ok $config , 'config does not exist';
 
@@ -33,38 +33,39 @@ $ENV{HOME} = $dir;
 
 {
   my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config ]);
-  is $result->stdout , '' , 'nothing on STDOUT';
-  like $result->stderr ,
+
+  is   $result->stdout    , '' , 'nothing on STDOUT';
+  like $result->stderr    ,
     qr/ERROR: Need the URL of a repo to fork/ ,
     'need to give a URL';
-  is $result->exit_code , 1 , 'exit with 1';
+  is   $result->exit_code , 1  , 'exit with 1';
+
   file_not_exists_ok $config , 'failed command does not create config';
 }
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config , 'http://not.github.org/' ]);
-  is $result->stdout , '' , 'nothing on STDOUT';
-  like $result->stderr ,
+  my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config ,
+                                            'http://not.github.org/' ]);
+  is   $result->stdout    , '' , 'nothing on STDOUT';
+  like $result->stderr    ,
     qr|ERROR: Can't find .*\.github-identity| ,
       'need ~/.github-identity';
-  is $result->exit_code , 1 , 'exit with 1';
+  is   $result->exit_code , 1  , 'exit with 1';
+
   file_not_exists_ok $config , 'failed command does not create config';
 }
 
-open( my $OUT , '>' , '.github-identity' );
-print $OUT <<EOF;
-login luser
-token my-user-token-thingie
-EOF
-close( $OUT );
+Test::BASE::create_github_identity_file();
 
 {
   my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config , 'http://not.github.org/' ]);
+
   is $result->stdout , '' , 'nothing on STDOUT';
   like $result->stderr ,
     qr|ERROR: Can't parse 'http://not.github.org| ,
       'need to give a *github* URL';
   is $result->exit_code , 1 , 'exit with 1';
+
   file_not_exists_ok $config , 'failed command does not create config';
 }
 
