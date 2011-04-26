@@ -14,7 +14,7 @@ sub _execute {
   my( $self, $opt, $args ) = @_;
 
   my $github_url = shift @$args
-    or die "Need the URL of a repo to fork!";
+    or say STDERR "ERROR: Need the URL of a repo to fork!" and exit(1);
 
   my( $user , $pass ) = _parse_github_identity();
 
@@ -47,9 +47,9 @@ sub _execute {
 
 sub _parse_github_identity {
   my $file = "$ENV{HOME}/.github-identity";
-  die "Can't find ~/.github-identity"
-    unless -e $file;
 
+  -e $file or
+    say STDERR "ERROR: Can't find $ENV{HOME}/.github-identity" and exit(1);
   open( my $IN , '<' , $file );
   my @lines = <$IN>;
   close( $IN );
@@ -61,10 +61,10 @@ sub _parse_github_identity {
   }
 
   my $user = $config{login}
-    or die "Couldn't parse login info from ~/.github_identity";
+    or say STDERR "Couldn't parse login info from ~/.github_identity" and exit(1);
 
   my $pass = $config{token}
-    or die "Couldn't parse token info from ~/.github_identity";
+    or say STDERR "Couldn't parse token info from ~/.github_identity" and exit(1);
 
   return( $user , $pass );
 }
@@ -72,10 +72,10 @@ sub _parse_github_identity {
 sub _parse_github_url {
   my $url = shift;
 
-  die "Can't parse that"
-    unless $url =~ m|/github.com/([^/]+)/([^/]+).git$|;
+  my( $owner , $repo ) = $url =~ m|/github.com/([^/]+)/([^/]+).git$|
+    or say STDERR "ERROR: Can't parse '$url'" and exit(1);
 
-  return( $1 , $2 );
+  return( $owner , $repo );
 }
 
 __PACKAGE__->meta->make_immutable;
