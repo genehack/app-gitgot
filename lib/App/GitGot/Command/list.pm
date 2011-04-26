@@ -14,20 +14,20 @@ sub _execute {
 
   for my $repo ( $self->active_repos ) {
     my $repo_remote = ( $repo->repo and -d $repo->path ) ? $repo->repo
-      : ( $repo->repo ) ? $repo->repo . ' (Not checked out)'
-        : ( -d $repo->path ) ? 'NO REMOTE'
-          : 'ERROR: No remote and no repo?!';
-
-    my $msg = sprintf "%-${max_len}s  %-4s  %s\n",
-      $repo->label, $repo->type, $repo_remote;
+      : ( $repo->repo )    ? $repo->repo . ' (Not checked out)'
+      : ( -d $repo->path ) ? 'NO REMOTE'
+      : 'ERROR: No remote and no repo?!';
 
     printf "%3d) ", $repo->number;
 
     if ( $self->quiet ) { say $repo->label }
-    elsif ( $self->verbose ) {
-      printf "$msg    tags: %s\n" , $repo->tags;
+    else {
+      printf "%-${max_len}s  %-4s  %s\n",
+        $repo->label, $repo->type, $repo_remote;
+      if ( $self->verbose ) {
+        printf "    tags: %s\n" , $repo->tags if $repo->tags;
+      }
     }
-    else { print $msg}
   }
 }
 
