@@ -10,7 +10,6 @@ use List::MoreUtils qw/ any /;
 has 'force' => (
   is          => 'rw',
   isa         => 'Bool',
-  cmd_aliases => 'f',
   traits      => [qw/ Getopt /],
 );
 
