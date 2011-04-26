@@ -34,9 +34,11 @@ sub _build__wrapper {
     my $mock = Test::MockObject->new;
     $mock->set_isa( 'Git::Wrapper' );
     foreach my $method ( qw/ cherry clone config pull remote
-                             status symbolic_ref / ) {
-      $mock->mock( $method => sub { return "Called $method" });
+                             symbolic_ref / ) {
+      $mock->mock( $method => sub { return( '1' )});
     }
+    $mock->mock( 'status' => sub { package MyFake; sub get { return () }; return bless {} , 'MyFake' } );
+
     return $mock
   }
   else {
@@ -58,7 +60,7 @@ sub current_branch {
 
   try {
     ( $branch ) = $self->symbolic_ref( 'HEAD' );
-    $branch =~ s|^refs/heads/||;
+    $branch =~ s|^refs/heads/|| if $branch;
   }
   catch {
     die $_ unless $_ && $_->isa('Git::Wrapper::Exception')
