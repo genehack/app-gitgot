@@ -33,6 +33,11 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
 
   my $config   = LoadFile( $config );
   my $expected = [{
+    name => 'bargle.git' ,
+    path => "$dir/bargle.git" ,
+    repo => 'github@github.com:genehack/bargle.git' ,
+    type => 'git' ,
+  },{
     name => 'foo.git' ,
     path => "$dir/foo.git" ,
     type => 'git' ,
@@ -46,7 +51,7 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
 }
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'remove' , '-f' , $config , 1 , '--force' , '-v' ]);
+  my $result = test_app( 'App::GitGot' => [ 'remove' , '-f' , $config , 2 , '--force' , '-v' ]);
 
   is $result->stdout    , "Removed repo 'foo.git'" , 'expected on STDOUT';
   is $result->stderr    , ''                       , 'nothing on STDERR';
@@ -54,6 +59,11 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
 
   my $config = LoadFile( $config );
   my $expected = [{
+    name => 'bargle.git' ,
+    path => "$dir/bargle.git" ,
+    repo => 'github@github.com:genehack/bargle.git' ,
+    type => 'git' ,
+  },{
     name => 'xxx.git' ,
     path => "$dir/xxx.git" ,
     type => 'git'

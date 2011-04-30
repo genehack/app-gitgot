@@ -49,9 +49,17 @@ sub write_fake_config {
     name => 'xxx.git' ,
     path => "$dir/xxx.git" ,
     type => 'git'
+  },{
+    name => 'bargle.git' ,
+    path => "$dir/bargle.git" ,
+    repo => 'github@github.com:genehack/bargle.git' ,
+    type => 'git'
   }];
 
   build_fake_git_repo( 'xxx.git' );
+  chdir('..');
+
+  build_fake_git_repo( 'bar.git' );
   chdir('..');
 
   my( $fh , $name ) = tempfile();

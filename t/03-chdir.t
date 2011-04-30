@@ -24,7 +24,7 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
 }
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'chdir' , '-f' , $config , 1 ]);
+  my $result = test_app( 'App::GitGot' => [ 'chdir' , '-f' , $config , 2 ]);
 
   is   $result->stdout    , ''                          , 'no output';
   like $result->stderr    , qr/Failed to chdir to repo/ , 'msg about non-existant dir';
