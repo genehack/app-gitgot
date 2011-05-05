@@ -130,7 +130,7 @@ sub execute {
 
   # don't catch any errors here; if this fails we just output stuff like
   # normal and nobody is the wiser.
-  eval 'use IO::Page';
+  eval 'use IO::Page' if $self->_use_io_page;
 
   $self->_execute($opt,$args);
 }
@@ -290,6 +290,10 @@ sub _read_config {
   # if the config is completely empty, bootstrap _something_
   return $config // [ {} ];
 }
+
+# override this in commands that shouldn't use IO::Page -- i.e., ones that
+# need to do incremental output
+sub _use_io_page { 1 }
 
 __PACKAGE__->meta->make_immutable;
 1;
