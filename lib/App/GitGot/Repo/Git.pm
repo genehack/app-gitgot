@@ -34,11 +34,12 @@ sub _build__wrapper {
   if ( $ENV{GITGOT_FAKE_GIT_WRAPPER} ) {
     my $mock = Test::MockObject->new;
     $mock->set_isa( 'Git::Wrapper' );
-    foreach my $method ( qw/ cherry clone config gc pull remote
-                             symbolic_ref / ) {
+    foreach my $method ( qw/ cherry clone gc pull
+                             remote symbolic_ref / ) {
       $mock->mock( $method => sub { return( '1' )});
     }
     $mock->mock( 'status' => sub { package MyFake; sub get { return () }; return bless {} , 'MyFake' } );
+    $mock->mock( 'config' => sub { 0 });
 
     return $mock
   }
@@ -81,7 +82,7 @@ branch doesn't have a remote.)
 sub current_remote_branch {
   my( $self ) = shift;
 
-  my $remote;
+  my $remote = 0;
 
   if ( my $branch = $self->current_branch ) {
     try {

@@ -31,7 +31,7 @@ sub test_current_remote_branch :Tests(3) {
   dies_ok { $test->{full}->current_branch } 'will die';
   like( $@ , qr/Not a git repository/ , 'expected error message' );
 
-  is( $test->{min}->current_remote_branch , undef , 'get undef without real remote' );
+  is( $test->{min}->current_remote_branch , 0 , 'get 0 without real remote' );
 }
 
 1;
