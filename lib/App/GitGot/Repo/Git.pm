@@ -21,6 +21,7 @@ has '_wrapper' => (
                       config
                       gc
                       pull
+                      push
                       remote
                       status
                       symbolic_ref
