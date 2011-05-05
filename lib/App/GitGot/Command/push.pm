@@ -27,10 +27,10 @@ sub _execute {
     }
 
     try {
-      printf "%3d) %-${max_len}s : ", $repo->number , $repo->label unless $self->quiet;
+      printf "%3d) %-${max_len}s : ", $repo->number , $repo->label;
       # really wish this gave _some_ kind of output...
       my @output = $repo->push;
-      printf "%s\n", $self->major_change( 'PUSHED' ) unless $self->quiet;
+      printf "%s\n", $self->major_change( 'PUSHED' );
     }
     catch {
       say STDERR $self->error( 'ERROR: Problem with push on repo ' , $repo->label );
