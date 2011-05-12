@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.0       2011-05-12 16:39:16 America/New_York
+
   [ENHANCEMENTS]
 
   * Add 'update_status' command (alias 'upst') which first does 'got
