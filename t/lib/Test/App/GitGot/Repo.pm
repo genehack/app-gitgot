@@ -77,6 +77,8 @@ sub test_in_writable_format :Tests(2) {
   }
 }
 
+sub cleanup :Test(shutdown) { chdir('/') }
+
 sub make_base_fixtures {
   my $test = shift;
   my $lib  = $test->{lib};

@@ -34,4 +34,6 @@ sub test_current_remote_branch :Tests(3) {
   is( $test->{min}->current_remote_branch , 0 , 'get 0 without real remote' );
 }
 
+sub cleanup :Test(shutdown) { chdir('/') }
+
 1;

@@ -54,4 +54,5 @@ Test::BASE::build_fake_git_repo();
   is   $result->exit_code , 1  , 'exit with 1';
 }
 
+chdir(); ## let File::Temp clean up...
 done_testing();

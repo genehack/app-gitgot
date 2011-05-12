@@ -24,4 +24,5 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
   is   $result->exit_code , 0  , 'exit with 0';
 }
 
+chdir(); ## let File::Temp clean up...
 done_testing();

@@ -71,4 +71,5 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
   is_deeply( $config , $expected , 'deleted repo' );
 }
 
+chdir();  # let File::Temp clean up...
 done_testing();
