@@ -2,4 +2,23 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
-    Hadn't been maintaining Changes file. Bad coder, no cookie.
+  [ENHANCEMENTS]
+
+  * Add 'update_status' command (alias 'upst') which first does 'got
+    update' followed by 'got status'.
+
+  * Add 'push' command (as suggested by Brock Wilcox and Chas Owens)
+    to do batch pushes of selected repos.
+
+  * Add 'gc' command to trigger garbage collection in managed Git repos.
+
+  * Tests, tests, tests
+
+  [BUG FIXES]
+  * Tweak $ENV{LESS} to work better with 256 color terms.
+
+  * Remove '_bright_' from various colors in the dark-themed
+    outputter.
+
+OLDER:
+  * Hadn't been maintaining Changes file. Bad coder, no cookie.
