@@ -1,7 +1,7 @@
 package App::GitGot::Command::add;
 # ABSTRACT: add a new repo to your config
 
-use Moose;
+use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
 

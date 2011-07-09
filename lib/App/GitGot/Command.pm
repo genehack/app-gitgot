@@ -1,8 +1,8 @@
 package App::GitGot::Command;
 # ABSTRACT: Base class for App::GitGot commands
 
-use Moose;
-extends 'MooseX::App::Cmd::Command';
+use Mouse;
+extends 'MouseX::App::Cmd::Command';
 use 5.010;
 
 use App::GitGot::Repo::Git;

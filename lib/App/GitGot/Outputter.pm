@@ -1,7 +1,7 @@
 package App::GitGot::Outputter;
 # ABSTRACT: Generic base class for outputting formatted messages.
 
-use Moose;
+use Mouse;
 use 5.010;
 
 use Term::ANSIColor;

@@ -1,7 +1,7 @@
 package App::GitGot::Command::status;
 # ABSTRACT: print status info about repos
 
-use Moose;
+use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
 

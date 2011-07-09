@@ -1,7 +1,7 @@
 package App::GitGot::Command::fork;
 # ABSTRACT: fork a github repo
 
-use Moose;
+use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
 

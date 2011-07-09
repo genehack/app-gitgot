@@ -2,7 +2,13 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  [ENHANCEMENTS]
+
+  * Convert to MouseX::App::Cmd. (Thanks to Ingy for pointing that
+    this module exists...)
+
 1.01      2011-07-08 21:42:32 America/New_York
+
   [BUGFIX]
 
   * Add specific dep on Git::Wrapper version. (RT#69342)

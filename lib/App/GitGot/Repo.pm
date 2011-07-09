@@ -1,6 +1,6 @@
 package App::GitGot::Repo;
 # ABSTRACT: Base repository objects
-use Moose;
+use Mouse;
 use 5.010;
 
 use namespace::autoclean;

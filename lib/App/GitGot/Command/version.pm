@@ -1,7 +1,7 @@
 package App::GitGot::Command::version;
 # ABSTRACT: display application version
 
-use Moose;
+use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
 

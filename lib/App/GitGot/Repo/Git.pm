@@ -1,6 +1,6 @@
 package App::GitGot::Repo::Git;
 # ABSTRACT: Git repo objects
-use Moose;
+use Mouse;
 extends 'App::GitGot::Repo';
 use 5.010;
 
