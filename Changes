@@ -1,6 +1,8 @@
 Changes file for {{$dist->name}}
 
 {{$NEXT}}
+
+1.01      2011-07-08 21:42:32 America/New_York
   [BUGFIX]
 
   * Add specific dep on Git::Wrapper version. (RT#69342)
