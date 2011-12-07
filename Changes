@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.02      2011-12-07 09:36:01 America/New_York
+
   [ENHANCEMENTS]
 
   * Add 'this' command to show if current repo is known to got (Yanick)
