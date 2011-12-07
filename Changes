@@ -4,6 +4,8 @@ Changes file for {{$dist->name}}
 
   [ENHANCEMENTS]
 
+  * Add 'this' command to show if current repo is known to got (Yanick)
+  * Add '--origin' option for 'add' command (Yanick)
   * Convert to MouseX::App::Cmd. (Thanks to Ingy for pointing that
     this module exists...)
 
