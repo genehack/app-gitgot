@@ -2,6 +2,10 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  [BUGFIX]
+
+  * Fix broken tests; d'oh.
+
 1.02      2011-12-07 09:36:01 America/New_York
 
   [ENHANCEMENTS]

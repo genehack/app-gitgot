@@ -14,8 +14,8 @@ INIT { Test::Class->runtests }
 
 sub build_fake_git_repo {
   my $repo = shift || 'foo.git';
-  `mkdir $repo && cd $repo && git init && touch foo && git add foo && git ci -m"mu"`;
-  `cd $repo && touch bar && git add bar && git ci -m"mu2"`;
+  `mkdir $repo && cd $repo && git init && touch foo && git add foo && git commit -m"mu"`;
+  `cd $repo && touch bar && git add bar && git commit -m"mu2"`;
   chdir $repo;
 }
 

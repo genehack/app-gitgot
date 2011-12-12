@@ -108,7 +108,7 @@ sub make_base_fixtures {
 sub _make_git_repo {
   my $dir = tempdir(CLEANUP=>1);
   chdir( $dir );
-  `git init && touch foo && git add foo && git ci -m"mu"`;
+  `git init && touch foo && git add foo && git commit -m"mu"`;
   return $dir;
 }
 
