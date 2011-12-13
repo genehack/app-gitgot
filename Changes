@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.03      2011-12-11 22:16:13 America/New_York
+
   [BUGFIX]
 
   * Fix broken tests; d'oh.
