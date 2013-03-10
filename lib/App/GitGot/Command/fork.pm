@@ -9,7 +9,7 @@ use autodie;
 use App::GitGot::Repo::Git;
 use Cwd;
 use File::Slurp;
-use Net::GitHub::V2::Repositories;
+use Net::GitHub;
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
@@ -17,29 +17,23 @@ sub _execute {
   my $github_url = shift @$args
     or say STDERR "ERROR: Need the URL of a repo to fork!" and exit(1);
 
-  my( $user , $pass ) = _parse_github_identity();
-
   my( $owner , $repo_name ) = _parse_github_url( $github_url );
 
-  Net::GitHub::V2::Repositories->new(
-    owner => $owner ,
-    repo  => $repo_name ,
-    login => $user ,
-    token => $pass ,
-  )->fork; ## hardcore forking action!
+  my %gh_args = _parse_github_identity();
 
-  my $new_repo_url = $github_url;
-  $new_repo_url =~ s/$owner/$user/;
+  my $resp = Net::GitHub->new( %gh_args )->repos->create_fork( $owner , $repo_name );
 
   my $new_repo = App::GitGot::Repo::Git->new({ entry => {
     name => $repo_name ,
     path => cwd() . "/$repo_name" ,
-    repo => $new_repo_url ,
+    repo => $resp->{ssh_url} ,
     type => 'git' ,
   }});
 
   $self->add_repo( $new_repo );
   $self->write_config;
+
+  $new_repo->clone( $resp->{ssh_url} );
 }
 
 sub _parse_github_identity {
@@ -52,13 +46,16 @@ sub _parse_github_identity {
 
   my %config = map { my( @x ) = split /\s/; { $x[0] => $x[1] } } @lines;
 
-  my $user = $config{login}
-    or say STDERR "Couldn't parse login info from ~/.github_identity" and exit(1);
-
-  my $pass = $config{token}
-    or say STDERR "Couldn't parse token info from ~/.github_identity" and exit(1);
-
-  return( $user , $pass );
+  if ( defined $config{access_token} ) {
+    return ( access_token => $config{access_token} )
+  }
+  elsif ( defined $config{pass} and defined $config{user} ) {
+    return ( login => $config{user} , pass => $config{pass} )
+  }
+  else {
+    say STDERR "Couldn't parse password or access_token info from ~/.github-identity"
+      and exit(1);
+  }
 }
 
 sub _parse_github_url {
