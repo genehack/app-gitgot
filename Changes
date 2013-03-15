@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.05      2013-03-15 09:29:24 America/Los_Angeles
+
   [ENHANCEMENTS]
 
   * Add 'tmux' command to open tmux window in repo (Yanick Champoux)
