@@ -69,6 +69,11 @@ repositories.
     # fork a subshell with working directory set to 'path' of repo foo
     got cd foo
 
+    # or use 'tmux' subcommand to open a new tmux window instead 
+    got tmux 1
+    got tmux foo
+    # N.b., 'tmux' will reuse an existing window if one is open
+
     # show version of got
     got version
 
