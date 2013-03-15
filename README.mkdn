@@ -1,12 +1,10 @@
-# DESCRIPTION
+# NAME
 
-`got` is a script to make it easier to manage all the version controlled
-repositories you have on all the computers you use. It can operate on all,
-some, or just one repo at a time, to both check the status of the repo (up to
-date, pending changes, dirty, etc.) and sync it with any upstream master.
+got - A tool to make it easier to manage multiple code repositories using different VCSen
 
-got also supports forking a GitHub repo and adding it to the list of managed
-repositories.
+# VERSION
+
+version 1.05
 
 # SYNOPSIS
 
@@ -65,8 +63,23 @@ repositories.
     # fork a subshell with working directory set to 'path' of repo foo
     got cd foo
 
+    # or use 'tmux' subcommand to open a new tmux window instead
+    got tmux 1
+    got tmux foo
+    # N.b., 'tmux' will reuse an existing window if one is open
+
     # show version of got
     got version
+
+# DESCRIPTION
+
+`got` is a script to make it easier to manage all the version controlled
+repositories you have on all the computers you use. It can operate on all,
+some, or just one repo at a time, to both check the status of the repo (up to
+date, pending changes, dirty, etc.) and sync it with any upstream master.
+
+got also supports forking a GitHub repo and adding it to the list of managed
+repositories.
 
 # OPTIONS
 
@@ -75,45 +88,45 @@ all the subcommands accept the following options:
 
 - `--verbose / -v`
 
-Be more verbose about what is happening behind the scenes
+    Be more verbose about what is happening behind the scenes
 
 - `--quiet / -q`
 
-Be more quiet
+    Be more quiet
 
 - `--tags / -t`
 
-Select all repositories that have the given tag. May be given multiple
-times. Multiple args are (effectively) 'and'-ed together.
+    Select all repositories that have the given tag. May be given multiple
+    times. Multiple args are (effectively) 'and'-ed together.
 
 - `--no-color / -C`
 
-Suppress colored output
+    Suppress colored output
 
 - `--color-scheme / -c`
 
-Specify a color scheme. Defaults to 'dark'. People using light backgrounds may
-want to specify "-c light".
+    Specify a color scheme. Defaults to 'dark'. People using light backgrounds may
+    want to specify "-c light".
 
-The name given to the option indicates a library to load. By default this
-library is assumed to be in the 'App::GitGot::Outputter::' namespace; the
-given scheme name will be appended to that namespace. You can load something
-from a different namespace by prefacing a '+'. (E.g., '-C +GitGot::pink' will
-attempt to load 'GitGot::pink'.)
+    The name given to the option indicates a library to load. By default this
+    library is assumed to be in the 'App::GitGot::Outputter::' namespace; the
+    given scheme name will be appended to that namespace. You can load something
+    from a different namespace by prefacing a '+'. (E.g., '-C +GitGot::pink' will
+    attempt to load 'GitGot::pink'.)
 
-If the requested module can't be loaded, the command will exit.
+    If the requested module can't be loaded, the command will exit.
 
-See COLOR SCHEMES for details on how to write your own custom color scheme.
+    See COLOR SCHEMES for details on how to write your own custom color scheme.
 
 - repo name, repo number, range
 
-Commands may be limited to a subset of repositories by giving a combination of
-additional arguments, consisting of either repository names, repository
-numbers (as reported by the '`list`' subcommand), or number ranges (e.g., `2-4`
-will operate on repository numbers 2, 3, and 4).
+    Commands may be limited to a subset of repositories by giving a combination of
+    additional arguments, consisting of either repository names, repository
+    numbers (as reported by the '`list`' subcommand), or number ranges (e.g., `2-4`
+    will operate on repository numbers 2, 3, and 4).
 
-Note that if you have a repository whose name is an integer number, bad things
-are going probably going to happen. Don't do that.
+    Note that if you have a repository whose name is an integer number, bad things
+    are going probably going to happen. Don't do that.
 
 # COLOR SCHEMES
 
@@ -127,21 +140,36 @@ read-only of type 'Str' with a default value that corresponds to a valid
 
 - [http://github.com/ingydotnet/app-aycabtu-pm/](http://github.com/ingydotnet/app-aycabtu-pm/)
 
-Seeing Ingy döt Net speak about AYCABTU at PPW2010 was a major factor in the
-development of this script -- earlier (unreleased) versions did not have any way
-to limit operations to a subset of managed repositories; they also didn't deal
-well managing output. After lifting his interface (virtually wholesale) I
-ended up with something that I thought was worth releasing.
+    Seeing Ingy döt Net speak about AYCABTU at PPW2010 was a major factor in the
+    development of this script -- earlier (unreleased) versions did not have any way
+    to limit operations to a subset of managed repositories; they also didn't deal
+    well managing output. After lifting his interface (virtually wholesale) I
+    ended up with something that I thought was worth releasing.
 
 - [http://www.leancrew.com/all-this/2010/12/batch-comparison-of-git-repositories/](http://www.leancrew.com/all-this/2010/12/batch-comparison-of-git-repositories/)
 
-drdrang prodded me about making the color configuration more friendly to those
-that weren't dark backrgound terminal people. The colors in
-`App::GitGot::Outputter::light` are based on a couple of patches that drdrang
-sent me.
+    drdrang prodded me about making the color configuration more friendly to those
+    that weren't dark backrgound terminal people. The colors in
+    `App::GitGot::Outputter::light` are based on a couple of patches that drdrang
+    sent me.
 
 - [The Wire](http://en.wikipedia.org/wiki/The\_Wire)
 
 # LIMITATIONS
 
 Currently git is the only supported VCS.
+
+# CONTRIBUTORS
+
+- Yanick Champoux <yanick@babyl.dyndns.org>
+
+# AUTHOR
+
+John SJ Anderson <genehack@genehack.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by John SJ Anderson.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
