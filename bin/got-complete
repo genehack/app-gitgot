@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+use strict;
+
+use YAML::Any qw/ LoadFile /;
+
+sub get_command_line {
+	my $comp = substr $ENV{'COMP_LINE'}, 0, $ENV{'COMP_POINT'};
+	return split /[ \t]+/, $comp, -1; # if not good enough, use Text::ParseWords
+}
+
+sub get_project_suggestion {
+    my $word = shift;
+
+    my $config = LoadFile( $ENV{HOME} . '/'. '.gitgot' ) 
+        or die "~/.gitgot not found\n";
+
+    return grep { 0 == index $_, $word } 
+           map  { $_->{name} } 
+                @$config;
+}
+
+sub usage {
+	die map "\n$_\n", (
+		"To use, issue the following command in bash:",
+		"\tcomplete -C got-complete -o nospace -o default got",
+		"You probably want to put that line in your ~/.bashrc file.\n",
+	);
+}
+
+usage() if not exists $ENV{'COMP_LINE'};
+
+my ( $cmd, @args ) = get_command_line();
+
+my $subcommand;
+$subcommand = shift @args if $cmd =~ /got$/;
+
+print "$_\n" for get_project_suggestion( $args[-1] );
