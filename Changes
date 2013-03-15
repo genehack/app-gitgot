@@ -2,6 +2,12 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  [ENHANCEMENTS]
+
+  * Add 'tmux' command to open tmux window in repo (Yanick Champoux)
+  * Add 'got-complete' bash-complete helper (Yanick Champoux)
+  * Use 'bin/got' POD for dist abstract
+
 1.04      2011-12-12 21:27:40 America/New_York
 
   [BUGFIX]
