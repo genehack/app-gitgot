@@ -25,11 +25,9 @@ sub _execute {
       exec 'tmux', 'select-window', '-t' => $window;
   }
 
-
   chdir $repo->path;
 
-  exec 'tmux', 'new-window', '-n', $repo->name; 
-
+  exec 'tmux', 'new-window', '-n', $repo->name;
 }
 
 __PACKAGE__->meta->make_immutable;
