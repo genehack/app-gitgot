@@ -2,6 +2,8 @@
 # ABSTRACT: A tool to make it easier to manage multiple code repositories using different VCSen
 # PODNAME: got
 
+=encoding UTF-8
+
 =head1 DESCRIPTION
 
 C<got> is a script to make it easier to manage all the version controlled
@@ -162,6 +164,14 @@ sent me.
 =head1 LIMITATIONS
 
 Currently git is the only supported VCS.
+
+=head1 CONTRIBUTORS
+
+=over
+
+=item Yanick Champoux <yanick@babyl.dyndns.org>
+
+=back
 
 =cut
 
