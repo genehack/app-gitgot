@@ -1,3 +1,4 @@
 .build
+extlib
 App-GitGot-*
 !releases/*.tar.gz
