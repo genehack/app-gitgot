@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+# ABSTRACT: shell completion helper for got
+# PODNAME: got-complete
 
 use strict;
 
