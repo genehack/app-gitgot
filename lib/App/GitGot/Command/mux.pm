@@ -18,8 +18,8 @@ sub _execute {
   my( $repo ) = $self->active_repos;
 
   # is it already opened?
-  my %windows = reverse map { /^(\d+):\s+(\S+)/ }
-    split "\n", `tmux list-windows`;
+  my %windows = reverse map { /^(\d+):::(\S+)/ }
+    split "\n", `tmux list-windows -F"#I:::#W"`;
 
   if( my $window = $windows{$repo->name} ) {
       exec 'tmux', 'select-window', '-t' => $window;
