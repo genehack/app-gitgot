@@ -17,7 +17,7 @@ sub _execute {
   die "usage: got move <repo> <new dir>\n" unless @$args <= 2 and @$args > 0;
 
   my $repo;
-  
+
   my $target_dir = $args->[-1];
 
   # got move <name> <new location>
@@ -54,6 +54,3 @@ sub _execute {
 
 __PACKAGE__->meta->make_immutable;
 1;
-
-
-
