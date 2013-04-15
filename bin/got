@@ -67,11 +67,15 @@ repositories.
     got tmux foo
     # N.b., 'tmux' will reuse an existing window if one is open
 
-    # fork a github repo and add it to your list of repos
+    # fork a github repo, add it to your list of repos, and check it out in
+    # the current working directory
     got fork https://github.com/somebodies/repo_name
 
     # note: the default path to a repo added via 'fork' is a directory
     # named 'repo_name' in the current working directory
+
+    # if you just want to fork without checking out a working copy:
+    got fork --noclone https://github.com/somebodies/repo_name
 
     # finally, please note that you need a C<~/.github-identity> file set up
     # with your access token or your username and password in the following key-value

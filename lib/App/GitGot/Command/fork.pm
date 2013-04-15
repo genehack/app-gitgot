@@ -11,6 +11,13 @@ use Cwd;
 use File::Slurp;
 use Net::GitHub;
 
+has 'noclone' => (
+  is          => 'rw',
+  isa         => 'Bool',
+  cmd_aliases => 'n',
+  traits      => [qw/ Getopt /],
+);
+
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
@@ -30,10 +37,11 @@ sub _execute {
     type => 'git' ,
   }});
 
+  $new_repo->clone( $resp->{ssh_url} )
+    unless $self->noclone;
+
   $self->add_repo( $new_repo );
   $self->write_config;
-
-  $new_repo->clone( $resp->{ssh_url} );
 }
 
 sub _parse_github_identity {
