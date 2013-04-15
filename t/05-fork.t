@@ -13,11 +13,12 @@ use Test::More;
 BEGIN {
   my $mock = Test::MockObject->new();
   $mock->fake_module(
-    'Net::GitHub::V2::Repositories' ,
+    'Net::GitHub::V3::Repositories' ,
     'fork' => sub { 1 } ,
   );
-  $mock->fake_new( 'Net::GitHub::V2::Repositories' );
-  $mock->mock( fork => sub { 1 } );
+  $mock->fake_new( 'Net::GitHub' );
+  $mock->mock( repos => sub { $mock } );
+  $mock->mock( create_fork => sub { 1 } );
 }
 
 use App::Cmd::Tester;
@@ -48,8 +49,8 @@ $ENV{HOME} = $dir;
                                             'http://not.github.org/' ]);
   is   $result->stdout    , '' , 'nothing on STDOUT';
   like $result->stderr    ,
-    qr|ERROR: Can't find .*\.github-identity| ,
-      'need ~/.github-identity';
+    qr|ERROR: Can't parse 'http://not.github.org/'| ,
+      'need repo URL';
   is   $result->exit_code , 1  , 'exit with 1';
 
   file_not_exists_ok $config , 'failed command does not create config';
@@ -70,7 +71,7 @@ Test::BASE::create_github_identity_file();
 }
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config ,
+  my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config , '--noclone' ,
                                             'http://github.com/genehack/fake-git-repo.git' ]);
 
   is $result->stdout    , '' , 'no output';

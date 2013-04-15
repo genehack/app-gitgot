@@ -21,8 +21,8 @@ sub build_fake_git_repo {
 
 sub create_github_identity_file {
   write_file( '.github-identity' , <<EOF );
-login luser
-token my-user-token-thingie
+user luser
+pass my-user-token-thingie
 EOF
 }
 

@@ -20,7 +20,7 @@ sub test_current_branch :Tests(3) {
   my $test = shift;
 
   dies_ok { $test->{full}->current_branch } 'will die';
-  like( $@ , qr/Not a git repository/ , 'expected error message' );
+  like( $@ , qr/Can't locate directory/ , 'expected error message' );
 
   is( $test->{min}->current_branch , 'master' , 'expected answer' );
 }
@@ -29,7 +29,7 @@ sub test_current_remote_branch :Tests(3) {
   my $test = shift;
 
   dies_ok { $test->{full}->current_branch } 'will die';
-  like( $@ , qr/Not a git repository/ , 'expected error message' );
+  like( $@ , qr/Can't locate directory/ , 'expected error message' );
 
   is( $test->{min}->current_remote_branch , 0 , 'get 0 without real remote' );
 }
