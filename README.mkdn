@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.05
+version 1.06
 
 # SYNOPSIS
 
@@ -48,25 +48,33 @@ version 1.05
     # Note: if a repo is in the list but doesn't have a local checkout, 'got
     # update' will create directories as needed and do the initial check out.
 
-    # fork a github repo and add it to your list of repos
-    got fork https://github.com/somebodies/repo_name
-
-    # note: this doesn't actually check out the repo, but running 'got up
-    # repo_name' will work as described above.
-
-    # also note: the default path to a repo added via 'fork' is a directory
-    # named 'repo_name' in the current working directory
-
-    # open a subshell with working directory set to 'path' of repo #1
+    # spawn a subshell with working directory set to 'path' of repo #1
     got chdir 1
 
-    # fork a subshell with working directory set to 'path' of repo foo
+    # spawn a subshell with working directory set to 'path' of repo foo
     got cd foo
 
     # or use 'tmux' subcommand to open a new tmux window instead
     got tmux 1
     got tmux foo
     # N.b., 'tmux' will reuse an existing window if one is open
+
+    # fork a github repo and add it to your list of repos
+    got fork https://github.com/somebodies/repo_name
+
+    # note: the default path to a repo added via 'fork' is a directory
+    # named 'repo_name' in the current working directory
+
+    # finally, please note that you need a C<~/.github-identity> file set up
+    # with your access token or your username and password in the following key-value
+    # format:
+    user username
+    pass password
+
+    # *OR*
+    access_token token
+
+    # note that if you specify both, the access_token value will be used
 
     # show version of got
     got version

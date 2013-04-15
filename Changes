@@ -2,6 +2,15 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  [BUGFIXES]
+
+  * Make 'got mux' more resilant with re-attaching (Github issue #7) (John SJ Anderson)
+  * Update for Net::GitHub API chaneg (Github issue #4) (John SJ Anderson)
+
+  [ENHANCEMENT]
+
+  * Add 'got move' command (Yanick Champoux)
+  
 1.05      2013-03-15 09:29:24 America/Los_Angeles
 
   [ENHANCEMENTS]
