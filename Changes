@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.06      2013-04-14 17:28:20 America/Los_Angeles
+
   [BUGFIXES]
 
   * Make 'got mux' more resilant with re-attaching (Github issue #7) (John SJ Anderson)
