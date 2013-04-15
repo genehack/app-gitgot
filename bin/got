@@ -56,10 +56,10 @@ repositories.
     # Note: if a repo is in the list but doesn't have a local checkout, 'got
     # update' will create directories as needed and do the initial check out.
 
-    # open a subshell with working directory set to 'path' of repo #1
+    # spawn a subshell with working directory set to 'path' of repo #1
     got chdir 1
 
-    # fork a subshell with working directory set to 'path' of repo foo
+    # spawn a subshell with working directory set to 'path' of repo foo
     got cd foo
 
     # or use 'tmux' subcommand to open a new tmux window instead
