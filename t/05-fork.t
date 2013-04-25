@@ -18,7 +18,7 @@ BEGIN {
   );
   $mock->fake_new( 'Net::GitHub' );
   $mock->mock( repos => sub { $mock } );
-  $mock->mock( create_fork => sub { 1 } );
+  $mock->mock( create_fork => sub {{ ssl_url => 'yeahboi' }} );
 }
 
 use App::Cmd::Tester;

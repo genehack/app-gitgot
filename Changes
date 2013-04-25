@@ -2,6 +2,10 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  [BUGFIX]
+
+  * Fix mocking so that test doesn't fail on older Perls
+
 1.06      2013-04-14 17:28:20 America/Los_Angeles
 
   [BUGFIXES]
