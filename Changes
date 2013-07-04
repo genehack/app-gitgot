@@ -2,6 +2,9 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Remove given/when constructs (which will silence the warnings on newer Perls)
+    (Thanks to Heikki Lehvaslaiho for raising this issue.)
+
 1.07      2013-04-24 20:27:45 America/Los_Angeles
 
   [BUGFIX]
