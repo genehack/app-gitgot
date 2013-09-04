@@ -220,7 +220,7 @@ sub _build_active_repo_list {
         }
       }
     }
-    push @repos, $repo unless $self->tags or $list;
+    push @repos, $repo unless $self->tags or @$list;
   } 
 
   return \@repos;
