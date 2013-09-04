@@ -195,7 +195,7 @@ sub _build_active_repo_list {
   my ( $self ) = @_;
 
   return $self->full_repo_list
-    if $self->all or ! $self->tags and ! $self->no_tags and ! @{ $self->args };
+    if $self->all or ! $self->tags and ! $self->skip_tags and ! @{ $self->args };
 
   my $list = _expand_arg_list( $self->args );
 
@@ -220,8 +220,8 @@ sub _build_active_repo_list {
         }
       }
     }
-    push @repos, $repo unless $self->tags;
-  }
+    push @repos, $repo unless $self->tags or $list;
+  } 
 
   return \@repos;
 }
