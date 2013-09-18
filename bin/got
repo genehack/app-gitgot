@@ -111,6 +111,12 @@ Be more quiet
 Select all repositories that have the given tag. May be given multiple
 times. Multiple args are (effectively) 'and'-ed together.
 
+=item * C<--skip-tags / -T>
+
+Skip all repositories that have the given tag. May be given multiple
+times. Multiple args are (effectively) 'or'-ed together.  May be combined with
+-t to select all repos with the -t tag except for those with the -T tag.
+
 =item * C<--no-color / -C>
 
 Suppress colored output
