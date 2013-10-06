@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.09      2013-10-06 11:01:46 America/New_York
+
   * Add --skip-tags for skipping repos with given tag(s) (Mike Greb)
 
 1.08      2013-07-04 14:37:24 America/Los_Angeles
