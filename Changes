@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Add --skip-tags for skipping repos with given tag(s) (Mike Greb)
+
 1.08      2013-07-04 14:37:24 America/Los_Angeles
 
   * Remove given/when constructs (which will silence the warnings on newer Perls)

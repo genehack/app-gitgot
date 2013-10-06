@@ -72,6 +72,14 @@ has 'tags' => (
   traits        => [qw/ Getopt /],
 );
 
+has 'skip_tags' => (
+  is            => 'rw',
+  isa           => 'ArrayRef[Str]',
+  documentation => 'select repositories not tagged with these words' ,
+  cmd_aliases   => 'T',
+  traits        => [qw/ Getopt /],
+);
+
 has 'verbose' => (
   is            => 'rw',
   isa           => 'Bool',
@@ -187,7 +195,7 @@ sub _build_active_repo_list {
   my ( $self ) = @_;
 
   return $self->full_repo_list
-    if $self->all or ! $self->tags and ! @{ $self->args };
+    if $self->all or ! $self->tags and ! $self->skip_tags and ! @{ $self->args };
 
   my $list = _expand_arg_list( $self->args );
 
@@ -198,6 +206,12 @@ sub _build_active_repo_list {
       next REPO;
     }
 
+    if ( $self->skip_tags ) {
+      foreach my $tag ( @{ $self->skip_tags } ) {
+        next REPO if grep { $repo->tags =~ /\b$_\b/ } $tag;
+      }
+    }
+
     if ( $self->tags ) {
       foreach my $tag ( @{ $self->tags } ) {
         if ( grep { $repo->tags =~ /\b$_\b/ } $tag ) {
@@ -206,7 +220,8 @@ sub _build_active_repo_list {
         }
       }
     }
-  }
+    push @repos, $repo unless $self->tags or @$list;
+  } 
 
   return \@repos;
 }
