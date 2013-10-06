@@ -1,4 +1,4 @@
-#! /opt/perl/bin/perl
+#! /usr/bin/env perl
 # ABSTRACT: A tool to make it easier to manage multiple code repositories using different VCSen
 # PODNAME: got
 
