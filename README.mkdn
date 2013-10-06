@@ -180,6 +180,7 @@ Currently git is the only supported VCS.
 # CONTRIBUTORS
 
 - Yanick Champoux <yanick@babyl.dyndns.org>
+- Michael Greb <michael@thegrebs.com>
 
 # AUTHOR
 
