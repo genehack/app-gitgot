@@ -46,7 +46,7 @@ sub _build__wrapper {
   }
   else {
     return Git::Wrapper->new( $self->path )
-      or die "Can't make Git::Wrapper";
+      || die "Can't make Git::Wrapper";
   }
 }
 
