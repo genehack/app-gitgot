@@ -10,7 +10,11 @@ use File::Slurp;
 use File::Temp   qw/ tempdir tempfile /;
 use YAML         qw/ DumpFile /;
 
-INIT { Test::Class->runtests }
+INIT {
+  my( undef, $config ) = tempfile();
+  $ENV{GIT_CONFIG} = $config;
+  Test::Class->runtests;
+}
 
 sub build_fake_git_repo {
   my $repo = shift || 'foo.git';
