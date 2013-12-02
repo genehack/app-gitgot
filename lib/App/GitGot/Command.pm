@@ -7,6 +7,7 @@ use 5.010;
 
 use App::GitGot::Repo::Git;
 use File::Path 2.08         qw/ make_path /;
+use Path::Class;
 use List::Util              qw/ max /;
 use Try::Tiny;
 use YAML                    qw/ DumpFile LoadFile /;
@@ -464,6 +465,45 @@ sub _update {
 
     say "$msg$status";
   }
+}
+
+sub _path_is_managed {
+  my( $self , $path ) = @_;
+
+  my $dir = dir( $path );
+
+  # find repo root
+  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
+    die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
+    $dir = $dir->parent;
+  }
+
+  my $max_len = $self->max_length_of_an_active_repo_label;
+
+  for my $repo ( $self->active_repos ) {
+    next unless $repo->path eq $dir->absolute;
+
+    my $repo_remote = ( $repo->repo and -d $repo->path ) ? $repo->repo
+      : ( $repo->repo )    ? $repo->repo . ' (Not checked out)'
+      : ( -d $repo->path ) ? 'NO REMOTE'
+      : 'ERROR: No remote and no repo?!';
+
+    printf "%3d) ", $repo->number;
+
+    if ( $self->quiet ) { say $repo->label }
+    else {
+      printf "%-${max_len}s  %-4s  %s\n",
+        $repo->label, $repo->type, $repo_remote;
+      if ( $self->verbose ) {
+        printf "    tags: %s\n" , $repo->tags if $repo->tags;
+      }
+    }
+
+    return 1;
+  }
+
+  say "repository not in Got list";
+  return;
 }
 
 # override this in commands that shouldn't use IO::Page -- i.e., ones that
