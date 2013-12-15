@@ -7,8 +7,8 @@ use 5.010;
 
 use App::GitGot::Repo::Git;
 use File::Path 2.08         qw/ make_path /;
-use Path::Class;
 use List::Util              qw/ max /;
+use Path::Class;
 use Try::Tiny;
 use YAML                    qw/ DumpFile LoadFile /;
 use namespace::autoclean;
