@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.09
+version 1.10
 
 # SYNOPSIS
 
@@ -171,7 +171,7 @@ read-only of type 'Str' with a default value that corresponds to a valid
     `App::GitGot::Outputter::light` are based on a couple of patches that drdrang
     sent me.
 
-- [The Wire](http://en.wikipedia.org/wiki/The\_Wire)
+- [The Wire](http://en.wikipedia.org/wiki/The_Wire)
 
 # LIMITATIONS
 
@@ -181,6 +181,7 @@ Currently git is the only supported VCS.
 
 - Yanick Champoux <yanick@babyl.dyndns.org>
 - Michael Greb <michael@thegrebs.com>
+- Chris Prather <chris@prather.org>
 
 # AUTHOR
 

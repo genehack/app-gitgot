@@ -2,6 +2,9 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Add 'that' subcommand; refactor 'this' (Mike Greb)
+  * Add '-s' (session) support to 'mux' (Chris Prather)
+
 1.09      2013-10-06 11:01:46 America/New_York
 
   * Add --skip-tags for skipping repos with given tag(s) (Mike Greb)
