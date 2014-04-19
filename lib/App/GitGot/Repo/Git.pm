@@ -19,6 +19,7 @@ has '_wrapper' => (
                       cherry
                       clone
                       config
+                      fetch
                       gc
                       pull
                       push
