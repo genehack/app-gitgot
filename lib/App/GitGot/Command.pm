@@ -340,6 +340,58 @@ sub _git_update {
   return $msg;
 }
 
+sub _git_fetch {
+  my ( $self, $entry ) = @_
+    or die "Need entry";
+
+  my $msg = '';
+
+  my $path = $entry->path;
+
+  if ( !-d $path ) {
+    make_path $path;
+
+    try {
+      $entry->clone( $entry->repo , './' );
+      $msg .= $self->major_change('Checked out');
+    }
+    catch { $msg .= $self->error('ERROR') . "\n$_" };
+  }
+  elsif ( -d "$path/.git" ) {
+    try {
+      my @o = $entry->fetch;
+
+      # "git fetch" doesn't output anything to STDOUT only STDERR
+      my @err = @{ $entry->_wrapper->ERR };
+
+      # If something was updated then STDERR should contain something
+      # similar to:
+      #
+      #     From git://example.com/link-to-repo
+      #         SHA1___..SHA1___  master     -> origin/master
+      #
+      # So search for /^From / in STDERR to see if anything was outputed
+      if ( grep { /^From / } @err ) {
+        $msg .= $self->major_change('Updated');
+        $msg .= "\n" . join("\n",@err) unless $self->quiet;
+      }
+      elsif ( scalar @err == 0) {
+        # No messages to STDERR means repo was already updated
+        $msg .= $self->minor_change('Up to date') unless $self->quiet;
+      }
+      else {
+        # Something else occured (possibly a warning)
+        # Print STDERR and move on
+        $msg .= $self->warning('Problem during fetch');
+        $msg .= "\n" . join("\n",@err) unless $self->quiet;
+      }
+    }
+    catch { $msg .= $self->error('ERROR') . "\n$_" };
+  }
+
+  return $msg;
+}
+
 sub _read_config {
   my $file = shift;
 
@@ -466,6 +518,35 @@ sub _update {
     say "$msg$status";
   }
 }
+
+sub _fetch {
+  my( $self , @repos ) = @_;
+
+  my $max_len = $self->max_length_of_an_active_repo_label;
+
+ REPO: for my $repo ( @repos ) {
+    next REPO unless $repo->repo;
+
+    my $name = $repo->name;
+
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->label;
+
+    my ( $status, $fxn );
+
+    my $repo_type = $repo->type;
+
+    if ( $repo_type eq 'git' ) { $fxn = '_git_fetch' }
+    ### FIXME elsif( $repo_type eq 'svn' ) { $fxn = 'svn_update' }
+    else { $status = $self->error("ERROR: repo type '$_' not supported") }
+
+    $status = $self->$fxn($repo) if ($fxn);
+
+    next REPO if $self->quiet and !$status;
+
+    say "$msg$status";
+  }
+}
+
 
 sub _path_is_managed {
   my( $self , $path ) = @_;
