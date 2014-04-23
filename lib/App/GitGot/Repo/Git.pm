@@ -36,8 +36,8 @@ sub _build__wrapper {
   if ( $ENV{GITGOT_FAKE_GIT_WRAPPER} ) {
     my $mock = Test::MockObject->new;
     $mock->set_isa( 'Git::Wrapper' );
-    foreach my $method ( qw/ cherry clone gc pull
-                             remote symbolic_ref / ) {
+    foreach my $method ( qw/ cherry clone fetch gc pull
+                             remote symbolic_ref ERR / ) {
       $mock->mock( $method => sub { return( '1' )});
     }
     $mock->mock( 'status' => sub { package MyFake; sub get { return () }; return bless {} , 'MyFake' } );
