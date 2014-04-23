@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Add 'fetch' subcommand (Rolando Pereira)
+
 1.10      2013-12-15 20:28:02 America/Los_Angeles
 
   * Add 'that' subcommand; refactor 'this' (Mike Greb)
