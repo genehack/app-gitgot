@@ -1,4 +1,5 @@
 package App::GitGot;
+
 use Mouse;
 extends 'MouseX::App::Cmd';
 # ABSTRACT: A tool to make it easier to manage multiple git repositories.

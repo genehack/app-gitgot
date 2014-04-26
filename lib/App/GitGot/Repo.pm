@@ -1,4 +1,5 @@
 package App::GitGot::Repo;
+
 # ABSTRACT: Base repository objects
 use Mouse;
 use 5.010;

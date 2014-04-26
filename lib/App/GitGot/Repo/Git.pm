@@ -1,4 +1,5 @@
 package App::GitGot::Repo::Git;
+
 # ABSTRACT: Git repo objects
 use Mouse;
 extends 'App::GitGot::Repo';
@@ -40,7 +41,8 @@ sub _build__wrapper {
                              remote symbolic_ref / ) {
       $mock->mock( $method => sub { return( '1' )});
     }
-    $mock->mock( 'status' => sub { package MyFake; sub get { return () }; return bless {} , 'MyFake' } );
+    $mock->mock( 'status' => sub { package
+                                     MyFake; sub get { return () }; return bless {} , 'MyFake' } );
     $mock->mock( 'config' => sub { 0 });
     $mock->mock( 'ERR'    => sub { [ ] });
 

@@ -2,8 +2,10 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
-1.12      2014-04-22 20:54:41-07:00 America/Los_Angeles
+  * __sigh__       
 
+1.12      2014-04-22 20:54:41-07:00 America/Los_Angeles
+  
 1.11      2014-04-22 18:53:24-07:00 America/Los_Angeles
 
   * Add 'fetch' subcommand (Rolando Pereira)
