@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.14      2014-05-08 18:06:22-07:00 America/Los_Angeles
+
   * Move from File::Slurp to File::Slurp::Tiny (#25)
 
 1.13      2014-04-26 10:40:00-07:00 America/Los_Angeles
