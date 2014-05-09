@@ -6,9 +6,9 @@ use warnings;
 use 5.010;
 
 use Carp;
-use File::Slurp;
-use File::Temp   qw/ tempdir tempfile /;
-use YAML         qw/ DumpFile /;
+use File::Slurp::Tiny  qw/ write_file /;
+use File::Temp         qw/ tempdir tempfile /;
+use YAML               qw/ DumpFile /;
 
 INIT {
   my( undef, $config ) = tempfile();

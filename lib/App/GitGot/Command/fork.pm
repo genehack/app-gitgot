@@ -8,7 +8,7 @@ use 5.010;
 use autodie;
 use App::GitGot::Repo::Git;
 use Cwd;
-use File::Slurp;
+use File::Slurp::Tiny 'read_lines';
 use Net::GitHub;
 
 has 'noclone' => (
@@ -50,7 +50,7 @@ sub _parse_github_identity {
   -e $file or
     say STDERR "ERROR: Can't find $ENV{HOME}/.github-identity" and exit(1);
 
-  my @lines = read_file( $file );
+  my @lines = read_lines( $file );
 
   my %config = map { my( @x ) = split /\s/; { $x[0] => $x[1] } } @lines;
 
