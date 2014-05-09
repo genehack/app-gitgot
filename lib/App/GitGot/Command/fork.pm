@@ -52,7 +52,13 @@ sub _parse_github_identity {
 
   my @lines = read_lines( $file );
 
-  my %config = map { my( @x ) = split /\s/; { $x[0] => $x[1] } } @lines;
+  my %config;
+  foreach ( @lines ) {
+    chomp;
+    next unless $_;
+    my( $k , $v ) = split /\s/;
+    $config{$k} = $v;
+  }
 
   if ( defined $config{access_token} ) {
     return ( access_token => $config{access_token} )
