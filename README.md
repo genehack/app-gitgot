@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.14
+version 1.15
 
 # SYNOPSIS
 

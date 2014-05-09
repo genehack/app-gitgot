@@ -2,6 +2,12 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.15      2014-05-08 21:19:33-07:00 America/Los_Angeles
+
+  * Fix stupid bugs because File::Slurp::Tiny does things _just_
+    slightly differently on some versions of Perl because we don't get
+    to have nice things ever.
+
 1.14      2014-05-08 18:06:22-07:00 America/Los_Angeles
 
   * Move from File::Slurp to File::Slurp::Tiny (#25)
