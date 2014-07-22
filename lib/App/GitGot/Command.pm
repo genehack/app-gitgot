@@ -551,6 +551,8 @@ sub _fetch {
 sub _path_is_managed {
   my( $self , $path ) = @_;
 
+  return unless $path;
+
   my $dir = dir( $path );
 
   # find repo root
