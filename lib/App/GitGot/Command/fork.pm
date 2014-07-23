@@ -9,7 +9,7 @@ use autodie;
 use App::GitGot::Repo::Git;
 use Cwd;
 use File::Slurp::Tiny 'read_lines';
-use Net::GitHub;
+use Class::Load;
 
 has 'noclone' => (
   is          => 'rw',
@@ -28,6 +28,7 @@ sub _execute {
 
   my %gh_args = _parse_github_identity();
 
+  Class::Load::load_class('Net::GitHub');
   my $resp = Net::GitHub->new( %gh_args )->repos->create_fork( $owner , $repo_name );
 
   my $new_repo = App::GitGot::Repo::Git->new({ entry => {
