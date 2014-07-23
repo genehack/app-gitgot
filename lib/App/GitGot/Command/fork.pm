@@ -7,9 +7,9 @@ use 5.010;
 
 use autodie;
 use App::GitGot::Repo::Git;
+use Class::Load       'try_load_class';
 use Cwd;
 use File::Slurp::Tiny 'read_lines';
-use Net::GitHub;
 
 has 'noclone' => (
   is          => 'rw',
@@ -20,6 +20,10 @@ has 'noclone' => (
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
+
+  try_load_class('Net::GitHub') or
+    say "Sorry, Net::GitHub is required for 'got fork'. Please install it."
+    and exit(1);
 
   my $github_url = shift @$args
     or say STDERR "ERROR: Need the URL of a repo to fork!" and exit(1);
