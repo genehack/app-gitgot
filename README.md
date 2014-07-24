@@ -39,6 +39,12 @@ version 1.17
     # show status for repo #3
     got st 3
 
+    # fetch upstream for all repositories
+    got fetch
+
+    # fetch upstream for repo #3
+    got fetch 3
+
     # update all repos with configured remotes
     got update
 
