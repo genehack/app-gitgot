@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Documentation updates for 'fetch' and 'gc' (Dan McCracken)
+
 1.17      2014-07-24 10:03:54-07:00 America/Los_Angeles
 
   * Modify dist.ini to pull the INSTALL file from the build back into
