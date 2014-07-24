@@ -2,7 +2,14 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Modify dist.ini to pull the INSTALL file from the build back into
+    the repo (addresses #28)
+
 1.16      2014-07-23 16:19:42-07:00 America/Los_Angeles
+
+  * Load Net::GitHub on the fly in the 'fork' command. Make it an
+    optional dep. Provide nice error message if it is not installed
+    when the 'fork' command is used.
 
 1.15      2014-05-08 21:19:33-07:00 America/Los_Angeles
 
