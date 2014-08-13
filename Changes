@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.18      2014-08-12 22:03:34-05:00 America/Chicago
+
   * Documentation updates for 'fetch' and 'gc' (Dan McCracken)
 
 1.17      2014-07-24 10:03:54-07:00 America/Los_Angeles
