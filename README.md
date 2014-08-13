@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.17
+version 1.18
 
 # SYNOPSIS
 
@@ -39,6 +39,12 @@ version 1.17
     # show status for repo #3
     got st 3
 
+    # fetch upstream for all repositories
+    got fetch
+
+    # fetch upstream for repo #3
+    got fetch 3
+
     # update all repos with configured remotes
     got update
 
@@ -47,6 +53,9 @@ version 1.17
 
     # Note: if a repo is in the list but doesn't have a local checkout, 'got
     # update' will create directories as needed and do the initial check out.
+
+    # Run the 'git gc' command to garbage collect in git repos
+    got gc
 
     # spawn a subshell with working directory set to 'path' of repo #1
     got chdir 1
