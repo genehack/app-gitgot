@@ -3,6 +3,8 @@ Changes file for {{$dist->name}}
 {{$NEXT}}
 
   * Make 'mux' work with multiple repos instead of just one
+  * Add 'dirty' flag to 'mux' to make it open all repos with unclear
+    status
 
 1.18      2014-08-12 22:03:34-05:00 America/Chicago
 
