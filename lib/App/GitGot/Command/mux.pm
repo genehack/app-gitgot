@@ -6,11 +6,11 @@ extends 'App::GitGot::Command';
 use 5.010;
 
 has session => (
-    traits        => [qw(Getopt)],
-    isa           => 'Bool',
-    is            => 'ro',
-    cmd_aliases   => 's',
-    documentation => 'use tmux-sessions',
+  traits        => [qw(Getopt)],
+  isa           => 'Bool',
+  is            => 'ro',
+  cmd_aliases   => 's',
+  documentation => 'use tmux-sessions',
 );
 
 sub command_names { qw/ mux tmux / }
