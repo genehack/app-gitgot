@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Make 'mux' work with multiple repos instead of just one
+
 1.18      2014-08-12 22:03:34-05:00 America/Chicago
 
   * Documentation updates for 'fetch' and 'gc' (Dan McCracken)
