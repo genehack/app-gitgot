@@ -7,10 +7,27 @@ use 5.010;
 
 sub command_names { qw/ list ls / }
 
+has 'json' => (
+  is          => 'ro',
+  isa         => 'Bool',
+  cmd_aliases => 'j',
+  documentation => 'stream output as json',
+  traits      => [qw/ Getopt /],
+);
+
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
   my $max_len = $self->max_length_of_an_active_repo_label;
+
+  if ( $self->json ) {
+      my @data = map { {%$_}  } $self->active_repos;
+
+      require JSON;
+
+      say JSON::to_json( \@data, { pretty => 1 } );
+      return;
+  }
 
   for my $repo ( $self->active_repos ) {
     my $repo_remote = ( $repo->repo and -d $repo->path ) ? $repo->repo
