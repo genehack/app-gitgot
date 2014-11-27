@@ -6,6 +6,8 @@ extends 'MouseX::App::Cmd::Command';
 use 5.010;
 
 use App::GitGot::Repo::Git;
+use App::GitGot::Repositories;
+
 use File::Path 2.08         qw/ make_path /;
 use List::Util              qw/ max /;
 use Path::Class;
@@ -129,6 +131,14 @@ has 'outputter' => (
     'minor_change' ,
   ] ,
 );
+
+sub search_repos {
+    my $self = shift;
+    
+    return App::GitGot::Repositories->new(
+        repos => [ $self->all_repos ]
+    );
+}
 
 sub execute {
   my( $self , $opt , $args ) = @_;
