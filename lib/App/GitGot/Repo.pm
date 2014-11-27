@@ -4,6 +4,8 @@ package App::GitGot::Repo;
 use Mouse;
 use 5.010;
 
+use List::AllUtils qw/ uniq /;
+
 use namespace::autoclean;
 
 has 'label' => (
@@ -35,7 +37,7 @@ has 'repo' => (
 );
 
 has 'tags' => (
-  is          => 'ro',
+  is          => 'rw',
   isa         => 'Str',
 );
 
@@ -95,6 +97,20 @@ sub in_writable_format {
   }
 
   return $writeable;
+}
+
+sub add_tags {
+    my( $self, @tags ) = @_;
+
+    $self->tags( join ' ', uniq sort @tags, split ' ', $self->tags );
+}
+
+sub remove_tags {
+    my( $self, @tags ) = @_;
+
+    %verboten = map { $_ => 1 } @tags;
+
+    $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
 }
 
 

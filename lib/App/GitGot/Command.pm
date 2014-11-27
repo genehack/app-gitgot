@@ -5,9 +5,10 @@ use Mouse;
 extends 'MouseX::App::Cmd::Command';
 use 5.010;
 
+use Cwd;
 use App::GitGot::Repo::Git;
 use File::Path 2.08         qw/ make_path /;
-use List::Util              qw/ max /;
+use List::AllUtils              qw/ max first /;
 use Path::Class;
 use Try::Tiny;
 use YAML                    qw/ DumpFile LoadFile /;
@@ -547,6 +548,19 @@ sub _fetch {
   }
 }
 
+sub local_repo {
+    my $self = shift;
+
+    my $dir = dir( getcwd() );
+
+    # find repo root
+    while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
+        die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
+        $dir = $dir->parent;
+    }
+
+    return first { $_->path eq $dir->absolute } $self->all_repos;
+}
 
 sub _path_is_managed {
   my( $self , $path ) = @_;
