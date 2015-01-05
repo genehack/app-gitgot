@@ -112,3 +112,12 @@ sub _init_for_git {
 
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+    # add repository of current directory
+    $ got add 
+
+=cut
