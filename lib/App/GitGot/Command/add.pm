@@ -9,7 +9,10 @@ use App::GitGot::Repo::Git;
 use Config::INI::Reader;
 use Cwd;
 use File::Basename;
+use File::chdir;
 use Term::ReadLine;
+use Path::Tiny;
+use List::AllUtils qw/any pairmap/;
 
 has 'defaults' => (
   is          => 'rw',
@@ -29,13 +32,27 @@ has 'origin' => (
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
-  my $new_entry = $self->_build_new_entry_from_user_input();
+  my @dirs = @$args;
+  push @dirs, '.' unless @dirs;  # default dir is this one
 
-  # this will exit if the new_entry duplicates an existing repo in the config
-  $self->_check_for_dupe_entries($new_entry);
+  $self->process_dir($_) for map { path($_)->absolute } @dirs;
 
-  $self->add_repo( $new_entry );
-  $self->write_config;
+}
+
+sub process_dir {
+    my( $self, $dir ) = @_;
+
+    # first thing, do we already "got" it?
+    return warn "Repository at '$dir' already registered with Got, skipping\n"
+        if any { $_ eq $dir }  map { $_->path } $self->all_repos;
+
+    local $CWD = $dir;
+
+    $self->add_repo( 
+        $self->_build_new_entry_from_user_input
+    );
+
+    $self->write_config;
 }
 
 sub _build_new_entry_from_user_input {
@@ -119,5 +136,9 @@ __END__
 
     # add repository of current directory
     $ got add 
+
+    # add repository of multiple directories, 
+    # with default tags
+    $ got add -t bar-things -t moosey Moo-bar Moose-bar
 
 =cut
