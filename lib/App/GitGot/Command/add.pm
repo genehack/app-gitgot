@@ -9,7 +9,13 @@ use App::GitGot::Repo::Git;
 use Config::INI::Reader;
 use Cwd;
 use File::Basename;
+use File::chdir;
 use Term::ReadLine;
+use IO::Prompt::Simple;
+use PerlX::Maybe;
+use Path::Tiny;
+use List::AllUtils qw/any pairmap/;
+use Class::Load qw/ try_load_class /;
 
 has 'defaults' => (
   is          => 'rw',
@@ -26,58 +32,101 @@ has 'origin' => (
   traits      => [qw/ Getopt /],
 );
 
+has recursive => (
+  traits => [qw/ Getopt /],
+   is => 'ro',
+   isa => 'Bool',
+   default => 0,
+   documentation => 'search all sub-directories for repositories',
+);
+
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
-  my $new_entry = $self->_build_new_entry_from_user_input();
+  my @dirs = @$args;
+  push @dirs, '.' unless @dirs;  # default dir is this one
 
-  # this will exit if the new_entry duplicates an existing repo in the config
-  $self->_check_for_dupe_entries($new_entry);
+  if( $self->recursive ) {
+      # hunt for repos
 
-  $self->add_repo( $new_entry );
-  $self->write_config;
+      try_load_class( 'Path::Iterator::Rule' )
+        or die "feature requires module 'Path::Iterator::Rule' to be installed\n";
+
+        Path::Iterator::Rule->add_helper(
+            is_git => sub {
+                return sub {
+                    my $item = shift;
+                    return -d "$item/.git";
+                }
+            }
+        );
+
+      @dirs = Path::Iterator::Rule->new->dir->is_git->all(@dirs);
+  }
+
+  $self->process_dir($_) for map { path($_)->absolute } @dirs;
+}
+
+sub process_dir {
+    my( $self, $dir ) = @_;
+
+    # first thing, do we already "got" it?
+    return warn "Repository at '$dir' already registered with Got, skipping\n"
+        if any { $_ eq $dir }  map { $_->path } $self->all_repos;
+
+    local $CWD = $dir;
+
+    $self->add_repo( 
+        $self->_build_new_entry_from_user_input
+    );
+
+    $self->write_config;
 }
 
 sub _build_new_entry_from_user_input {
   my ($self) = @_;
 
-  my ( $repo, $name, $type, $tags, $path );
+  my ( $repo, $type );
 
   if ( -e '.git' ) {
-    ( $repo, $name, $type ) = $self->_init_for_git;
+    ( $repo, $type ) = $self->_init_for_git;
   }
   else {
     say STDERR "ERROR: Non-git repos not supported at this time.";
     exit(1);
   }
 
-  if ( $self->defaults ) {
-    my $cwd = getcwd
-      or die "ERROR: Couldn't determine path";
-    $name //= basename getcwd;
-    die "ERROR: Couldn't determine name"      unless $name;
-    $repo //= '';
-    die "ERROR: Couldn't determine repo type" unless $type;
-    $path = $cwd;
+  my $name = lc basename getcwd;
+
+  $ENV{PERL_IOPS_USE_DEFAULT} = $self->defaults;
+
+  my $path = getcwd;
+
+  return unless prompt "\nadd repository at '$path'?", { yn => 1, default => 'y' };
+
+  $name = prompt( 'Name', $name );
+
+  my $remote;
+
+  if ( 1 == keys %$repo ) {
+    # one remote? No choice
+    ($remote) = values %$repo;
   }
   else {
-    my $term = Term::ReadLine->new('gitgot');
-    $name = $term->readline( 'Name: ', $name );
-    $repo = $term->readline( ' URL: ', $repo );
-    $path = $term->readline( 'Path: ', getcwd );
-    $tags = $term->readline( 'Tags: ', $tags );
+    $remote = prompt( 'tracking remote', { 
+            anyone => $repo, 
+            verbose => 1,
+            maybe default => $repo->{$self->origin} && $self->origin,
+        });
   }
 
-  my $new_entry = {
-    repo => $repo,
-    name => $name,
+  return App::GitGot::Repo::Git->new({ entry => {
     type => $type,
     path => $path,
-  };
-
-  $new_entry->{tags} = $tags if $tags;
-
-  return App::GitGot::Repo::Git->new({ entry => $new_entry });
+    name => $name,
+    repo => $remote,
+    maybe tags => join ' ', prompt( 'Tags', join ' ', @{$self->tags||[]} ),
+  }});
 }
 
 sub _check_for_dupe_entries {
@@ -100,15 +149,28 @@ sub _init_for_git {
 
   my $cfg = Config::INI::Reader->read_file('.git/config');
 
-  my $remote = sprintf 'remote "%s"', $self->origin;
+  my %remotes = pairmap { $a =~ /remote "(.*?)"/ ? ( $1 => $b->{url} ) : () } %$cfg;
 
-  no warnings qw/ uninitialized /;
-
-  my $repo = $cfg->{$remote}{url};
-  my ( $name ) = $repo =~ m|([^/]+).git$|;
-
-  return ( $repo, $name, 'git' );
+  return ( \%remotes, 'git' );
 }
 
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+    # add repository of current directory
+    $ got add 
+
+    # add repository of multiple directories, 
+    # with default tags
+    $ got add -t bar-things -t moosey Moo-bar Moose-bar
+    
+    # recursively find repositories, 
+    # auto-configure with the defaults
+    # with given tag
+    $ got add --recursive --tag mine .
+
+=cut
