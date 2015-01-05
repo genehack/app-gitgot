@@ -11,6 +11,8 @@ use Cwd;
 use File::Basename;
 use File::chdir;
 use Term::ReadLine;
+use IO::Prompt::Simple;
+use PerlX::Maybe;
 use Path::Tiny;
 use List::AllUtils qw/any pairmap/;
 use Class::Load qw/ try_load_class /;
@@ -84,43 +86,47 @@ sub process_dir {
 sub _build_new_entry_from_user_input {
   my ($self) = @_;
 
-  my ( $repo, $name, $type, $tags, $path );
+  my ( $repo, $type );
 
   if ( -e '.git' ) {
-    ( $repo, $name, $type ) = $self->_init_for_git;
+    ( $repo, $type ) = $self->_init_for_git;
   }
   else {
     say STDERR "ERROR: Non-git repos not supported at this time.";
     exit(1);
   }
 
-  if ( $self->defaults ) {
-    my $cwd = getcwd
-      or die "ERROR: Couldn't determine path";
-    $name //= basename getcwd;
-    die "ERROR: Couldn't determine name"      unless $name;
-    $repo //= '';
-    die "ERROR: Couldn't determine repo type" unless $type;
-    $path = $cwd;
+  my $name = lc basename getcwd;
+
+  $ENV{PERL_IOPS_USE_DEFAULT} = $self->defaults;
+
+  my $path = getcwd;
+
+  return unless prompt "\nadd repository at '$path'?", { yn => 1, default => 'y' };
+
+  $name = prompt( 'Name', $name );
+
+  my $remote;
+
+  if ( 1 == keys %$repo ) {
+    # one remote? No choice
+    ($remote) = values %$repo;
   }
   else {
-    my $term = Term::ReadLine->new('gitgot');
-    $name = $term->readline( 'Name: ', $name );
-    $repo = $term->readline( ' URL: ', $repo );
-    $path = $term->readline( 'Path: ', getcwd );
-    $tags = $term->readline( 'Tags: ', $tags );
+    $remote = prompt( 'tracking remote', { 
+            anyone => $repo, 
+            verbose => 1,
+            maybe default => $repo->{$self->origin} && $self->origin,
+        });
   }
 
-  my $new_entry = {
-    repo => $repo,
-    name => $name,
+  return App::GitGot::Repo::Git->new({ entry => {
     type => $type,
     path => $path,
-  };
-
-  $new_entry->{tags} = $tags if $tags;
-
-  return App::GitGot::Repo::Git->new({ entry => $new_entry });
+    name => $name,
+    repo => $remote,
+    maybe tags => join ' ', prompt( 'Tags', join ' ', @{$self->tags||[]} ),
+  }});
 }
 
 sub _check_for_dupe_entries {
@@ -143,14 +149,9 @@ sub _init_for_git {
 
   my $cfg = Config::INI::Reader->read_file('.git/config');
 
-  my $remote = sprintf 'remote "%s"', $self->origin;
+  my %remotes = pairmap { $a =~ /remote "(.*?)"/ ? ( $1 => $b->{url} ) : () } %$cfg;
 
-  no warnings qw/ uninitialized /;
-
-  my $repo = $cfg->{$remote}{url};
-  my ( $name ) = $repo =~ m|([^/]+).git$|;
-
-  return ( $repo, $name, 'git' );
+  return ( \%remotes, 'git' );
 }
 
 __PACKAGE__->meta->make_immutable;
