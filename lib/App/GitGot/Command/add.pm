@@ -13,6 +13,7 @@ use File::chdir;
 use Term::ReadLine;
 use Path::Tiny;
 use List::AllUtils qw/any pairmap/;
+use Class::Load qw/ try_load_class /;
 
 has 'defaults' => (
   is          => 'rw',
@@ -29,14 +30,39 @@ has 'origin' => (
   traits      => [qw/ Getopt /],
 );
 
+has recursive => (
+  traits => [qw/ Getopt /],
+   is => 'ro',
+   isa => 'Bool',
+   default => 0,
+   documentation => 'search all sub-directories for repositories',
+);
+
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
   my @dirs = @$args;
   push @dirs, '.' unless @dirs;  # default dir is this one
 
-  $self->process_dir($_) for map { path($_)->absolute } @dirs;
+  if( $self->recursive ) {
+      # hunt for repos
 
+      try_load_class( 'Path::Iterator::Rule' )
+        or die "feature requires module 'Path::Iterator::Rule' to be installed\n";
+
+        Path::Iterator::Rule->add_helper(
+            is_git => sub {
+                return sub {
+                    my $item = shift;
+                    return -d "$item/.git";
+                }
+            }
+        );
+
+      @dirs = Path::Iterator::Rule->new->dir->is_git->all(@dirs);
+  }
+
+  $self->process_dir($_) for map { path($_)->absolute } @dirs;
 }
 
 sub process_dir {
@@ -140,5 +166,10 @@ __END__
     # add repository of multiple directories, 
     # with default tags
     $ got add -t bar-things -t moosey Moo-bar Moose-bar
+    
+    # recursively find repositories, 
+    # auto-configure with the defaults
+    # with given tag
+    $ got add --recursive --tag mine .
 
 =cut
