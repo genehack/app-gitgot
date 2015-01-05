@@ -5,6 +5,8 @@ use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
 
+use Class::Load       'try_load_class';
+
 sub command_names { qw/ list ls / }
 
 has 'json' => (
@@ -23,7 +25,8 @@ sub _execute {
   if ( $self->json ) {
       my @data = map { {%$_}  } $self->active_repos;
 
-      require JSON;
+      try_load_class( 'JSON' )
+          or die "json serializing requires the module 'JSON' to be installed\n";
 
       say JSON::to_json( \@data, { pretty => 1 } );
       return;
