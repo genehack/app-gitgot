@@ -110,7 +110,7 @@ sub _build_new_entry_from_user_input {
 
   return App::GitGot::Repo::Git->new({ entry => {
     type => $type,
-    path => $path,
+    path => "$path",  # Path::Tiny to string coercion
     name => $name,
     repo => $remote,
     maybe tags => ( join ' ', prompt( 'Tags? ', join ' ', @{$self->tags||[]} )),
