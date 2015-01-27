@@ -1,5 +1,5 @@
 package App::GitGot::Command::do;
-# ABSTRACT: run command in all repositories
+# ABSTRACT: run command in many repositories
 
 use 5.010;
 
@@ -12,7 +12,16 @@ extends 'App::GitGot::Command';
 use File::chdir;
 use Capture::Tiny qw/ capture_stdout /;
 
-has 'with_repo' => (
+has command => (
+    is            => 'ro',
+    isa           => 'Str',
+    required      => 1,
+    traits        => [qw/ Getopt /],
+    documentation => 'command to execute in the different repos',
+    cmd_aliases   => 'e',
+);
+
+has with_repo => (
   is            => 'ro',
   isa           => 'Bool',
   default       => 0,
@@ -23,10 +32,10 @@ has 'with_repo' => (
 sub command_names { qw/ do / }
 
 sub _execute {
-  my( $self, $opt, $args ) = @_;
+   my $self = shift;
 
   for my $repo ( $self->active_repos ) {
-    $self->_run_in_repo( $repo => $args );
+    $self->_run_in_repo( $repo => $self->command );
   }
 }
 
@@ -45,7 +54,7 @@ sub _run_in_repo {
 
   say $prefix, $_ for split "\n", capture_stdout {
     $CWD = $repo->path;
-    system @$cmd;
+    system $cmd;
   };
 }
 
