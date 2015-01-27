@@ -26,6 +26,9 @@ repositories.
     got list
     got ls
 
+    # run a command in selected repositories
+    got do --tag perl --command "ls t/"
+
     # show managed repositories sorted by path (default = sort by name)
     got ls -p
 
