@@ -10,26 +10,24 @@ use Class::Load       'try_load_class';
 sub command_names { qw/ list ls / }
 
 has 'json' => (
-  is          => 'ro',
-  isa         => 'Bool',
-  cmd_aliases => 'j',
+  is            => 'ro',
+  isa           => 'Bool',
+  cmd_aliases   => 'j',
+  traits        => [qw/ Getopt /],
   documentation => 'stream output as json',
-  traits      => [qw/ Getopt /],
 );
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
-  my $max_len = $self->max_length_of_an_active_repo_label;
-
   if ( $self->json ) {
-      my @data = map { {%$_}  } $self->active_repos;
+    try_load_class( 'JSON' )
+      or die "json serializing requires the module 'JSON' to be installed\n";
 
-      try_load_class( 'JSON' )
-          or die "json serializing requires the module 'JSON' to be installed\n";
+    my @data = map { {%$_}  } $self->active_repos;
 
-      say JSON::to_json( \@data, { pretty => 1 } );
-      return;
+    say JSON::to_json( \@data, { pretty => 1 } );
+    return;
   }
 
   for my $repo ( $self->active_repos ) {
@@ -42,10 +40,12 @@ sub _execute {
 
     if ( $self->quiet ) { say $repo->label }
     else {
-      printf "%-${max_len}s  %-4s  %s\n",
-        $repo->label, $repo->type, $repo_remote;
-      if ( $self->verbose ) {
-        printf "    tags: %s\n" , $repo->tags if $repo->tags;
+      my $max_len = $self->max_length_of_an_active_repo_label;
+
+      printf "%-${max_len}s  %-4s  %s\n", $repo->label, $repo->type, $repo_remote;
+
+      if ( $self->verbose and $repo->tags ) {
+        printf "    tags: %s\n" , $repo->tags
       }
     }
   }
