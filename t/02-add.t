@@ -64,4 +64,23 @@ Test::BASE::build_fake_git_repo();
 }
 
 chdir(); ## let File::Temp clean up...
+
+subtest 'recursive behavior' => sub {
+    my $dir = Test::BASE::create_tempdir_and_chdir();
+
+    for my $repo ( qw/ alpha beta / ) {
+        Test::BASE::build_fake_git_repo( $repo );
+        chdir '..';
+    }
+    my $config = "$dir/gitgot";
+
+    test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D', '--recursive' ]);
+
+    is_deeply [ sort map { $_->{name} } @{ LoadFile($config) } ]  => [
+        qw/ alpha beta /
+    ], 'all repositores detected';
+
+    chdir();
+};
+
 done_testing();
