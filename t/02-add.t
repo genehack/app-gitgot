@@ -11,6 +11,7 @@ use Test::More;
 
 use App::Cmd::Tester;
 use App::GitGot;
+use App::GitGot::Command::add;
 use Cwd;
 use YAML              qw/ LoadFile /;
 
@@ -32,8 +33,16 @@ Test::BASE::build_fake_git_repo();
 {
   my $result = test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
 
-  is $result->stdout    , '' , 'nothing on stdout';
-  is $result->stderr    , '' , 'nothing on stderr';
+  like $result->stdout, qr/
+        Add \s repository \s at \s '.*?'\? \s+ \(y\/n\) \s \[y\]: \s y \s+
+        Name\? \s+ \[foo.git\]: \s+ foo.git \s+
+        Tracking \s remote\? \s+  : \s+
+        Tags\? \s+  \[\]: 
+   /x, 'interaction auto-filled';
+
+  my $err = $result->stderr;
+  $err =~ s/-\w on unopened filehandle STDOUT.*?\n//g; # test_app mess with STDOUT
+  is $err    , '' , 'nothing on stderr';
   is $result->exit_code , 0  , 'exit with 0';
 
   file_exists_ok $config , 'config exists';
@@ -49,10 +58,29 @@ Test::BASE::build_fake_git_repo();
 
   is   $result->stdout    , '' , 'empty STDOUT';
   like $result->stderr    ,
-    qr/ERROR: Not adding entry for 'foo.git'; exact duplicate already exists/ ,
+    qr/Repository at '.+' already registered with Got, skipping/,
     'msg that cannot add same repo twice on STDERR';
-  is   $result->exit_code , 1  , 'exit with 1';
+  is   $result->exit_code , 0, 'exit with 0';
 }
 
 chdir(); ## let File::Temp clean up...
+
+subtest 'recursive behavior' => sub {
+    my $dir = Test::BASE::create_tempdir_and_chdir();
+
+    for my $repo ( qw/ alpha beta / ) {
+        Test::BASE::build_fake_git_repo( $repo );
+        chdir '..';
+    }
+    my $config = "$dir/gitgot";
+
+    test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D', '--recursive' ]);
+
+    is_deeply [ sort map { $_->{name} } @{ LoadFile($config) } ]  => [
+        qw/ alpha beta /
+    ], 'all repositores detected';
+
+    chdir();
+};
+
 done_testing();
