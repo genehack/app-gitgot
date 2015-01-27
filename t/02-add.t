@@ -11,6 +11,7 @@ use Test::More;
 
 use App::Cmd::Tester;
 use App::GitGot;
+use App::GitGot::Command::add;
 use Cwd;
 use YAML              qw/ LoadFile /;
 
