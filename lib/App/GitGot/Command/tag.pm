@@ -116,7 +116,7 @@ C<got tag> manages tags for the current repository.
 
 =head1 OPTIONS
 
-=head2 --all 
+=head2 --all
 
 Shows all tags. Tags that are associated with the current repository are
 marked with an '*'.
@@ -128,5 +128,3 @@ Adds tags to the current repository.
 =head2 --remove tag1 tag2 ...
 
 Removes tags from the current repository.
-
-

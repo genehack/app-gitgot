@@ -8,7 +8,7 @@ use 5.010;
 use Cwd;
 use App::GitGot::Repo::Git;
 use File::Path 2.08         qw/ make_path /;
-use List::AllUtils              qw/ max first /;
+use List::AllUtils          qw/ max first /;
 use Path::Class;
 use Try::Tiny;
 use YAML                    qw/ DumpFile LoadFile /;
