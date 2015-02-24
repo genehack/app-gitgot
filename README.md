@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.19
+version 1.20
 
 # SYNOPSIS
 
@@ -17,6 +17,9 @@ version 1.19
     # show managed repositories
     got list
     got ls
+
+    # run a command in selected repositories
+    got do --tag perl --command "ls t/"
 
     # show managed repositories sorted by path (default = sort by name)
     got ls -p
