@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Add 'tag' subcommand (Yanick Champoux)
+
 1.19      2014-08-29 22:07:03-07:00 America/Los_Angeles
 
   * Make 'mux' work with multiple repos instead of just one
