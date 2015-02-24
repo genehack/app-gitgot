@@ -1,9 +1,10 @@
 package App::GitGot::Command::clone;
-# ABSTRACT: clone a remote repo and add it to your config
 
+# ABSTRACT: clone a remote repo and add it to your config
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use App::GitGot::Repo::Git;
 use Cwd;
@@ -11,7 +12,7 @@ use File::Basename;
 use File::Spec;
 use Term::ReadLine;
 
-has 'defaults' => (
+has defaults => (
   is          => 'rw',
   isa         => 'Bool',
   cmd_aliases => 'D',

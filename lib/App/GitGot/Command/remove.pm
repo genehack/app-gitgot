@@ -1,16 +1,17 @@
 package App::GitGot::Command::remove;
-# ABSTRACT: remove a managed repository from your config
 
+# ABSTRACT: remove a managed repository from your config
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use List::MoreUtils qw/ any /;
 
-has 'force' => (
-  is          => 'rw',
-  isa         => 'Bool',
-  traits      => [qw/ Getopt /],
+has force => (
+  is     => 'rw',
+  isa    => 'Bool',
+  traits => [qw/ Getopt /],
 );
 
 sub command_names { qw/ remove rm / }

@@ -1,9 +1,10 @@
 package App::GitGot::Command::chdir;
-# ABSTRACT: open a subshell in a selected project
 
+# ABSTRACT: open a subshell in a selected project
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 sub command_names { qw/ chdir cd / }
 

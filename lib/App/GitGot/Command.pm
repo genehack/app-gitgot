@@ -1,23 +1,23 @@
 package App::GitGot::Command;
-# ABSTRACT: Base class for App::GitGot commands
 
+# ABSTRACT: Base class for App::GitGot commands
 use Mouse;
 extends 'MouseX::App::Cmd::Command';
 use 5.010;
+use namespace::autoclean;
 
-use Cwd;
 use App::GitGot::Repo::Git;
 use App::GitGot::Repositories;
 
+use Cwd;
 use File::Path 2.08         qw/ make_path /;
 use List::AllUtils          qw/ max first /;
 use Path::Class;
 use Try::Tiny;
 use YAML                    qw/ DumpFile LoadFile /;
-use namespace::autoclean;
 
 # option attrs
-has 'all' => (
+has all => (
   is            => 'rw',
   isa           => 'Bool',
   documentation => 'use all available repositories' ,
@@ -25,14 +25,14 @@ has 'all' => (
   traits        => [qw/ Getopt /],
 );
 
-has 'by_path' => (
+has by_path => (
   is          => 'rw' ,
   isa         => 'Bool' ,
   cmd_aliases => 'p',
   traits      => [qw/ Getopt /],
 );
 
-has 'color_scheme' => (
+has color_scheme => (
   is            => 'rw',
   isa           => 'Str',
   documentation => 'name of color scheme to use',
@@ -41,7 +41,7 @@ has 'color_scheme' => (
   traits        => [qw/ Getopt /],
 );
 
-has 'configfile' => (
+has configfile => (
   is            => 'rw',
   isa           => 'Str',
   documentation => 'path to config file',
@@ -51,7 +51,7 @@ has 'configfile' => (
   required      => 1,
 );
 
-has 'no_color' => (
+has no_color => (
   is            => 'rw',
   isa           => 'Bool',
   documentation => 'do not use colored output',
@@ -60,7 +60,7 @@ has 'no_color' => (
   traits        => [qw/ Getopt /],
 );
 
-has 'quiet' => (
+has quiet => (
   is            => 'rw',
   isa           => 'Bool',
   documentation => 'keep it down',
@@ -68,15 +68,7 @@ has 'quiet' => (
   traits        => [qw/ Getopt /],
 );
 
-has 'tags' => (
-  is            => 'rw',
-  isa           => 'ArrayRef[Str]',
-  documentation => 'select repositories tagged with these words' ,
-  cmd_aliases   => 't',
-  traits        => [qw/ Getopt /],
-);
-
-has 'skip_tags' => (
+has skip_tags => (
   is            => 'rw',
   isa           => 'ArrayRef[Str]',
   documentation => 'select repositories not tagged with these words' ,
@@ -84,7 +76,15 @@ has 'skip_tags' => (
   traits        => [qw/ Getopt /],
 );
 
-has 'verbose' => (
+has tags => (
+  is            => 'rw',
+  isa           => 'ArrayRef[Str]',
+  documentation => 'select repositories tagged with these words' ,
+  cmd_aliases   => 't',
+  traits        => [qw/ Getopt /],
+);
+
+has verbose => (
   is            => 'rw',
   isa           => 'Bool',
   documentation => 'bring th\' noise',
@@ -93,7 +93,7 @@ has 'verbose' => (
 );
 
 # non-option attrs
-has 'active_repo_list' => (
+has active_repo_list => (
   is         => 'rw',
   isa        => 'ArrayRef[App::GitGot::Repo::Git]' ,
   traits     => [qw/ NoGetopt Array /],
@@ -103,13 +103,13 @@ has 'active_repo_list' => (
   } ,
 );
 
-has 'args' => (
+has args => (
   is     => 'rw' ,
   isa    => 'ArrayRef' ,
   traits => [ qw/ NoGetopt / ] ,
 );
 
-has 'full_repo_list' => (
+has full_repo_list => (
   is         => 'rw',
   isa        => 'ArrayRef[App::GitGot::Repo::Git]' ,
   traits     => [qw/ NoGetopt Array /],
@@ -120,7 +120,7 @@ has 'full_repo_list' => (
   } ,
 );
 
-has 'outputter' => (
+has outputter => (
   is         => 'ro' ,
   isa        => 'App::GitGot::Outputter' ,
   traits     => [ qw/ NoGetopt / ] ,
@@ -132,14 +132,6 @@ has 'outputter' => (
     'minor_change' ,
   ] ,
 );
-
-sub search_repos {
-    my $self = shift;
-
-    return App::GitGot::Repositories->new(
-        repos => [ $self->all_repos ]
-    );
-}
 
 sub execute {
   my( $self , $opt , $args ) = @_;
@@ -155,6 +147,30 @@ sub execute {
 
   $self->_execute($opt,$args);
 }
+
+=method local_repo
+
+Checks to see if $CWD is inside a Git repo managed by Got, and returns the
+corresponding L<App::GitGot::Repo> object if it is.
+
+=cut
+
+sub local_repo {
+  my $self = shift;
+
+  my $dir = dir( getcwd() );
+
+  # find repo root
+  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
+    die "$path doesn't seem to be in a git directory\n"
+      if $dir eq $dir->parent;
+    $dir = $dir->parent;
+  }
+
+  return first { $_->path eq $dir->absolute } $self->all_repos;
+}
+
+
 
 =method max_length_of_an_active_repo_label
 
@@ -183,6 +199,21 @@ sub prompt_yn {
   printf '%s [y/N]: ' , $message;
   chomp( my $response = <STDIN> );
   return lc($response) eq 'y';
+}
+
+=method search_repos
+
+Returns a L<App::GotGot::Repositories> object containing all repos managed by
+Got.
+
+=cut
+
+sub search_repos {
+  my $self = shift;
+
+  return App::GitGot::Repositories->new(
+    repos => [ $self->all_repos ]
+  );
 }
 
 =method write_config
@@ -305,50 +336,32 @@ sub _expand_arg_list {
   ## use critic
 }
 
-sub _git_status {
-  my ( $self, $entry ) = @_
-    or die "Need entry";
+sub _fetch {
+  my( $self , @repos ) = @_;
 
-  my( $msg , $verbose_msg ) = $self->_run_git_status( $entry );
+  my $max_len = $self->max_length_of_an_active_repo_label;
 
-  $msg .= $self->_run_git_cherry( $entry )
-    if $entry->current_remote_branch;
+ REPO: for my $repo ( @repos ) {
+    next REPO unless $repo->repo;
 
-  return ( $self->verbose ) ? "$msg$verbose_msg" : $msg;
-}
+    my $name = $repo->name;
 
-sub _git_update {
-  my ( $self, $entry ) = @_
-    or die "Need entry";
+    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->label;
 
-  my $msg = '';
+    my ( $status, $fxn );
 
-  my $path = $entry->path;
+    my $repo_type = $repo->type;
 
-  if ( !-d $path ) {
-    make_path $path;
+    if ( $repo_type eq 'git' ) { $fxn = '_git_fetch' }
+    ### FIXME elsif( $repo_type eq 'svn' ) { $fxn = 'svn_update' }
+    else { $status = $self->error("ERROR: repo type '$_' not supported") }
 
-    try {
-      $entry->clone( $entry->repo , './' );
-      $msg .= $self->major_change('Checked out');
-    }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
+    $status = $self->$fxn($repo) if ($fxn);
+
+    next REPO if $self->quiet and !$status;
+
+    say "$msg$status";
   }
-  elsif ( -d "$path/.git" ) {
-    try {
-      my @o = $entry->pull;
-      if ( $o[0] eq 'Already up-to-date.' ) {
-        $msg .= $self->minor_change('Up to date') unless $self->quiet;
-      }
-      else {
-        $msg .= $self->major_change('Updated');
-        $msg .= "\n" . join("\n",@o) unless $self->quiet;
-      }
-    }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
-  }
-
-  return $msg;
 }
 
 sub _git_fetch {
@@ -403,6 +416,93 @@ sub _git_fetch {
   return $msg;
 }
 
+sub _git_status {
+  my ( $self, $entry ) = @_
+    or die "Need entry";
+
+  my( $msg , $verbose_msg ) = $self->_run_git_status( $entry );
+
+  $msg .= $self->_run_git_cherry( $entry )
+    if $entry->current_remote_branch;
+
+  return ( $self->verbose ) ? "$msg$verbose_msg" : $msg;
+}
+
+sub _git_update {
+  my ( $self, $entry ) = @_
+    or die "Need entry";
+
+  my $msg = '';
+
+  my $path = $entry->path;
+
+  if ( !-d $path ) {
+    make_path $path;
+
+    try {
+      $entry->clone( $entry->repo , './' );
+      $msg .= $self->major_change('Checked out');
+    }
+    catch { $msg .= $self->error('ERROR') . "\n$_" };
+  }
+  elsif ( -d "$path/.git" ) {
+    try {
+      my @o = $entry->pull;
+      if ( $o[0] eq 'Already up-to-date.' ) {
+        $msg .= $self->minor_change('Up to date') unless $self->quiet;
+      }
+      else {
+        $msg .= $self->major_change('Updated');
+        $msg .= "\n" . join("\n",@o) unless $self->quiet;
+      }
+    }
+    catch { $msg .= $self->error('ERROR') . "\n$_" };
+  }
+
+  return $msg;
+}
+
+sub _path_is_managed {
+  my( $self , $path ) = @_;
+
+  return unless $path;
+
+  my $dir = dir( $path );
+
+  # find repo root
+  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
+    die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
+    $dir = $dir->parent;
+  }
+
+  my $max_len = $self->max_length_of_an_active_repo_label;
+
+  for my $repo ( $self->active_repos ) {
+    next unless $repo->path eq $dir->absolute;
+
+    my $repo_remote = ( $repo->repo and -d $repo->path ) ? $repo->repo
+      : ( $repo->repo )    ? $repo->repo . ' (Not checked out)'
+      : ( -d $repo->path ) ? 'NO REMOTE'
+      : 'ERROR: No remote and no repo?!';
+
+    printf "%3d) ", $repo->number;
+
+    if ( $self->quiet ) { say $repo->label }
+    else {
+      printf "%-${max_len}s  %-4s  %s\n",
+        $repo->label, $repo->type, $repo_remote;
+      if ( $self->verbose ) {
+        printf "    tags: %s\n" , $repo->tags if $repo->tags;
+      }
+    }
+
+    return 1;
+  }
+
+  say "repository not in Got list";
+  return;
+}
+
 sub _read_config {
   my $file = shift;
 
@@ -430,7 +530,7 @@ sub _run_git_cherry {
       }
     }
   }
-    catch { $msg = $self->error('ERROR') . "\n$_" };
+  catch { $msg = $self->error('ERROR') . "\n$_" };
 
   return $msg
 }
@@ -468,7 +568,7 @@ sub _run_git_status {
       $verbose_msg = "\n$verbose_msg" if $verbose_msg;
     }
   }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
+  catch { $msg .= $self->error('ERROR') . "\n$_" };
 
   return( $msg , $verbose_msg );
 }
@@ -528,89 +628,6 @@ sub _update {
 
     say "$msg$status";
   }
-}
-
-sub _fetch {
-  my( $self , @repos ) = @_;
-
-  my $max_len = $self->max_length_of_an_active_repo_label;
-
- REPO: for my $repo ( @repos ) {
-    next REPO unless $repo->repo;
-
-    my $name = $repo->name;
-
-    my $msg = sprintf "%3d) %-${max_len}s  : ", $repo->number, $repo->label;
-
-    my ( $status, $fxn );
-
-    my $repo_type = $repo->type;
-
-    if ( $repo_type eq 'git' ) { $fxn = '_git_fetch' }
-    ### FIXME elsif( $repo_type eq 'svn' ) { $fxn = 'svn_update' }
-    else { $status = $self->error("ERROR: repo type '$_' not supported") }
-
-    $status = $self->$fxn($repo) if ($fxn);
-
-    next REPO if $self->quiet and !$status;
-
-    say "$msg$status";
-  }
-}
-
-sub local_repo {
-    my $self = shift;
-
-    my $dir = dir( getcwd() );
-
-    # find repo root
-    while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
-        die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
-        $dir = $dir->parent;
-    }
-
-    return first { $_->path eq $dir->absolute } $self->all_repos;
-}
-
-sub _path_is_managed {
-  my( $self , $path ) = @_;
-
-  return unless $path;
-
-  my $dir = dir( $path );
-
-  # find repo root
-  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
-    die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
-    $dir = $dir->parent;
-  }
-
-  my $max_len = $self->max_length_of_an_active_repo_label;
-
-  for my $repo ( $self->active_repos ) {
-    next unless $repo->path eq $dir->absolute;
-
-    my $repo_remote = ( $repo->repo and -d $repo->path ) ? $repo->repo
-      : ( $repo->repo )    ? $repo->repo . ' (Not checked out)'
-      : ( -d $repo->path ) ? 'NO REMOTE'
-      : 'ERROR: No remote and no repo?!';
-
-    printf "%3d) ", $repo->number;
-
-    if ( $self->quiet ) { say $repo->label }
-    else {
-      printf "%-${max_len}s  %-4s  %s\n",
-        $repo->label, $repo->type, $repo_remote;
-      if ( $self->verbose ) {
-        printf "    tags: %s\n" , $repo->tags if $repo->tags;
-      }
-    }
-
-    return 1;
-  }
-
-  say "repository not in Got list";
-  return;
 }
 
 # override this in commands that shouldn't use IO::Page -- i.e., ones that

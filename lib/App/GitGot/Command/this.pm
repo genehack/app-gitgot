@@ -1,9 +1,10 @@
 package App::GitGot::Command::this;
-# ABSTRACT: check if the current repository is managed
 
+# ABSTRACT: check if the current repository is managed
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use Cwd;
 
@@ -17,4 +18,3 @@ sub _execute {
 
 __PACKAGE__->meta->make_immutable;
 1;
-

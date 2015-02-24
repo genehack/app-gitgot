@@ -1,9 +1,10 @@
 package App::GitGot::Command::gc;
-# ABSTRACT: Run the 'gc' command to garbage collect in git repos
 
+# ABSTRACT: Run the 'gc' command to garbage collect in git repos
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use Data::Dumper;
 use Try::Tiny;

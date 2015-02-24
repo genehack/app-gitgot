@@ -1,9 +1,10 @@
 package App::GitGot::Command::update;
-# ABSTRACT: update managed repositories
 
+# ABSTRACT: update managed repositories
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 sub command_names { qw/ update up / }
 

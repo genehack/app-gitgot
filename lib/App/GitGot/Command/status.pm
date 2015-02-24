@@ -1,9 +1,10 @@
 package App::GitGot::Command::status;
-# ABSTRACT: print status info about repos
 
+# ABSTRACT: print status info about repos
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 sub command_names { qw/ status st / }
 

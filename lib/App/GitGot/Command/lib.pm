@@ -1,22 +1,15 @@
 package App::GitGot::Command::lib;
-# ABSTRACT: Generate a lib listing off a .gotlib file
 
+# ABSTRACT: Generate a lib listing off a .gotlib file
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
-use Path::Tiny;
 use List::AllUtils qw/ uniq /;
+use Path::Tiny;
 
 sub command_names { qw/ lib / }
-
-has separator => (
-  traits => [ qw/ Getopt /],
-  is          => 'ro',
-  isa         => 'Str',
-  default     => ':',
-  documentation => 'library path separator',
-);
 
 has gotlib => (
   traits => [ qw/ Getopt /],
@@ -34,41 +27,49 @@ has libvar => (
   documentation => 'library environment variable',
 );
 
+has separator => (
+  traits => [ qw/ Getopt /],
+  is          => 'ro',
+  isa         => 'Str',
+  default     => ':',
+  documentation => 'library path separator',
+);
+
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
-  my @libs = map { $self->expand_lib($_) } $self->raw_libs( $args );
+  my @libs = map { $self->_expand_lib($_) } $self->_raw_libs( $args );
 
   say join $self->separator, uniq @libs, split ':', $ENV{$self->libvar};
 
 }
 
-sub expand_lib {
-    my( $self, $lib ) = @_;
+sub _expand_lib {
+  my( $self, $lib ) = @_;
 
-    return path($lib)->absolute if $lib =~ m#^(?:\.|/)#;
+  return path($lib)->absolute if $lib =~ m#^(?:\.|/)#;
 
-    if ( $lib =~ s/^\@(\w+)// ) {
-        # it's a tag
-        return map { $_->path . $lib } $self->search_repos->tags($1)->all;
-    }
+  if ( $lib =~ s/^\@(\w+)// ) {
+    # it's a tag
+    return map { $_->path . $lib } $self->search_repos->tags($1)->all;
+  }
 
-    # it's a repo name
-    $lib =~ s#^([^/]+)## or return;
-    return map { $_->path . $lib } $self->search_repos->name($1)->all;
+  # it's a repo name
+  $lib =~ s#^([^/]+)## or return;
+  return map { $_->path . $lib } $self->search_repos->name($1)->all;
 
 }
 
-sub raw_libs {
-    my( $self, $args ) = @_;
+sub _raw_libs {
+  my( $self, $args ) = @_;
 
-    my $file = path( $self->gotlib );
+  my $file = path( $self->gotlib );
 
-    return @$args,
-            # remove comments and clean whitespaces
-        grep { $_ }
-        map { s/^\s+|#.*|\s+$//g; $_  }
-            ( -f $file ) ? $file->lines({ chomp => 1 }) : ();
+  return @$args,
+    # remove comments and clean whitespaces
+    grep { $_ }
+    map { s/^\s+|#.*|\s+$//g; $_  }
+    ( -f $file ) ? $file->lines({ chomp => 1 }) : ();
 }
 
 __PACKAGE__->meta->make_immutable;

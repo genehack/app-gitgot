@@ -1,24 +1,21 @@
 package App::GitGot::Command::do;
+
 # ABSTRACT: run command in many repositories
-
 use 5.010;
-
-use strict;
-use warnings;
-
 use Mouse;
 extends 'App::GitGot::Command';
+use namespace::autoclean;
 
-use File::chdir;
 use Capture::Tiny qw/ capture_stdout /;
+use File::chdir;
 
 has command => (
-    is            => 'ro',
-    isa           => 'Str',
-    required      => 1,
-    traits        => [qw/ Getopt /],
-    documentation => 'command to execute in the different repos',
-    cmd_aliases   => 'e',
+  is            => 'ro',
+  isa           => 'Str',
+  required      => 1,
+  traits        => [qw/ Getopt /],
+  documentation => 'command to execute in the different repos',
+  cmd_aliases   => 'e',
 );
 
 has with_repo => (
@@ -32,7 +29,7 @@ has with_repo => (
 sub command_names { qw/ do / }
 
 sub _execute {
-   my $self = shift;
+  my $self = shift;
 
   for my $repo ( $self->active_repos ) {
     $self->_run_in_repo( $repo => $self->command );

@@ -1,9 +1,10 @@
 package App::GitGot::Command::fork;
-# ABSTRACT: fork a github repo
 
+# ABSTRACT: fork a github repo
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use autodie;
 use App::GitGot::Repo::Git;
@@ -11,7 +12,7 @@ use Class::Load       'try_load_class';
 use Cwd;
 use File::Slurp::Tiny 'read_lines';
 
-has 'noclone' => (
+has noclone => (
   is          => 'rw',
   isa         => 'Bool',
   cmd_aliases => 'n',

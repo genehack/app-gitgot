@@ -1,9 +1,10 @@
 package App::GitGot::Command::push;
-# ABSTRACT: Push local changes to the default remote in git repos
 
+# ABSTRACT: Push local changes to the default remote in git repos
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use Data::Dumper;
 use Try::Tiny;

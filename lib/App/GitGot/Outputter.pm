@@ -1,13 +1,18 @@
 package App::GitGot::Outputter;
-# ABSTRACT: Generic base class for outputting formatted messages.
 
+# ABSTRACT: Generic base class for outputting formatted messages.
 use Mouse;
 use 5.010;
+use namespace::autoclean;
 
 use Term::ANSIColor;
 
 # boolean indicating whether color messages should be output at all
-has 'no_color' => ( is => 'ro' , isa => 'Bool' , default => 0 );
+has no_color => (
+  is      => 'ro' ,
+  isa     => 'Bool' ,
+  default => 0 ,
+);
 
 =method error
 
@@ -18,17 +23,6 @@ Display a message using the 'color_error' color settings.
 sub error {
   my( $self , $message ) = @_;
   return $self->_colored( $message , $self->color_error );
-}
-
-=method warning
-
-Display a message using the 'color_warning' color settings.
-
-=cut
-
-sub warning {
-  my( $self , $message ) = @_;
-  return $self->_colored( $message , $self->color_warning );
 }
 
 =method major_change
@@ -51,6 +45,17 @@ Display a message using the 'color_minor_change' color settings.
 sub minor_change {
   my( $self , $message ) = @_;
   return $self->_colored( $message , $self->color_minor_change );
+}
+
+=method warning
+
+Display a message using the 'color_warning' color settings.
+
+=cut
+
+sub warning {
+  my( $self , $message ) = @_;
+  return $self->_colored( $message , $self->color_warning );
 }
 
 sub _colored {

@@ -1,9 +1,10 @@
 package App::GitGot::Command::fetch;
-# ABSTRACT: fetch remotes for managed repositories
 
+# ABSTRACT: fetch remotes for managed repositories
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 sub command_names { qw/ fetch / }
 

@@ -4,8 +4,8 @@ package App::GitGot::Repo::Git;
 use Mouse;
 extends 'App::GitGot::Repo';
 use 5.010;
-
 use namespace::autoclean;
+
 use Git::Wrapper;
 use Test::MockObject;
 use Try::Tiny;

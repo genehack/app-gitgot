@@ -1,13 +1,14 @@
 package App::GitGot::Command::move;
-# ABSTRACT: move a repo in a new directory
 
+# ABSTRACT: move a repo in a new directory
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use Cwd;
-use Path::Class;
 use File::Copy::Recursive qw/ dirmove /;
+use Path::Class;
 
 sub command_names { qw/ move mv / }
 
@@ -26,12 +27,12 @@ sub _execute {
   dir($self->destination)->mkpath if @repos > 1;
 
   for my $repo ( @repos ) {
-    $target_dir = -d $self->destination 
-        ? dir($self->destination)->subdir( dir($repo->path)->basename ) 
-        : $self->destination;
+    $target_dir = -d $self->destination
+      ? dir($self->destination)->subdir( dir($repo->path)->basename )
+      : $self->destination;
 
     dirmove( $repo->path => $target_dir )
-        or die "couldn't move ", $repo->name, " to '$target_dir': $!";
+      or die "couldn't move ", $repo->name, " to '$target_dir': $!";
 
     $repo->{path} = "$target_dir";
     $self->write_config;

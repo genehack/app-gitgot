@@ -1,9 +1,10 @@
 package App::GitGot::Command::mux;
-# ABSTRACT: open a tmux window for a selected project
 
+# ABSTRACT: open a tmux window for a selected project
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 has dirty => (
   traits        => [qw(Getopt)] ,

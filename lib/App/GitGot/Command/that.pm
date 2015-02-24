@@ -1,9 +1,10 @@
 package App::GitGot::Command::that;
-# ABSTRACT: check if a given repository is managed
 
+# ABSTRACT: check if a given repository is managed
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 sub command_names { qw/ that / }
 
@@ -19,4 +20,3 @@ sub _execute {
 
 __PACKAGE__->meta->make_immutable;
 1;
-

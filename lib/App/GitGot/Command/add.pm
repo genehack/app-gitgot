@@ -1,9 +1,10 @@
 package App::GitGot::Command::add;
-# ABSTRACT: add a new repo to your config
 
+# ABSTRACT: add a new repo to your config
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use App::GitGot::Repo::Git;
 use Class::Load              qw/ try_load_class /;
@@ -17,14 +18,14 @@ use Path::Tiny;
 use PerlX::Maybe;
 use Term::ReadLine;
 
-has 'defaults' => (
+has defaults => (
   is          => 'rw',
   isa         => 'Bool',
   cmd_aliases => 'D',
   traits      => [qw/ Getopt /],
 );
 
-has 'origin' => (
+has origin => (
   is          => 'rw',
   isa         => 'Str',
   cmd_aliases => 'o',
@@ -32,7 +33,7 @@ has 'origin' => (
   traits      => [qw/ Getopt /],
 );
 
-has 'recursive' => (
+has recursive => (
   is            => 'ro',
   isa           => 'Bool',
   default       => 0,
@@ -62,21 +63,7 @@ sub _execute {
     @dirs = Path::Iterator::Rule->new->dir->is_git->all(@dirs);
   }
 
-  $self->process_dir($_) for map { path($_)->absolute } @dirs;
-}
-
-sub process_dir {
-  my( $self, $dir ) = @_;
-
-  # first thing, do we already "got" it?
-  return warn "Repository at '$dir' already registered with Got, skipping\n"
-    if any { $_ eq $dir } map { $_->path } $self->all_repos;
-
-  $self->add_repo(
-    $self->_build_new_entry_from_user_input($dir)
-  );
-
-  $self->write_config;
+  $self->_process_dir($_) for map { path($_)->absolute } @dirs;
 }
 
 sub _build_new_entry_from_user_input {
@@ -97,7 +84,7 @@ sub _build_new_entry_from_user_input {
   my $name = prompt( 'Name? ', lc basename $path );
 
   my $remote;
-  if ( 1 == scalar keys %$repo ) {  # one remote? No choice
+  if ( 1 == scalar keys %$repo ) { # one remote? No choice
     ($remote) = values %$repo;
   }
   else {
@@ -110,7 +97,7 @@ sub _build_new_entry_from_user_input {
 
   return App::GitGot::Repo::Git->new({ entry => {
     type => $type,
-    path => "$path",  # Path::Tiny to string coercion
+    path => "$path",            # Path::Tiny to string coercion
     name => $name,
     repo => $remote,
     maybe tags => ( join ' ', prompt( 'Tags? ', join ' ', @{$self->tags||[]} )),
@@ -126,6 +113,20 @@ sub _init_for_git {
   my %remotes = pairmap { $a =~ /remote "(.*?)"/ ? ( $1 => $b->{url} ) : () } %$cfg;
 
   return ( \%remotes, 'git' );
+}
+
+sub _process_dir {
+  my( $self, $dir ) = @_;
+
+  # first thing, do we already "got" it?
+  return warn "Repository at '$dir' already registered with Got, skipping\n"
+    if any { $_ eq $dir } map { $_->path } $self->all_repos;
+
+  $self->add_repo(
+    $self->_build_new_entry_from_user_input($dir)
+  );
+
+  $self->write_config;
 }
 
 __PACKAGE__->meta->make_immutable;

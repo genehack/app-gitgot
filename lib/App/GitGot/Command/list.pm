@@ -1,15 +1,16 @@
 package App::GitGot::Command::list;
-# ABSTRACT: list managed repositories
 
+# ABSTRACT: list managed repositories
 use Mouse;
 extends 'App::GitGot::Command';
 use 5.010;
+use namespace::autoclean;
 
 use Class::Load       'try_load_class';
 
 sub command_names { qw/ list ls / }
 
-has 'json' => (
+has json => (
   is            => 'ro',
   isa           => 'Bool',
   cmd_aliases   => 'j',

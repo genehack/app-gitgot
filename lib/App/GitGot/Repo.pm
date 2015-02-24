@@ -3,45 +3,44 @@ package App::GitGot::Repo;
 # ABSTRACT: Base repository objects
 use Mouse;
 use 5.010;
+use namespace::autoclean;
 
 use List::AllUtils qw/ uniq /;
 
-use namespace::autoclean;
-
-has 'label' => (
+has label => (
   is       => 'ro' ,
   isa      => 'Str' ,
 );
 
-has 'name' => (
+has name => (
   is          => 'ro',
   isa         => 'Str',
   required    => 1 ,
 );
 
-has 'number' => (
+has number => (
   is          => 'ro',
   isa         => 'Int',
   required    => 1 ,
 );
 
-has 'path' => (
+has path => (
   is          => 'ro',
   isa         => 'Str',
   required    => 1 ,
 );
 
-has 'repo' => (
+has repo => (
   is          => 'ro',
   isa         => 'Str',
 );
 
-has 'tags' => (
+has tags => (
   is          => 'rw',
   isa         => 'Str',
 );
 
-has 'type' => (
+has type => (
   is          => 'ro',
   isa         => 'Str',
   required    => 1 ,
@@ -77,6 +76,17 @@ sub BUILDARGS {
   return $return;
 }
 
+=method add_tags
+
+Given a list of tags, add them to the current repo object.
+
+=cut
+
+sub add_tags {
+  my( $self, @tags ) = @_;
+
+  $self->tags( join ' ', uniq sort @tags, split ' ', $self->tags );
+}
 
 =method in_writable_format
 
@@ -84,6 +94,7 @@ Returns a serialized representation of the repository for writing out in a
 config file.
 
 =cut
+
 sub in_writable_format {
   my $self = shift;
 
@@ -99,20 +110,21 @@ sub in_writable_format {
   return $writeable;
 }
 
-sub add_tags {
-    my( $self, @tags ) = @_;
+=method remove_tags
 
-    $self->tags( join ' ', uniq sort @tags, split ' ', $self->tags );
-}
+Given a list of tags, remove them from the current repo object.
+
+Passing a tag that is not on the current repo object will silently no-op.
+
+=cut
 
 sub remove_tags {
-    my( $self, @tags ) = @_;
+  my( $self, @tags ) = @_;
 
-    %verboten = map { $_ => 1 } @tags;
+  %verboten = map { $_ => 1 } @tags;
 
-    $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
+  $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
 }
-
 
 __PACKAGE__->meta->make_immutable;
 1;
