@@ -162,7 +162,7 @@ sub local_repo {
 
   # find repo root
   while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
-    die "$path doesn't seem to be in a git directory\n"
+    die "$dir doesn't seem to be in a git directory\n"
       if $dir eq $dir->parent;
     $dir = $dir->parent;
   }
