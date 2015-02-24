@@ -11,45 +11,34 @@ use File::Copy::Recursive qw/ dirmove /;
 
 sub command_names { qw/ move mv / }
 
+has destination => (
+  is          => 'ro',
+  isa         => 'Str',
+  required    => 1,
+  traits      => [qw/ Getopt /],
+);
+
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
-  die "usage: got move <repo> <new dir>\n" unless @$args <= 2 and @$args > 0;
+  my @repos = $self->active_repos;
 
-  my $repo;
+  dir($self->destination)->mkpath if @repos > 1;
 
-  my $target_dir = $args->[-1];
+  for my $repo ( @repos ) {
+    $target_dir = -d $self->destination 
+        ? dir($self->destination)->subdir( dir($repo->path)->basename ) 
+        : $self->destination;
 
-  # got move <name> <new location>
-  if( @$args == 2 ) {
-      die "ERROR: You need to select a single repo\n"
-        unless $self->active_repos and $self->active_repos == 1;
+    dirmove( $repo->path => $target_dir )
+        or die "couldn't move ", $repo->name, " to '$target_dir': $!";
 
-      my( $repo ) = $self->active_repos;
-  }
-  else { # no repo given, assume we are in it
-    my $dir = dir( getcwd );
+    $repo->{path} = "$target_dir";
+    $self->write_config;
 
-    # find repo root
-    while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
-        die "you don't seem to be in a git directory\n" if $dir eq $dir->parent;
-        $dir = $dir->parent;
-    }
-
-    ( $repo ) = grep { $_->path eq "$dir" } @{$self->full_repo_list}
-        or die "'$dir' not monitored by got\n";
+    say sprintf '%s moved to %s', $repo->name, $target_dir;
   }
 
-  $target_dir = dir($target_dir);
-  $target_dir = $target_dir->subdir( dir($repo->path)->basename ) if -d $target_dir;
-
-  dirmove( $repo->path => $target_dir )
-    or die "couldn't move ", $repo->name, " to '$target_dir': $!";
-
-  $repo->{path} = "$target_dir";
-  $self->write_config;
-
-  say sprintf '%s moved to %s', $repo->name, $target_dir;
 }
 
 __PACKAGE__->meta->make_immutable;
