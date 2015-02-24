@@ -158,19 +158,10 @@ corresponding L<App::GitGot::Repo> object if it is.
 sub local_repo {
   my $self = shift;
 
-  my $dir = dir( getcwd() );
-
-  # find repo root
-  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
-    die "$dir doesn't seem to be in a git directory\n"
-      if $dir eq $dir->parent;
-    $dir = $dir->parent;
-  }
+  my $dir = $self->_find_repo_root( getcwd() );
 
   return first { $_->path eq $dir->absolute } $self->all_repos;
 }
-
-
 
 =method max_length_of_an_active_repo_label
 
@@ -364,6 +355,20 @@ sub _fetch {
   }
 }
 
+sub _find_repo_root {
+  my( $self , $path ) = @_;
+
+  my $dir = dir( $path );
+
+  # find repo root
+  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
+    die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
+    $dir = $dir->parent;
+  }
+
+  return $dir
+}
+
 sub _git_fetch {
   my ( $self, $entry ) = @_
     or die "Need entry";
@@ -467,14 +472,7 @@ sub _path_is_managed {
 
   return unless $path;
 
-  my $dir = dir( $path );
-
-  # find repo root
-  while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
-    die "$path doesn't seem to be in a git directory\n" if $dir eq $dir->parent;
-    $dir = $dir->parent;
-  }
-
+  my $dir     = $self->_find_repo_root( $path );
   my $max_len = $self->max_length_of_an_active_repo_label;
 
   for my $repo ( $self->active_repos ) {

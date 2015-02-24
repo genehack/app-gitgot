@@ -53,10 +53,11 @@ $result = test_app( 'App::GitGot' => [ 'tag', '-f', $config, '--remove', '--add'
 is $result->stdout => "can't --add and --remove at the same time\n", 'simultaneous add/remove';
 
 chdir '..';
+my $current_dir = getcwd();
 
 $result = test_app( 'App::GitGot' => [ 'tag', '-f', $config, '--add', qw/ perl git / ] );
 
-is $result->error => " doesn't seem to be in a git directory\n", 'outside of repo';
+is $result->error => "$current_dir doesn't seem to be in a git directory\n", 'outside of repo';
 
 chdir(); ## let File::Temp clean up...
 done_testing();
