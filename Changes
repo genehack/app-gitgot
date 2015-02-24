@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.20      2015-02-23 17:51:14-08:00 America/Los_Angeles
+
   * Add 'lib' subcommand (Yanick Champoux)
   * Add 'tag' subcommand (Yanick Champoux)
   * Add 'do' subcommand (Yanick Champoux)
