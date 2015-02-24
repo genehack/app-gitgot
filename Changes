@@ -4,6 +4,16 @@ Changes file for {{$dist->name}}
 
   * Add 'lib' subcommand (Yanick Champoux)
   * Add 'tag' subcommand (Yanick Champoux)
+  * Add 'do' subcommand (Yanick Champoux)
+  * Add '--json' option to 'got list' (Yanick Champoux)
+  * Extend the 'add' subcommand in a number of ways:
+      * Allow to pass more than one directory as arguments.
+      * Add '--recursive', to hunt down git repos under a main
+        directory.
+      * Make '--tag X' set the default tag(s) to X
+      * If there's only one remote, don't ask, use that one.
+      * Instead of asking the user to type the remote URI, give the
+        choice between the remote name/URL pairs.
 
 1.19      2014-08-29 22:07:03-07:00 America/Los_Angeles
 
