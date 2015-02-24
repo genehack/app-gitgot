@@ -1,7 +1,7 @@
 package App::GitGot::Repositories;
 
+# ABSTRACT: Object holding a collection of repositories
 use Mouse;
-
 use 5.010;
 
 use strict;
@@ -10,12 +10,12 @@ use warnings;
 use overload '@{}' => sub { $_[0]->all };
 
 has repos => (
-    traits => [ qw/ Array / ],
-    is => 'ro',
-    isa => 'ArrayRef[App::GitGot::Repo::Git]',
-    default => sub { [] },
+    is       => 'ro',
+    isa      => 'ArrayRef[App::GitGot::Repo::Git]',
+    traits   => [ qw/ Array / ],
+    default  => sub { [] },
     required => 1,
-    handles => { all => 'elements' },
+    handles  => { all => 'elements' },
 );
 
 sub tags {
@@ -38,10 +38,5 @@ sub name {
     ]);
 }
 
-
-
-
+__PACKAGE__->meta->make_immutable;
 1;
-
-
-
