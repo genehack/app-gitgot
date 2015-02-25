@@ -29,7 +29,7 @@ sub _execute {
   dir($self->destination)->mkpath if @repos > 1;
 
   for my $repo ( @repos ) {
-    $target_dir = -d $self->destination
+    my $target_dir = -d $self->destination
       ? dir($self->destination)->subdir( dir($repo->path)->basename )
       : $self->destination;
 
