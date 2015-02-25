@@ -42,6 +42,7 @@ sub _execute {
 
   my @libs = map { $self->_expand_lib($_) } $self->_raw_libs( $args );
 
+  no warnings; # $ENV{$self->libvar} can be undefined
   say join $self->separator, uniq @libs, split ':', $ENV{$self->libvar};
 
 }
