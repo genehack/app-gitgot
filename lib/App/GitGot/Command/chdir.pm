@@ -3,6 +3,8 @@ package App::GitGot::Command::chdir;
 # ABSTRACT: open a subshell in a selected project
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

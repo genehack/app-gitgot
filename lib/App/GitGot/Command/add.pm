@@ -3,6 +3,8 @@ package App::GitGot::Command::add;
 # ABSTRACT: add a new repo to your config
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

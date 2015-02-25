@@ -2,6 +2,8 @@ package App::GitGot::Repositories;
 
 # ABSTRACT: Object holding a collection of repositories
 use Mouse;
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

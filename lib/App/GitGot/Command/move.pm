@@ -3,6 +3,8 @@ package App::GitGot::Command::move;
 # ABSTRACT: move a repo in a new directory
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

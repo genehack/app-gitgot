@@ -3,6 +3,8 @@ package App::GitGot::Command;
 # ABSTRACT: Base class for App::GitGot commands
 use Mouse;
 extends 'MouseX::App::Cmd::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

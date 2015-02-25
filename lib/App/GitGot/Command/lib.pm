@@ -3,6 +3,8 @@ package App::GitGot::Command::lib;
 # ABSTRACT: Generate a lib listing off a .gotlib file
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

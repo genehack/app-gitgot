@@ -3,6 +3,8 @@ package App::GitGot::Repo::Git;
 # ABSTRACT: Git repo objects
 use Mouse;
 extends 'App::GitGot::Repo';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

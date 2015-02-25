@@ -2,6 +2,8 @@ package App::GitGot::Repo;
 
 # ABSTRACT: Base repository objects
 use Mouse;
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 
