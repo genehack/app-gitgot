@@ -2,7 +2,13 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.22      2015-02-26 07:40:05-08:00 America/Los_Angeles
+
+  * Really fixed test failures (John Anderson)
+
 1.21      2015-02-24 19:15:58-08:00 America/Los_Angeles
+
+  * Fixed test failures (John Anderson)
 
 1.20      2015-02-23 17:51:14-08:00 America/Los_Angeles
 
