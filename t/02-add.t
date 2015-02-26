@@ -12,8 +12,9 @@ use Test::More;
 use App::Cmd::Tester;
 use App::GitGot;
 use App::GitGot::Command::add;
+use Class::Load                 qw/ try_load_class /;
 use Cwd;
-use YAML              qw/ LoadFile /;
+use YAML                        qw/ LoadFile /;
 
 my $dir = Test::BASE::create_tempdir_and_chdir();
 
@@ -66,6 +67,11 @@ Test::BASE::build_fake_git_repo();
 chdir(); ## let File::Temp clean up...
 
 subtest 'recursive behavior' => sub {
+ SKIP:
+  {
+    skip 'Test requires Path::Iterator::Rule' , 1
+      unless try_load_class( 'Path::Iterator::Rule' );
+
     my $dir = Test::BASE::create_tempdir_and_chdir();
 
     for my $repo ( qw/ alpha beta / ) {
@@ -81,6 +87,7 @@ subtest 'recursive behavior' => sub {
     ], 'all repositores detected';
 
     chdir();
+  }
 };
 
 done_testing();
