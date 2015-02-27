@@ -3,6 +3,8 @@ package App::GitGot::Command::clone;
 # ABSTRACT: clone a remote repo and add it to your config
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

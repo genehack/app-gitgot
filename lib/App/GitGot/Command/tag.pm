@@ -3,6 +3,8 @@ package App::GitGot::Command::tag;
 # ABSTRACT: list/add/remove tags for the current repository
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

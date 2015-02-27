@@ -2,6 +2,8 @@ package App::GitGot::Repo;
 
 # ABSTRACT: Base repository objects
 use Mouse;
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 
@@ -121,7 +123,7 @@ Passing a tag that is not on the current repo object will silently no-op.
 sub remove_tags {
   my( $self, @tags ) = @_;
 
-  %verboten = map { $_ => 1 } @tags;
+  my %verboten = map { $_ => 1 } @tags;
 
   $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
 }

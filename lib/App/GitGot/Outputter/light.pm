@@ -3,6 +3,8 @@ package App::GitGot::Outputter::light;
 # ABSTRACT: Color scheme appropriate for dark terminal backgrounds
 use Mouse;
 extends 'App::GitGot::Outputter';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

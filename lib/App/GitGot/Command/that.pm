@@ -3,6 +3,8 @@ package App::GitGot::Command::that;
 # ABSTRACT: check if a given repository is managed
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

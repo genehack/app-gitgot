@@ -3,6 +3,8 @@ package App::GitGot::Command::list;
 # ABSTRACT: list managed repositories
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

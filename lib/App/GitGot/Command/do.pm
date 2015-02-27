@@ -1,9 +1,11 @@
 package App::GitGot::Command::do;
 
 # ABSTRACT: run command in many repositories
-use 5.010;
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
+use 5.010;
 use namespace::autoclean;
 
 use Capture::Tiny qw/ capture_stdout /;

@@ -3,6 +3,8 @@ package App::GitGot::Command::version;
 # ABSTRACT: display application version
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

@@ -3,6 +3,8 @@ package App::GitGot::Command::update;
 # ABSTRACT: update managed repositories
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 

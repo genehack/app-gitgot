@@ -3,6 +3,8 @@ package App::GitGot::Command::move;
 # ABSTRACT: move a repo in a new directory
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 
@@ -27,7 +29,7 @@ sub _execute {
   dir($self->destination)->mkpath if @repos > 1;
 
   for my $repo ( @repos ) {
-    $target_dir = -d $self->destination
+    my $target_dir = -d $self->destination
       ? dir($self->destination)->subdir( dir($repo->path)->basename )
       : $self->destination;
 

@@ -3,6 +3,8 @@ package App::GitGot::Command::fork;
 # ABSTRACT: fork a github repo
 use Mouse;
 extends 'App::GitGot::Command';
+use strict;
+use warnings;
 use 5.010;
 use namespace::autoclean;
 
