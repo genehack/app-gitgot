@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.010;
+use 5.014;
 
 use ExtUtils::MakeMaker;
 
@@ -18,29 +18,23 @@ my %WriteMakefileArgs = (
     "bin/got-complete"
   ],
   "LICENSE" => "perl",
-  "MIN_PERL_VERSION" => "5.010",
+  "MIN_PERL_VERSION" => "5.014",
   "NAME" => "App::GitGot",
   "PREREQ_PM" => {
+    "App::Cmd::Setup" => 0,
     "Capture::Tiny" => 0,
     "Class::Load" => 0,
     "Config::INI::Reader" => 0,
     "Cwd" => 0,
     "Data::Dumper" => 0,
-    "File::Basename" => 0,
     "File::Copy::Recursive" => 0,
-    "File::Path" => "2.08",
     "File::Slurp::Tiny" => 0,
-    "File::Spec" => 0,
     "File::chdir" => 0,
     "Git::Wrapper" => "0.014",
     "IO::Prompt::Simple" => 0,
-    "List::AllUtils" => 0,
-    "List::MoreUtils" => 0,
-    "Mouse" => 0,
-    "MouseX::App::Cmd" => 0,
-    "MouseX::App::Cmd::Command" => 0,
-    "MouseX::NativeTraits" => 0,
-    "Path::Class" => 0,
+    "List::AllUtils" => "0.09",
+    "Moo" => 0,
+    "MooX::HandlesVia" => 0,
     "Path::Tiny" => 0,
     "PerlX::Maybe" => 0,
     "Term::ANSIColor" => 0,
@@ -48,9 +42,12 @@ my %WriteMakefileArgs = (
     "Term::ReadLine::Perl" => 0,
     "Test::MockObject" => 0,
     "Try::Tiny" => 0,
+    "Type::Library" => 0,
+    "Type::Utils" => 0,
+    "Types::Standard" => 0,
     "YAML" => 0,
-    "YAML::Any" => 0,
     "autodie" => 0,
+    "feature" => 0,
     "namespace::autoclean" => 0,
     "overload" => 0,
     "strict" => 0,
@@ -68,7 +65,7 @@ my %WriteMakefileArgs = (
     "lib" => 0,
     "parent" => 0
   },
-  "VERSION" => "1.22",
+  "VERSION" => "1.23",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -76,6 +73,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "App::Cmd::Setup" => 0,
   "App::Cmd::Tester" => 0,
   "Capture::Tiny" => 0,
   "Carp" => 0,
@@ -84,22 +82,15 @@ my %FallbackPrereqs = (
   "Cwd" => 0,
   "Data::Dumper" => 0,
   "ExtUtils::MakeMaker" => 0,
-  "File::Basename" => 0,
   "File::Copy::Recursive" => 0,
-  "File::Path" => "2.08",
   "File::Slurp::Tiny" => 0,
-  "File::Spec" => 0,
   "File::Temp" => 0,
   "File::chdir" => 0,
   "Git::Wrapper" => "0.014",
   "IO::Prompt::Simple" => 0,
-  "List::AllUtils" => 0,
-  "List::MoreUtils" => 0,
-  "Mouse" => 0,
-  "MouseX::App::Cmd" => 0,
-  "MouseX::App::Cmd::Command" => 0,
-  "MouseX::NativeTraits" => 0,
-  "Path::Class" => 0,
+  "List::AllUtils" => "0.09",
+  "Moo" => 0,
+  "MooX::HandlesVia" => 0,
   "Path::Tiny" => 0,
   "PerlX::Maybe" => 0,
   "Term::ANSIColor" => 0,
@@ -112,9 +103,12 @@ my %FallbackPrereqs = (
   "Test::MockObject" => 0,
   "Test::More" => 0,
   "Try::Tiny" => 0,
+  "Type::Library" => 0,
+  "Type::Utils" => 0,
+  "Types::Standard" => 0,
   "YAML" => 0,
-  "YAML::Any" => 0,
   "autodie" => 0,
+  "feature" => 0,
   "lib" => 0,
   "namespace::autoclean" => 0,
   "overload" => 0,
