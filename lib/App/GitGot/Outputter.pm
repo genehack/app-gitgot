@@ -1,19 +1,22 @@
 package App::GitGot::Outputter;
 
 # ABSTRACT: Generic base class for outputting formatted messages.
-use Mouse;
-use strict;
-use warnings;
-use 5.010;
+use 5.014;
+use feature 'unicode_strings';
+
+use Term::ANSIColor qw/ colored /;
+use Types::Standard -types;
+
+use App::GitGot::Types;
+
+use Moo;
 use namespace::autoclean;
 
-use Term::ANSIColor;
-
-# boolean indicating whether color messages should be output at all
 has no_color => (
-  is      => 'ro' ,
-  isa     => 'Bool' ,
-  default => 0 ,
+  is            => 'ro' ,
+  isa           => Bool ,
+  default       => 0 ,
+  documentation => 'boolean indicating whether color messages should be output at all' ,
 );
 
 =method error
@@ -67,5 +70,4 @@ sub _colored {
     : colored( $message , $color_string );
 }
 
-__PACKAGE__->meta->make_immutable;
 1;

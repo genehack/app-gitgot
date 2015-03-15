@@ -1,23 +1,25 @@
 package App::GitGot::Repo::Git;
 
 # ABSTRACT: Git repo objects
-use Mouse;
-extends 'App::GitGot::Repo';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use Git::Wrapper;
 use Test::MockObject;
 use Try::Tiny;
+use Types::Standard -types;
+
+use App::GitGot::Types qw/ GitWrapper /;
+
+use Moo;
+extends 'App::GitGot::Repo';
+use namespace::autoclean;
 
 has '+type' => ( default => 'git' );
 
 has '_wrapper' => (
-  is         => 'ro' ,
-  isa        => 'Git::Wrapper' ,
-  lazy_build => 1 ,
+  is         => 'lazy' ,
+  isa        => GitWrapper ,
   handles    => [ qw/
                       cherry
                       clone
@@ -62,6 +64,7 @@ sub _build__wrapper {
 Returns the current branch checked out by this repository object.
 
 =cut
+
 sub current_branch {
   my $self = shift;
 
@@ -86,6 +89,7 @@ object, or 0 if that information can't be extracted (if, for example, the
 branch doesn't have a remote.)
 
 =cut
+
 sub current_remote_branch {
   my( $self ) = shift;
 
@@ -104,5 +108,4 @@ sub current_remote_branch {
   return $remote;
 }
 
-__PACKAGE__->meta->make_immutable;
 1;

@@ -1,40 +1,32 @@
 package App::GitGot::Command::do;
 
 # ABSTRACT: run command in many repositories
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use Capture::Tiny qw/ capture_stdout /;
 use File::chdir;
+use Types::Standard -types;
 
-has command => (
-  is            => 'ro',
-  isa           => 'Str',
-  required      => 1,
-  traits        => [qw/ Getopt /],
-  documentation => 'command to execute in the different repos',
-  cmd_aliases   => 'e',
-);
+use App::GitGot -command;
 
-has with_repo => (
-  is            => 'ro',
-  isa           => 'Bool',
-  default       => 0,
-  traits        => [qw/ Getopt /],
-  documentation => 'prepend all output lines with the repo name',
-);
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
 
-sub command_names { qw/ do / }
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'command|e=s' => 'command to execute in the different repos' => { required => 1 } ] ,
+    [ 'with_repo'   => 'prepend all output lines with the repo name' => { default => 0 } ] ,
+  );
+}
 
 sub _execute {
   my $self = shift;
 
   for my $repo ( $self->active_repos ) {
-    $self->_run_in_repo( $repo => $self->command );
+    $self->_run_in_repo( $repo => $self->opt->command );
   }
 }
 
@@ -47,9 +39,9 @@ sub _run_in_repo {
     return;
   }
 
-  say "\n## repo ", $repo->label, "\n" unless $self->with_repo;
+  say "\n## repo ", $repo->label, "\n" unless $self->opt->with_repo;
 
-  my $prefix = $self->with_repo ? $repo->label . ': ' : '';
+  my $prefix = $self->opt->with_repo ? $repo->label . ': ' : '';
 
   say $prefix, $_ for split "\n", capture_stdout {
     $CWD = $repo->path;
@@ -57,5 +49,6 @@ sub _run_in_repo {
   };
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+### FIXME docs

@@ -1,132 +1,151 @@
 package App::GitGot::Command;
 
 # ABSTRACT: Base class for App::GitGot commands
-use Mouse;
-extends 'MouseX::App::Cmd::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
+
+use App::Cmd::Setup -command;
+use Cwd;
+use List::AllUtils          qw/ max first /;
+use Path::Tiny;
+use Try::Tiny;
+use Types::Standard -types;
+use YAML                    qw/ DumpFile LoadFile /;
 
 use App::GitGot::Repo::Git;
 use App::GitGot::Repositories;
+use App::GitGot::Types -all;
 
-use Cwd;
-use File::Path 2.08         qw/ make_path /;
-use List::AllUtils          qw/ max first /;
-use Path::Class;
-use Try::Tiny;
-use YAML                    qw/ DumpFile LoadFile /;
+use Moo;
+use MooX::HandlesVia;
+use namespace::autoclean;
 
-# option attrs
-has all => (
-  is            => 'rw',
-  isa           => 'Bool',
-  documentation => 'use all available repositories' ,
-  cmd_aliases   => 'a',
-  traits        => [qw/ Getopt /],
-);
+sub opt_spec {
+  my( $class , $app ) = @_;
 
-has by_path => (
-  is          => 'rw' ,
-  isa         => 'Bool' ,
-  cmd_aliases => 'p',
-  traits      => [qw/ Getopt /],
-);
+  return (
+    [ 'all|a'            => 'use all available repositories' ] ,
+    [ 'by_path|p'        => 'if set, output will be sorted by repo path (default: sort by repo name)' ] ,
+    [ 'color_scheme|c=s' => 'name of color scheme to use' => { default => 'dark' } ] ,
+    [ 'configfile|f=s'   => 'path to config file' => { default => "$ENV{HOME}/.gitgot" , required => 1 } ] ,
+    [ 'no_color|C'       => 'do not use colored output' => { default => 0 } ] ,
+    [ 'quiet|q'          => 'keep it down' ] ,
+    [ 'skip_tags|T=s@'   => 'select repositories not tagged with these words' ] ,
+    [ 'tags|t=s@'        => 'select repositories tagged with these words' ] ,
+    [ 'verbose|v'        => 'bring th\' noise'] ,
+    $class->options($app)
+  );
+}
 
-has color_scheme => (
-  is            => 'rw',
-  isa           => 'Str',
-  documentation => 'name of color scheme to use',
-  default       => 'dark',
-  cmd_aliases   => 'c' ,
-  traits        => [qw/ Getopt /],
-);
+sub options {}
 
-has configfile => (
-  is            => 'rw',
-  isa           => 'Str',
-  documentation => 'path to config file',
-  default       => "$ENV{HOME}/.gitgot",
-  cmd_aliases   => 'f' ,
-  traits        => [qw/ Getopt /],
-  required      => 1,
-);
-
-has no_color => (
-  is            => 'rw',
-  isa           => 'Bool',
-  documentation => 'do not use colored output',
-  default       => 0,
-  cmd_aliases   => 'C',
-  traits        => [qw/ Getopt /],
-);
-
-has quiet => (
-  is            => 'rw',
-  isa           => 'Bool',
-  documentation => 'keep it down',
-  cmd_aliases   => 'q',
-  traits        => [qw/ Getopt /],
-);
-
-has skip_tags => (
-  is            => 'rw',
-  isa           => 'ArrayRef[Str]',
-  documentation => 'select repositories not tagged with these words' ,
-  cmd_aliases   => 'T',
-  traits        => [qw/ Getopt /],
-);
-
-has tags => (
-  is            => 'rw',
-  isa           => 'ArrayRef[Str]',
-  documentation => 'select repositories tagged with these words' ,
-  cmd_aliases   => 't',
-  traits        => [qw/ Getopt /],
-);
-
-has verbose => (
-  is            => 'rw',
-  isa           => 'Bool',
-  documentation => 'bring th\' noise',
-  cmd_aliases   => 'v',
-  traits        => [qw/ Getopt /],
-);
-
-# non-option attrs
 has active_repo_list => (
-  is         => 'rw',
-  isa        => 'ArrayRef[App::GitGot::Repo::Git]' ,
-  traits     => [qw/ NoGetopt Array /],
-  lazy_build => 1 ,
-  handles    => {
+  is          => 'lazy',
+  isa         => ArrayRef[GotRepo] ,
+  handles_via => 'Array' ,
+  handles     => {
     active_repos => 'elements' ,
   } ,
 );
 
+sub _build_active_repo_list {
+  my ( $self ) = @_;
+
+  return $self->full_repo_list
+    if $self->all or ! $self->tags and ! $self->skip_tags and ! @{ $self->args };
+
+  my $list = _expand_arg_list( $self->args );
+
+  my @repos;
+ REPO: foreach my $repo ( $self->all_repos ) {
+    if ( grep { $_ eq $repo->number or $_ eq $repo->name } @$list ) {
+      push @repos, $repo;
+      next REPO;
+    }
+
+    if ( $self->skip_tags ) {
+      foreach my $tag ( @{ $self->skip_tags } ) {
+        next REPO if grep { $repo->tags =~ /\b$_\b/ } $tag;
+      }
+    }
+
+    if ( $self->tags ) {
+      foreach my $tag ( @{ $self->tags } ) {
+        if ( grep { $repo->tags =~ /\b$_\b/ } $tag ) {
+          push @repos, $repo;
+          next REPO;
+        }
+      }
+    }
+    push @repos, $repo unless $self->tags or @$list;
+  }
+
+  return \@repos;
+}
+
 has args => (
-  is     => 'rw' ,
-  isa    => 'ArrayRef' ,
-  traits => [ qw/ NoGetopt / ] ,
+  is     => 'rwp' ,
+  isa    => ArrayRef ,
 );
 
 has full_repo_list => (
-  is         => 'rw',
-  isa        => 'ArrayRef[App::GitGot::Repo::Git]' ,
-  traits     => [qw/ NoGetopt Array /],
-  lazy_build => 1 ,
-  handles    => {
+  is          => 'lazy',
+  isa         => ArrayRef[GotRepo] ,
+  writer      => 'set_full_repo_list' ,
+  handles_via => 'Array' ,
+  handles     => {
     add_repo  => 'push' ,
     all_repos => 'elements' ,
   } ,
 );
 
+sub _build_full_repo_list {
+  my $self = shift;
+
+  my $config = _read_config( $self->configfile );
+
+  my $repo_count = 1;
+
+  my $sort_key = $self->by_path ? 'path' : 'name';
+
+  my @parsed_config;
+
+  foreach my $entry ( sort { $a->{$sort_key} cmp $b->{$sort_key} } @$config ) {
+
+    # a completely empty entry is okay (this will happen when there's no
+    # config at all...)
+    keys %$entry or next;
+
+    ### FIXME unnecessarily git specific
+    push @parsed_config , App::GitGot::Repo::Git->new({
+      label => ( $self->by_path ) ? $entry->{path} : $entry->{name} ,
+      entry => $entry ,
+      count => $repo_count++ ,
+    });
+  }
+
+  return \@parsed_config;
+}
+
+has opt => (
+  is      => 'rwp' ,
+  isa     => Object ,
+  handles => [ qw/
+     all
+     by_path
+     color_scheme
+     configfile
+     no_color
+     quiet
+     skip_tags
+     tags
+     verbose
+   / ]
+);
+
 has outputter => (
-  is         => 'ro' ,
-  isa        => 'App::GitGot::Outputter' ,
-  traits     => [ qw/ NoGetopt / ] ,
-  lazy_build => 1 ,
+  is         => 'lazy' ,
+  isa        => GotOutputter ,
   handles    => [
     'error' ,
     'warning' ,
@@ -135,9 +154,34 @@ has outputter => (
   ] ,
 );
 
+sub _build_outputter {
+  my $self = shift;
+
+  my $scheme = $self->color_scheme;
+
+  if ( $scheme =~ /^\+/ ) {
+    $scheme =~ s/^\+//;
+  }
+  else {
+    $scheme = "App::GitGot::Outputter::$scheme"
+  }
+
+  try {
+    eval "use $scheme";
+    die $@ if $@;
+  }
+  catch {
+    say "Failed to load color scheme '$scheme'.\nExitting now.\n";
+    exit(5);
+  };
+
+  return $scheme->new({ no_color => $self->no_color });
+}
+
 sub execute {
   my( $self , $opt , $args ) = @_;
-  $self->args( $args );
+  $self->_set_args( $args );
+  $self->_set_opt( $opt  );
 
   # set up colored output if we page thru less
   # also exit pager immediately if <1 page of output
@@ -227,92 +271,6 @@ sub write_config {
   );
 }
 
-sub _build_active_repo_list {
-  my ( $self ) = @_;
-
-  return $self->full_repo_list
-    if $self->all or ! $self->tags and ! $self->skip_tags and ! @{ $self->args };
-
-  my $list = _expand_arg_list( $self->args );
-
-  my @repos;
- REPO: foreach my $repo ( $self->all_repos ) {
-    if ( grep { $_ eq $repo->number or $_ eq $repo->name } @$list ) {
-      push @repos, $repo;
-      next REPO;
-    }
-
-    if ( $self->skip_tags ) {
-      foreach my $tag ( @{ $self->skip_tags } ) {
-        next REPO if grep { $repo->tags =~ /\b$_\b/ } $tag;
-      }
-    }
-
-    if ( $self->tags ) {
-      foreach my $tag ( @{ $self->tags } ) {
-        if ( grep { $repo->tags =~ /\b$_\b/ } $tag ) {
-          push @repos, $repo;
-          next REPO;
-        }
-      }
-    }
-    push @repos, $repo unless $self->tags or @$list;
-  }
-
-  return \@repos;
-}
-
-sub _build_full_repo_list {
-  my $self = shift;
-
-  my $config = _read_config( $self->configfile );
-
-  my $repo_count = 1;
-
-  my $sort_key = $self->by_path ? 'path' : 'name';
-
-  my @parsed_config;
-
-  foreach my $entry ( sort { $a->{$sort_key} cmp $b->{$sort_key} } @$config ) {
-
-    # a completely empty entry is okay (this will happen when there's no
-    # config at all...)
-    keys %$entry or next;
-
-    push @parsed_config , App::GitGot::Repo::Git->new({
-      label => ( $self->by_path ) ? $entry->{path} : $entry->{name} ,
-      entry => $entry ,
-      count => $repo_count++ ,
-    });
-  }
-
-  return \@parsed_config;
-}
-
-sub _build_outputter {
-  my $self = shift;
-
-  my $scheme = $self->color_scheme;
-
-  if ( $scheme =~ /^\+/ ) {
-    $scheme =~ s/^\+//;
-  }
-  else {
-    $scheme = "App::GitGot::Outputter::$scheme"
-  }
-
-  try {
-    eval "use $scheme";
-    die $@ if $@;
-  }
-  catch {
-    say "Failed to load color scheme '$scheme'.\nExitting now.\n";
-    exit(5);
-  };
-
-  return $scheme->new({ no_color => $self->no_color });
-}
-
 sub _expand_arg_list {
   my $args = shift;
 
@@ -360,7 +318,7 @@ sub _fetch {
 sub _find_repo_root {
   my( $self , $path ) = @_;
 
-  my $dir = dir( $path );
+  my $dir = path( $path );
 
   # find repo root
   while ( ! grep { -d and $_->basename eq '.git' } $dir->children ) {
@@ -371,25 +329,42 @@ sub _find_repo_root {
   return $dir
 }
 
-sub _git_fetch {
-  my ( $self, $entry ) = @_
-    or die "Need entry";
+sub _git_clone_or_callback {
+  my( $self , $entry , $callback ) = @_
+    or die "Need entry and callback";
 
   my $msg = '';
 
   my $path = $entry->path;
 
   if ( !-d $path ) {
-    make_path $path;
+    path($path)->mkpath;
 
     try {
       $entry->clone( $entry->repo , './' );
       $msg .= $self->major_change('Checked out');
     }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
+      catch { $msg .= $self->error('ERROR') . "\n$_" };
   }
   elsif ( -d "$path/.git" ) {
     try {
+      $msg .= $callback->($msg , $entry);
+    }
+    catch { $msg .= $self->error('ERROR') . "\n$_" };
+  }
+
+  return $msg;
+
+}
+
+sub _git_fetch {
+  my ( $self, $entry ) = @_
+    or die "Need entry";
+
+  $self->_git_clone_or_callback( $entry ,
+    sub {
+      my( $msg , $entry ) = @_;
+
       my @o = $entry->fetch;
 
       # "git fetch" doesn't output anything to STDOUT only STDERR
@@ -416,11 +391,10 @@ sub _git_fetch {
         $msg .= $self->warning('Problem during fetch');
         $msg .= "\n" . join("\n",@err) unless $self->quiet;
       }
-    }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
-  }
 
-  return $msg;
+      return $msg;
+    }
+  );
 }
 
 sub _git_status {
@@ -439,21 +413,10 @@ sub _git_update {
   my ( $self, $entry ) = @_
     or die "Need entry";
 
-  my $msg = '';
+  $self->_git_clone_or_callback( $entry ,
+    sub {
+      my( $msg , $entry ) = @_;
 
-  my $path = $entry->path;
-
-  if ( !-d $path ) {
-    make_path $path;
-
-    try {
-      $entry->clone( $entry->repo , './' );
-      $msg .= $self->major_change('Checked out');
-    }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
-  }
-  elsif ( -d "$path/.git" ) {
-    try {
       my @o = $entry->pull;
       if ( $o[0] eq 'Already up-to-date.' ) {
         $msg .= $self->minor_change('Up to date') unless $self->quiet;
@@ -462,11 +425,10 @@ sub _git_update {
         $msg .= $self->major_change('Updated');
         $msg .= "\n" . join("\n",@o) unless $self->quiet;
       }
-    }
-    catch { $msg .= $self->error('ERROR') . "\n$_" };
-  }
 
-  return $msg;
+      return $msg;
+    }
+  );
 }
 
 sub _path_is_managed {
@@ -634,5 +596,4 @@ sub _update {
 # need to do incremental output
 sub _use_io_page { 1 }
 
-__PACKAGE__->meta->make_immutable;
 1;

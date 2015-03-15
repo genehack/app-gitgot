@@ -1,51 +1,54 @@
 package App::GitGot::Repo;
 
 # ABSTRACT: Base repository objects
-use Mouse;
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use List::AllUtils qw/ uniq /;
+use Types::Standard -types;
+
+use App::GitGot::Types;
+
+use Moo;
+use namespace::autoclean;
 
 has label => (
-  is       => 'ro' ,
-  isa      => 'Str' ,
+  is  => 'ro' ,
+  isa => Str ,
 );
 
 has name => (
-  is          => 'ro',
-  isa         => 'Str',
-  required    => 1 ,
+  is       => 'ro',
+  isa      => Str,
+  required => 1 ,
 );
 
 has number => (
-  is          => 'ro',
-  isa         => 'Int',
-  required    => 1 ,
+  is       => 'ro',
+  isa      => Int,
+  required => 1 ,
 );
 
 has path => (
-  is          => 'ro',
-  isa         => 'Str',
-  required    => 1 ,
+  is       => 'ro',
+  isa      => Str,
+  required => 1 ,
 );
 
 has repo => (
-  is          => 'ro',
-  isa         => 'Str',
+  is  => 'ro',
+  isa => Str,
 );
 
 has tags => (
-  is          => 'rw',
-  isa         => 'Str',
+  is  => 'rw',
+  isa => Str,
 );
 
 has type => (
-  is          => 'ro',
-  isa         => 'Str',
-  required    => 1 ,
+  is       => 'ro',
+  isa      => Str,
+  required => 1 ,
 );
 
 sub BUILDARGS {
@@ -59,6 +62,7 @@ sub BUILDARGS {
   my $repo = $entry->{repo} //= '';
 
   if ( ! defined $entry->{name} ) {
+    ### FIXME this is unnecessarily Git-specific
     $entry->{name} = ( $repo =~ m|([^/]+).git$| ) ? $1 : '';
   }
 
@@ -128,5 +132,4 @@ sub remove_tags {
   $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
 }
 
-__PACKAGE__->meta->make_immutable;
 1;

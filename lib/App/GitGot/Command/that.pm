@@ -1,14 +1,12 @@
 package App::GitGot::Command::that;
 
 # ABSTRACT: check if a given repository is managed
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
-sub command_names { qw/ that / }
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
@@ -20,5 +18,6 @@ sub _execute {
   $self->_path_is_managed( $path ) or exit 1;
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+## FIXME docs

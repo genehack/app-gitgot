@@ -1,14 +1,15 @@
 package App::GitGot::Command::version;
 
 # ABSTRACT: display application version
-use Mouse;
+use 5.014;
+use feature 'unicode_strings';
+
+use Moo;
 extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
 use namespace::autoclean;
 
 sub _execute { say $App::GitGot::VERSION }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+## FIXME docs

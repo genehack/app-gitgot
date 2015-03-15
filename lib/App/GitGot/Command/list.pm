@@ -1,29 +1,30 @@
 package App::GitGot::Command::list;
 
 # ABSTRACT: list managed repositories
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use Class::Load       'try_load_class';
 
+use App::GitGot -command;
+
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
+
 sub command_names { qw/ list ls / }
 
-has json => (
-  is            => 'ro',
-  isa           => 'Bool',
-  cmd_aliases   => 'j',
-  traits        => [qw/ Getopt /],
-  documentation => 'stream output as json',
-);
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'json|j' => 'stream output as JSON' ] ,
+  );
+}
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
-  if ( $self->json ) {
+  if ( $self->opt->json ) {
     try_load_class( 'JSON' )
       or die "json serializing requires the module 'JSON' to be installed\n";
 
@@ -54,5 +55,6 @@ sub _execute {
   }
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+## FIXME docs

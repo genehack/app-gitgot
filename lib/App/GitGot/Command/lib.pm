@@ -1,49 +1,35 @@
 package App::GitGot::Command::lib;
 
 # ABSTRACT: Generate a lib listing off a .gotlib file
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use List::AllUtils qw/ uniq /;
 use Path::Tiny;
+use Types::Standard -types;
 
-sub command_names { qw/ lib / }
+use App::GitGot -command;
 
-has gotlib => (
-  traits => [ qw/ Getopt /],
-  is          => 'ro',
-  isa         => 'Str',
-  default     => '.gotlib',
-  documentation => 'gotlib file',
-);
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
 
-has libvar => (
-  traits => [ qw/ Getopt /],
-  is          => 'ro',
-  isa         => 'Str',
-  default     => 'PERL5LIB',
-  documentation => 'library environment variable',
-);
-
-has separator => (
-  traits => [ qw/ Getopt /],
-  is          => 'ro',
-  isa         => 'Str',
-  default     => ':',
-  documentation => 'library path separator',
-);
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'gotlib=s'    => 'gotlib file' => { default => '.gotlib' } ] ,
+    [ 'libvar=s'    => 'library environment variable' => { default => 'PERL5LIB' } ] ,
+    [ 'separator=s' => 'library path separator' => { default => ':' } ] ,
+  );
+}
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
   my @libs = map { $self->_expand_lib($_) } $self->_raw_libs( $args );
 
-  no warnings; # $ENV{$self->libvar} can be undefined
-  say join $self->separator, uniq @libs, split ':', $ENV{$self->libvar};
+  no warnings; # $ENV{$self->opt->libvar} can be undefined
+  say join $self->opt->separator, uniq @libs, split ':', $ENV{$self->opt->libvar};
 
 }
 
@@ -66,16 +52,15 @@ sub _expand_lib {
 sub _raw_libs {
   my( $self, $args ) = @_;
 
-  my $file = path( $self->gotlib );
+  my $file = path( $self->opt->gotlib );
 
   return @$args,
     # remove comments and clean whitespaces
     grep { $_ }
-    map { s/^\s+|#.*|\s+$//g; $_  }
+    map { s/^\s+|#.*|\s+$//gr }
     ( -f $file ) ? $file->lines({ chomp => 1 }) : ();
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
 
 __END__

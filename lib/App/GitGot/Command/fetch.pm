@@ -1,14 +1,14 @@
 package App::GitGot::Command::fetch;
 
 # ABSTRACT: fetch remotes for managed repositories
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
-sub command_names { qw/ fetch / }
+use App::GitGot -command;
+
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
 
 sub _execute {
   my ( $self, $opt, $args ) = @_;
@@ -16,5 +16,6 @@ sub _execute {
   $self->_fetch( $self->active_repos );
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+### FIXME docs

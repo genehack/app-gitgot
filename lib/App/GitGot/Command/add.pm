@@ -1,47 +1,34 @@
 package App::GitGot::Command::add;
 
 # ABSTRACT: add a new repo to your config
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
-use App::GitGot::Repo::Git;
 use Class::Load              qw/ try_load_class /;
 use Config::INI::Reader;
 use Cwd;
-use File::Basename;
-use File::chdir;
 use IO::Prompt::Simple;
 use List::AllUtils           qw/ any pairmap /;
 use Path::Tiny;
 use PerlX::Maybe;
 use Term::ReadLine;
+use Types::Standard -types;
 
-has defaults => (
-  is          => 'rw',
-  isa         => 'Bool',
-  cmd_aliases => 'D',
-  traits      => [qw/ Getopt /],
-);
+use App::GitGot -command;
+use App::GitGot::Repo::Git;
 
-has origin => (
-  is          => 'rw',
-  isa         => 'Str',
-  cmd_aliases => 'o',
-  default     => 'origin',
-  traits      => [qw/ Getopt /],
-);
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
 
-has recursive => (
-  is            => 'ro',
-  isa           => 'Bool',
-  default       => 0,
-  traits        => [qw/ Getopt /],
-  documentation => 'search all sub-directories for repositories',
-);
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'defaults|D' => 'FIXME' => { default => 0 } ] ,
+    [ 'origin|o=s' => 'FIXME' => { default => 'origin' } ] ,
+    [ 'recursive'  => 'search all sub-directories for repositories' => { default => 0 } ],
+  );
+}
 
 sub _execute {
   my ( $self, $opt, $args ) = @_;
@@ -49,9 +36,9 @@ sub _execute {
   my @dirs = @$args;
   push @dirs, '.' unless @dirs; # default dir is this one
 
-  if( $self->recursive ) {      # hunt for repos
+  if( $self->opt->recursive ) {      # hunt for repos
     try_load_class( 'Path::Iterator::Rule' )
-      or die "feature requires module 'Path::Iterator::Rule' to be installed\n";
+      or die "--recursive requires module 'Path::Iterator::Rule' to be installed\n";
 
     Path::Iterator::Rule->add_helper(
       is_git => sub {
@@ -79,11 +66,11 @@ sub _build_new_entry_from_user_input {
   my( $repo, $type ) = $self->_init_for_git( $path );
 
   # if 'defaults' option is true, tell IO::Prompt::Simple to use default choices
-  $ENV{PERL_IOPS_USE_DEFAULT} = $self->defaults;
+  $ENV{PERL_IOPS_USE_DEFAULT} = $self->opt->defaults;
 
   return unless prompt( "\nAdd repository at '$path'? ", { yn => 1, default => 'y' } );
 
-  my $name = prompt( 'Name? ', lc basename $path );
+  my $name = prompt( 'Name? ', lc path( $path )->basename );
 
   my $remote;
   if ( 1 == scalar keys %$repo ) { # one remote? No choice
@@ -93,7 +80,7 @@ sub _build_new_entry_from_user_input {
     $remote = prompt( 'Tracking remote? ', {
       anyone  => $repo,
       verbose => 1,
-      maybe default => ( $repo->{$self->origin} && $self->origin ),
+      maybe default => ( $repo->{$self->opt->origin} && $self->opt->origin ),
     });
   }
 
@@ -131,7 +118,6 @@ sub _process_dir {
   $self->write_config;
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
 
 __END__

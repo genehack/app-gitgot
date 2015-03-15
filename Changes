@@ -2,6 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Port to Moo (John Anderson)
   * Silence warning if PERL5LIB is not defined (Yanick Champoux)
   * Specify minimum version on List::AllUtils (John Anderson)
 

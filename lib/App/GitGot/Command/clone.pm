@@ -1,28 +1,31 @@
 package App::GitGot::Command::clone;
 
 # ABSTRACT: clone a remote repo and add it to your config
-use Mouse;
+use 5.014;
+use feature 'unicode_strings';
+
+use Cwd;
+use Path::Tiny;
+use Term::ReadLine;
+use Types::Standard -types;
+
+use App::GitGot -command;
+use App::GitGot::Repo::Git;
+
+use Moo;
 extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
 use namespace::autoclean;
 
-use App::GitGot::Repo::Git;
-use Cwd;
-use File::Basename;
-use File::Spec;
-use Term::ReadLine;
-
-has defaults => (
-  is          => 'rw',
-  isa         => 'Bool',
-  cmd_aliases => 'D',
-  traits      => [qw/ Getopt /],
-);
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'defaults|D' => 'FIXME' ] ,
+  );
+}
 
 sub _execute {
   my ( $self, $opt, $args ) = @_;
+
   my ( $repo , $path ) = @$args;
 
   $repo // ( say STDERR 'ERROR: Need the URL to clone!' and exit(1) );
@@ -31,7 +34,7 @@ sub _execute {
     or( say STDERR "ERROR: Couldn't determine path" and exit(1) );
 
 
-  my $name = basename $repo;
+  my $name = path( $repo )->basename;
   $name =~ s/.git$//;
 
   $path //= "$cwd/$name";
@@ -39,7 +42,7 @@ sub _execute {
 
   my $tags;
 
-  unless ( $self->defaults ) {
+  unless ( $self->opt->defaults ) {
     my $term = Term::ReadLine->new('gitgot');
     $name = $term->readline( 'Name: ', $name );
     $path = $term->readline( 'Path: ', $path );
@@ -60,5 +63,6 @@ sub _execute {
   $self->write_config;
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+### FIXME docs

@@ -1,11 +1,13 @@
 package App::GitGot::Command::chdir;
 
 # ABSTRACT: open a subshell in a selected project
-use Mouse;
+use 5.014;
+use feature 'unicode_strings';
+
+use App::GitGot -command;
+
+use Moo;
 extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
 use namespace::autoclean;
 
 sub command_names { qw/ chdir cd / }
@@ -26,5 +28,6 @@ sub _execute {
   exec $ENV{SHELL};
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+### FIXME docs

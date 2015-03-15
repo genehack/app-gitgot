@@ -3,8 +3,11 @@
 # PODNAME: got-complete
 
 use strict;
+use warnings;
+use 5.014;
+use feature 'unicode_strings';
 
-use YAML::Any qw/ LoadFile /;
+use YAML qw/ LoadFile /;
 
 sub get_command_line {
   my $comp = substr $ENV{'COMP_LINE'}, 0, $ENV{'COMP_POINT'};
