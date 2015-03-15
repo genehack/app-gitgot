@@ -12,10 +12,22 @@ use App::GitGot::Types;
 use Moo;
 use namespace::autoclean;
 
+=attr label
+
+Optional label for the repo.
+
+=cut
+
 has label => (
   is  => 'ro' ,
   isa => Str ,
 );
+
+=attr name
+
+The name of the repo.
+
+=cut
 
 has name => (
   is       => 'ro',
@@ -23,11 +35,23 @@ has name => (
   required => 1 ,
 );
 
+=attr number
+
+The number of the repo.
+
+=cut
+
 has number => (
   is       => 'ro',
   isa      => Int,
   required => 1 ,
 );
+
+=attr path
+
+The path to the repo.
+
+=cut
 
 has path => (
   is       => 'ro',
@@ -35,15 +59,31 @@ has path => (
   required => 1 ,
 );
 
+=attr repo
+
+=cut
+
 has repo => (
   is  => 'ro',
   isa => Str,
 );
 
+=attr tags
+
+Space-separated list of tags for the repo
+
+=cut
+
 has tags => (
   is  => 'rw',
   isa => Str,
 );
+
+=attr type
+
+The type of the repo (git, svn, etc.).
+
+=cut
 
 has type => (
   is       => 'ro',
@@ -131,5 +171,9 @@ sub remove_tags {
 
   $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
 }
+
+=for Pod::Coverage BUILDARGS
+
+=cut
 
 1;

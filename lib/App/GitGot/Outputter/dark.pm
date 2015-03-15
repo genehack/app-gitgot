@@ -36,4 +36,8 @@ has color_warning => (
   default => 'bold black on_yellow'
 );
 
+=for Pod::Coverage color_error color_major_change color_minor_change color_warning
+
+=cut
+
 1;

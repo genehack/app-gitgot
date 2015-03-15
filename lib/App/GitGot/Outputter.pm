@@ -12,6 +12,12 @@ use App::GitGot::Types;
 use Moo;
 use namespace::autoclean;
 
+=attr no_color
+
+Boolean indicating whether color messages should be output at all.
+
+=cut
+
 has no_color => (
   is            => 'ro' ,
   isa           => Bool ,

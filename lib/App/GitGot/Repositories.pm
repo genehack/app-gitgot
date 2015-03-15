@@ -14,6 +14,12 @@ use namespace::autoclean;
 
 use overload '@{}' => sub { $_[0]->all };
 
+=attr repos
+
+Array of the C<App::GitGot::Repo> objects in the collection.
+
+=cut
+
 has repos => (
   is          => 'ro',
   isa         => ArrayRef[GotRepo],

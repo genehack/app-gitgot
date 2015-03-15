@@ -596,4 +596,8 @@ sub _update {
 # need to do incremental output
 sub _use_io_page { 1 }
 
+=for Pod::Coverage args opt options
+
+=cut
+
 1;
