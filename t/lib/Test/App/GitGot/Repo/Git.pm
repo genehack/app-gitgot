@@ -4,9 +4,10 @@ use parent 'Test::App::GitGot::Repo';
 use strict;
 use warnings;
 
-use App::GitGot::Repo::Git;
 use Test::Exception;
 use Test::More;
+
+use App::GitGot::Repo::Git;
 
 sub fixtures :Test(startup) {
   my $test = shift;

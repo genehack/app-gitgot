@@ -1,15 +1,17 @@
 package App::GitGot::Command::push;
 
 # ABSTRACT: Push local changes to the default remote in git repos
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use Data::Dumper;
 use Try::Tiny;
+
+use App::GitGot -command;
+
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
 
 # incremental output looks nicer for this command...
 STDOUT->autoflush(1);
@@ -42,5 +44,6 @@ sub _execute {
   }
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+## FIXME docs

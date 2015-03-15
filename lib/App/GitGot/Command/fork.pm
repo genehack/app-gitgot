@@ -1,25 +1,28 @@
 package App::GitGot::Command::fork;
 
 # ABSTRACT: fork a github repo
-use Mouse;
-extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
-use namespace::autoclean;
+use 5.014;
+use feature 'unicode_strings';
 
 use autodie;
-use App::GitGot::Repo::Git;
 use Class::Load       'try_load_class';
 use Cwd;
 use File::Slurp::Tiny 'read_lines';
+use Types::Standard -types;
 
-has noclone => (
-  is          => 'rw',
-  isa         => 'Bool',
-  cmd_aliases => 'n',
-  traits      => [qw/ Getopt /],
-);
+use App::GitGot -command;
+use App::GitGot::Repo::Git;
+
+use Moo;
+extends 'App::GitGot::Command';
+use namespace::autoclean;
+
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'noclone|n' => 'FIXME' ] ,
+  );
+}
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
@@ -45,7 +48,7 @@ sub _execute {
   }});
 
   $new_repo->clone( $resp->{ssh_url} )
-    unless $self->noclone;
+    unless $self->opt->noclone;
 
   $self->add_repo( $new_repo );
   $self->write_config;
@@ -88,5 +91,6 @@ sub _parse_github_url {
   return( $owner , $repo );
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+## FIXME docs

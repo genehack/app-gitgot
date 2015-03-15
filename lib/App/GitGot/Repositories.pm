@@ -1,21 +1,28 @@
 package App::GitGot::Repositories;
 
 # ABSTRACT: Object holding a collection of repositories
-use Mouse;
-use strict;
-use warnings;
-use 5.010;
+use 5.014;
+use feature 'unicode_strings';
+
+use Types::Standard -types;
+
+use App::GitGot::Types qw/ GotRepo /;
+
+use Moo;
+use MooX::HandlesVia;
 use namespace::autoclean;
 
 use overload '@{}' => sub { $_[0]->all };
 
 has repos => (
-  is       => 'ro',
-  isa      => 'ArrayRef[App::GitGot::Repo::Git]',
-  traits   => [ qw/ Array / ],
-  default  => sub { [] },
-  required => 1,
-  handles  => { all => 'elements' },
+  is          => 'ro',
+  isa         => ArrayRef[GotRepo],
+  default     => sub { [] },
+  required    => 1,
+  handles_via => 'Array' ,
+  handles     => {
+    all => 'elements'
+  }
 );
 
 =method name
@@ -53,5 +60,4 @@ sub tags {
   return App::GitGot::Repositories->new( repos => \@repos );
 }
 
-__PACKAGE__->meta->make_immutable;
 1;

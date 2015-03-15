@@ -1,11 +1,11 @@
 package App::GitGot::Command::update_status;
 
 # ABSTRACT: update managed repositories then display their status
-use Mouse;
+use 5.014;
+use feature 'unicode_strings';
+
+use Moo;
 extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
 use namespace::autoclean;
 
 sub command_names { qw/ update_status upst / }
@@ -20,5 +20,6 @@ sub _execute {
   $self->_status( $self->active_repos );
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
+
+## FIXME docs

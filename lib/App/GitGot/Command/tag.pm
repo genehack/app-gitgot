@@ -1,41 +1,21 @@
 package App::GitGot::Command::tag;
 
 # ABSTRACT: list/add/remove tags for the current repository
-use Mouse;
+use 5.014;
+use feature 'unicode_strings';
+
+use Moo;
 extends 'App::GitGot::Command';
-use strict;
-use warnings;
-use 5.010;
 use namespace::autoclean;
 
-sub command_names { qw/ tag / }
-
-has add => (
-  is          => 'ro',
-  isa         => 'Bool',
-  cmd_aliases => 'a',
-  default => 0,
-  documentation => 'assign tags to the current repository',
-  traits      => [qw/ Getopt /],
-);
-
-has all => (
-  is          => 'ro',
-  isa         => 'Bool',
-  cmd_aliases => 'A',
-  default => 0,
-  documentation => 'print out tags of all repositories',
-  traits      => [qw/ Getopt /],
-);
-
-has remove => (
-  is          => 'ro',
-  isa         => 'Bool',
-  cmd_aliases => 'rm',
-  default => 0,
-  documentation => 'remove tags from the current repository',
-  traits      => [qw/ Getopt /],
-);
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'add|a' => 'assign tags to the current repository' => { default => 0 } ] ,
+    [ 'all|A' => 'print out tags of all repositories' => { default => 0 } ] ,
+    [ 'remove|rm' => 'remove tags from the current repository' => { default => 0 } ] ,
+  );
+}
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
@@ -43,13 +23,13 @@ sub _execute {
   return say "not in a got-monitored repo" unless $self->local_repo;
 
   return say "can't --add and --remove at the same time"
-    if $self->add and $self->remove;
+    if $self->opt->add and $self->opt->remove;
 
-  if( $self->add ) {
+  if( $self->opt->add ) {
     return $self->_add_tags( @$args );
   }
 
-  if( $self->remove ) {
+  if( $self->opt->remove ) {
     return $self->_remove_tags( @$args );
   }
 
@@ -71,12 +51,12 @@ sub _print_tags {
 
   my %tags = map { $_ => 1 } split ' ', $self->local_repo->tags;
 
-  if ( $self->all ) {
+  if ( $self->opt->all ) {
     $tags{$_} ||= 0 for map { split ' ', $_->tags } $self->all_repos
   }
 
   for my $t ( sort keys %tags ) {
-    say $t, ' *' x ( $self->all and $tags{$t} );
+    say $t, ' *' x ( $self->opt->all and $tags{$t} );
   }
 
 }
@@ -91,7 +71,6 @@ sub _remove_tags {
   say "tags removed";
 }
 
-__PACKAGE__->meta->make_immutable;
 1;
 
 __END__

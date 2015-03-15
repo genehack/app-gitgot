@@ -1,16 +1,20 @@
 package App::GitGot::Outputter::light;
 
 # ABSTRACT: Color scheme appropriate for dark terminal backgrounds
-use Mouse;
+use 5.014;
+use feature 'unicode_strings';
+
+use Types::Standard -types;
+
+use App::GitGot::Types;
+
+use Moo;
 extends 'App::GitGot::Outputter';
-use strict;
-use warnings;
-use 5.010;
 use namespace::autoclean;
 
 has color_error => (
   is      => 'ro' ,
-  isa     => 'Str' ,
+  isa     => Str ,
   default => 'bold red'
 );
 
@@ -19,21 +23,20 @@ has color_error => (
 
 has color_major_change => (
   is      => 'ro' ,
-  isa     => 'Str' ,
+  isa     => Str ,
   default => 'blue'
 );
 
 has color_minor_change => (
   is      => 'ro' ,
-  isa     => 'Str' ,
+  isa     => Str ,
   default => 'uncolored'
 );
 
 has color_warning => (
   is      => 'ro' ,
-  isa     => 'Str' ,
+  isa     => Str ,
   default => 'bold magenta'
 );
 
-__PACKAGE__->meta->make_immutable;
 1;
