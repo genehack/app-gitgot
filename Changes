@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.23      2015-03-15 01:50:42-07:00 America/Los_Angeles (TRIAL RELEASE)
+
   * Port to Moo (John Anderson)
   * Silence warning if PERL5LIB is not defined (Yanick Champoux)
   * Specify minimum version on List::AllUtils (John Anderson)
