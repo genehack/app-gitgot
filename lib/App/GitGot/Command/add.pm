@@ -28,6 +28,8 @@ sub options {
   );
 }
 
+sub _use_io_page { 0 }
+
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
