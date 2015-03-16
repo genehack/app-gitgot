@@ -22,10 +22,14 @@ my $dir = Test::BASE::create_tempdir_and_chdir();
 my $config = "$dir/gitgot";
 
 Test::BASE::build_fake_git_repo('alpha');
-test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
+my $result = test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
+$result->error
+  and diag("App::GitGot add -f $config -D failed: " . $result->error);
 chdir '..';
 
-test_app( 'App::GitGot' => [ 'move', '-f', $config, '--dest', "$dir/gamma", 'alpha' ] );
+my $result = test_app( 'App::GitGot' => [ 'move', '-f', $config, '--dest', "$dir/gamma", 'alpha' ] );
+$result->error
+  and diag("App::GitGot move -f $config --dest $dir/gamma alpha failed: " . $result->error);
 
 ok ! -d 'alpha', 'alpha is gone';
 ok -d 'gamma', '...and replaced by gamma';

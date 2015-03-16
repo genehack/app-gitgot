@@ -24,7 +24,9 @@ my $config = "$dir/gitgot";
 
 for my $repo ( qw/ alpha beta / ) {
     Test::BASE::build_fake_git_repo($repo);
-    test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
+    my $result = test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
+    $result->error
+      and diag("App::GitGot add -f $config -D failed: " . $result->error);
     open my $fh, '>', "$repo.txt";
     print $fh "test";
     chdir '..';

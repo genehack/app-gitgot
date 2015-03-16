@@ -80,7 +80,9 @@ subtest 'recursive behavior' => sub {
     }
     my $config = "$dir/gitgot";
 
-    test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D', '--recursive' ]);
+    my $result = test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D', '--recursive' ]);
+    $result->error
+      and diag("App::GitGot add -f $config -D --recursive failed: " . $result->error);
 
     is_deeply [ sort map { $_->{name} } @{ LoadFile($config) } ]  => [
         qw/ alpha beta /

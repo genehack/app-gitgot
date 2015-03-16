@@ -2,6 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Various testing improvements (John Anderson)
   * Turn off IO::Page in 'got all' (John Anderson)
   * Get rid of Term::Readline in favor of IO::Prompt::Simple (John Anderson)
   * Move towards using Path::Tiny for errything (John Anderson)

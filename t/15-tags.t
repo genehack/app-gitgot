@@ -22,11 +22,15 @@ my $dir = Test::BASE::create_tempdir_and_chdir();
 my $config = "$dir/gitgot";
 
 Test::BASE::build_fake_git_repo();
-test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
+my $result = test_app( 'App::GitGot' => [ 'add' , '-f' , $config  , '-D' ]);
+$result->error
+  and diag("App::GitGot add -f $config -D failed: " . $result->error);
 
-my $result = test_app( 'App::GitGot' => [ 'tag', '-f', $config, ] );
+{
+  my $result = test_app( 'App::GitGot' => [ 'tag', '-f', $config, ] );
 
-is $result->stdout => '', 'no tag to begin with';
+  is $result->stdout => '', 'no tag to begin with';
+}
 
 subtest 'add tags' => sub {
     my $result = test_app( 'App::GitGot' => [ 'tag', '-f', $config, '--add', qw/ perl git / ] );
