@@ -10,7 +10,6 @@ use IO::Prompt::Simple;
 use List::AllUtils           qw/ any pairmap /;
 use Path::Tiny;
 use PerlX::Maybe;
-use Term::ReadLine;
 use Types::Standard -types;
 
 use App::GitGot -command;

@@ -5,7 +5,7 @@ use 5.014;
 
 use Cwd;
 use Path::Tiny;
-use Term::ReadLine;
+use IO::Prompt::Simple;
 use Types::Standard -types;
 
 use App::GitGot -command;
@@ -41,10 +41,9 @@ sub _execute {
   my $tags;
 
   unless ( $self->opt->defaults ) {
-    my $term = Term::ReadLine->new('gitgot');
-    $name = $term->readline( 'Name: ', $name );
-    $path = $term->readline( 'Path: ', $path );
-    $tags = $term->readline( 'Tags: ', $tags );
+    $name = prompt( 'Name: ' , $name );
+    $path = prompt( 'Path: ' , $path );
+    $tags = prompt( 'Tags: ' , $tags );
   }
 
   my $new_entry = App::GitGot::Repo::Git->new({ entry => {
