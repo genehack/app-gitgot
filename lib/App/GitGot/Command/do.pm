@@ -2,7 +2,6 @@ package App::GitGot::Command::do;
 
 # ABSTRACT: run command in many repositories
 use 5.014;
-use feature 'unicode_strings';
 
 use Capture::Tiny qw/ capture_stdout /;
 use File::chdir;

@@ -2,7 +2,6 @@ package App::GitGot::Command::gc;
 
 # ABSTRACT: Run the 'gc' command to garbage collect in git repos
 use 5.014;
-use feature 'unicode_strings';
 
 use Data::Dumper;
 use Try::Tiny;

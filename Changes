@@ -2,6 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Clean up 'use' stanzas (John Anderson)
   * delete 'version' command [#48] (John Anderson)
 
 1.23      2015-03-15 01:50:42-07:00 America/Los_Angeles (TRIAL RELEASE)

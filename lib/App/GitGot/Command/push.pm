@@ -2,7 +2,6 @@ package App::GitGot::Command::push;
 
 # ABSTRACT: Push local changes to the default remote in git repos
 use 5.014;
-use feature 'unicode_strings';
 
 use Data::Dumper;
 use Try::Tiny;

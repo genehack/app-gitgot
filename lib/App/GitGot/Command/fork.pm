@@ -2,7 +2,6 @@ package App::GitGot::Command::fork;
 
 # ABSTRACT: fork a github repo
 use 5.014;
-use feature 'unicode_strings';
 
 use autodie;
 use Class::Load       'try_load_class';

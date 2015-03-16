@@ -2,7 +2,6 @@ package App::GitGot::Repo;
 
 # ABSTRACT: Base repository objects
 use 5.014;
-use feature 'unicode_strings';
 
 use List::AllUtils qw/ uniq /;
 use Types::Standard -types;

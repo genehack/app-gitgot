@@ -2,7 +2,6 @@ package App::GitGot::Command::lib;
 
 # ABSTRACT: Generate a lib listing off a .gotlib file
 use 5.014;
-use feature 'unicode_strings';
 
 use List::AllUtils qw/ uniq /;
 use Path::Tiny;

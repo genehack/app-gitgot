@@ -2,7 +2,6 @@ package App::GitGot::Command::that;
 
 # ABSTRACT: check if a given repository is managed
 use 5.014;
-use feature 'unicode_strings';
 
 use Moo;
 extends 'App::GitGot::Command';

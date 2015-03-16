@@ -2,7 +2,6 @@ package App::GitGot::Command::update;
 
 # ABSTRACT: update managed repositories
 use 5.014;
-use feature 'unicode_strings';
 
 use Moo;
 extends 'App::GitGot::Command';

@@ -2,7 +2,6 @@ package App::GitGot::Command::tag;
 
 # ABSTRACT: list/add/remove tags for the current repository
 use 5.014;
-use feature 'unicode_strings';
 
 use Moo;
 extends 'App::GitGot::Command';

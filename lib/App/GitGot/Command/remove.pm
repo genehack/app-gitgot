@@ -2,7 +2,6 @@ package App::GitGot::Command::remove;
 
 # ABSTRACT: remove a managed repository from your config
 use 5.014;
-use feature 'unicode_strings';
 
 use List::AllUtils qw/ any /;
 

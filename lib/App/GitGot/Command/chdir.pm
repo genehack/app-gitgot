@@ -2,7 +2,6 @@ package App::GitGot::Command::chdir;
 
 # ABSTRACT: open a subshell in a selected project
 use 5.014;
-use feature 'unicode_strings';
 
 use App::GitGot -command;
 

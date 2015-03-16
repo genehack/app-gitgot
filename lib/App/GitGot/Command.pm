@@ -2,7 +2,6 @@ package App::GitGot::Command;
 
 # ABSTRACT: Base class for App::GitGot commands
 use 5.014;
-use feature 'unicode_strings';
 
 use App::Cmd::Setup -command;
 use Cwd;

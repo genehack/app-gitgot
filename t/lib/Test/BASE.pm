@@ -1,9 +1,8 @@
 package Test::BASE;
 use parent 'Test::Class';
 
-use strict;
+use 5.014;                      # strict, unicode_strings
 use warnings;
-use 5.010;
 
 use Carp;
 use File::Slurp::Tiny  qw/ write_file /;

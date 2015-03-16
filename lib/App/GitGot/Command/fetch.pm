@@ -2,7 +2,6 @@ package App::GitGot::Command::fetch;
 
 # ABSTRACT: fetch remotes for managed repositories
 use 5.014;
-use feature 'unicode_strings';
 
 use App::GitGot -command;
 

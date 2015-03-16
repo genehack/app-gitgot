@@ -211,10 +211,8 @@ Currently git is the only supported VCS.
 
 =cut
 
-use strict;
+use 5.014;    # strict, unicode_strings
 use warnings;
-use 5.014;
-use feature 'unicode_strings';
 
 use App::GitGot;
 App::GitGot->run;

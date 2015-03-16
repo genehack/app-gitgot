@@ -2,7 +2,6 @@ package App::GitGot::Command::this;
 
 # ABSTRACT: check if the current repository is managed
 use 5.014;
-use feature 'unicode_strings';
 
 use Cwd;
 

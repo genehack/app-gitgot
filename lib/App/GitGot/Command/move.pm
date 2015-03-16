@@ -2,7 +2,6 @@ package App::GitGot::Command::move;
 
 # ABSTRACT: move repo to new location
 use 5.014;
-use feature 'unicode_strings';
 
 use Cwd;
 use File::Copy::Recursive qw/ dirmove /;

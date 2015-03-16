@@ -2,7 +2,6 @@ package App::GitGot::Command::update_status;
 
 # ABSTRACT: update managed repositories then display their status
 use 5.014;
-use feature 'unicode_strings';
 
 use Moo;
 extends 'App::GitGot::Command';

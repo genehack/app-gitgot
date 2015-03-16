@@ -2,7 +2,6 @@ package App::GitGot::Command::list;
 
 # ABSTRACT: list managed repositories
 use 5.014;
-use feature 'unicode_strings';
 
 use Class::Load       'try_load_class';
 

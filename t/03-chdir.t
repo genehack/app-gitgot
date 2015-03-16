@@ -1,8 +1,8 @@
 #! perl
 
-use autodie;
-use strict;
+use 5.014;                      # strict, unicode_strings
 use warnings;
+use autodie;
 
 use lib 't/lib';
 use Test::BASE;

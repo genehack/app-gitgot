@@ -1,7 +1,7 @@
 package Test::App::GitGot::Repo::Git;
 use parent 'Test::App::GitGot::Repo';
 
-use strict;
+use 5.014;                      # strict, unicode_strings
 use warnings;
 
 use Test::Exception;

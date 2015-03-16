@@ -2,7 +2,6 @@ package App::GitGot::Command::clone;
 
 # ABSTRACT: clone a remote repo and add it to your config
 use 5.014;
-use feature 'unicode_strings';
 
 use Cwd;
 use Path::Tiny;

@@ -2,7 +2,6 @@ package App::GitGot::Repositories;
 
 # ABSTRACT: Object holding a collection of repositories
 use 5.014;
-use feature 'unicode_strings';
 
 use Types::Standard -types;
 

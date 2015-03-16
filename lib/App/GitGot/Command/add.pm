@@ -2,7 +2,6 @@ package App::GitGot::Command::add;
 
 # ABSTRACT: add a new repo to your config
 use 5.014;
-use feature 'unicode_strings';
 
 use Class::Load              qw/ try_load_class /;
 use Config::INI::Reader;

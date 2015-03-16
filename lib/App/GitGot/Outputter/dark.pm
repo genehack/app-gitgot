@@ -2,7 +2,6 @@ package App::GitGot::Outputter::dark;
 
 # ABSTRACT: Color scheme appropriate for dark terminal backgrounds
 use 5.014;
-use feature 'unicode_strings';
 
 use Types::Standard -types;
 

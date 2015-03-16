@@ -2,7 +2,6 @@ package App::GitGot::Repo::Git;
 
 # ABSTRACT: Git repo objects
 use 5.014;
-use feature 'unicode_strings';
 
 use Git::Wrapper;
 use Test::MockObject;

@@ -2,7 +2,6 @@ package App::GitGot::Outputter;
 
 # ABSTRACT: Generic base class for outputting formatted messages.
 use 5.014;
-use feature 'unicode_strings';
 
 use Term::ANSIColor qw/ colored /;
 use Types::Standard -types;

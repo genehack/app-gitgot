@@ -1,10 +1,8 @@
 package App::GitGot::Types;
 
 # ABSTRACT: GitGot type library
-use strict;
+use 5.014;    ## strict, unicode_strings
 use warnings;
-use 5.014;
-use feature 'unicode_strings';
 
 use Type::Library
   -base ,

@@ -2,7 +2,6 @@ package App::GitGot::Command::mux;
 
 # ABSTRACT: open a tmux window for a selected project
 use 5.014;
-use feature 'unicode_strings';
 
 use App::GitGot -command;
 
