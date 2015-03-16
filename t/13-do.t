@@ -49,5 +49,5 @@ is $stderr    , '' , 'nothing on stderr';
 like $stdout  , qr/alpha: alpha\.txt/, 'output preprended with repo name';
 
 
-chdir(); ## let File::Temp clean up...
+chdir('/'); ## clean up temp files
 done_testing();

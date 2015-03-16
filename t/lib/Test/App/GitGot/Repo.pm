@@ -5,7 +5,7 @@ use 5.014;                      # strict, unicode_strings
 use warnings;
 
 use App::GitGot::Repo;
-use File::Temp         qw/ tempdir /;
+use Path::Tiny;
 use Test::Exception;
 use Test::More;
 
@@ -106,7 +106,7 @@ sub make_base_fixtures {
 }
 
 sub _make_git_repo {
-  my $dir = tempdir(CLEANUP=>1);
+  my $dir = Path::Tiny->tempdir(CLEANUP=>1);
   chdir( $dir );
   `git init && touch foo && git add foo && git commit -m"mu"`;
   return $dir;

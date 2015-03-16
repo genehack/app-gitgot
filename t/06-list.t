@@ -60,5 +60,5 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
   is $result->exit_code , 0  , 'exit with 0';
 }
 
-chdir(); ## let File::Temp clean up...
+chdir('/'); ## clean up temp files
 done_testing();

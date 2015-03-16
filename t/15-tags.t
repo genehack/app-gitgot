@@ -59,5 +59,5 @@ $result = test_app( 'App::GitGot' => [ 'tag', '-f', $config, '--add', qw/ perl g
 
 is $result->error => "$current_dir doesn't seem to be in a git directory\n", 'outside of repo';
 
-chdir(); ## let File::Temp clean up...
+chdir('/'); ## clean up temp files
 done_testing();

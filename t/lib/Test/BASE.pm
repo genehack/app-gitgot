@@ -5,12 +5,11 @@ use 5.014;                      # strict, unicode_strings
 use warnings;
 
 use Carp;
-use File::Slurp::Tiny  qw/ write_file /;
-use File::Temp         qw/ tempdir tempfile /;
+use Path::Tiny;
 use YAML               qw/ DumpFile /;
 
 INIT {
-  my( undef, $config ) = tempfile();
+  my $config = Path::Tiny->tempfile();
   $ENV{GIT_CONFIG} = $config;
   Test::Class->runtests;
 }
@@ -23,14 +22,14 @@ sub build_fake_git_repo {
 }
 
 sub create_github_identity_file {
-  write_file( '.github-identity' , <<EOF );
+  path( '.github-identity')->spew(<<EOF);
 user luser
 pass my-user-token-thingie
 EOF
 }
 
 sub create_tempdir_and_chdir {
-  my $dir = tempdir(CLEANUP=>1);
+  my $dir = Path::Tiny->tempdir(CLEANUP=>1);
   chdir $dir;
   return $dir;
 }
@@ -65,7 +64,7 @@ sub write_fake_config {
   build_fake_git_repo( 'bar.git' );
   chdir('..');
 
-  my( $fh , $name ) = tempfile();
+  my $name = Path::Tiny->tempfile();
   DumpFile( $name , $config );
 
   return( $name , $dir );

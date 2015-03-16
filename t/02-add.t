@@ -64,7 +64,7 @@ Test::BASE::build_fake_git_repo();
   is   $result->exit_code , 0, 'exit with 0';
 }
 
-chdir(); ## let File::Temp clean up...
+chdir('/'); ## clean up tempfiles
 
 subtest 'recursive behavior' => sub {
  SKIP:

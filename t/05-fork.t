@@ -86,5 +86,5 @@ Test::BASE::create_github_identity_file();
   is( $entry->[0]{path} , abs_path( "$dir/fake-git-repo" ) , 'expected path' );
 }
 
-chdir('/'); ## let File::Temp clean up...
+chdir('/'); ## clean up temp files
 done_testing();

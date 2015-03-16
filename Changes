@@ -2,6 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Move towards using Path::Tiny for errything (John Anderson)
   * Whitespace cleanup (John Anderson)
   * Clean up 'use' stanzas (John Anderson)
   * delete 'version' command [#48] (John Anderson)

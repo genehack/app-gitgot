@@ -48,5 +48,5 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
   is( $entry->[0]{path} , abs_path( "$dir/fake-git-repo" ) , 'expected path' );
 }
 
-chdir(); ## let File::Temp clean up...
+chdir('/'); ## clean up temp files
 done_testing();

@@ -35,5 +35,5 @@ $config = YAML::LoadFile( $config );
 is $config->[0]->{name} => 'alpha', 'right repo';
 like $config->[0]->{path} => qr#.*/gamma#, 'moved to its new location';
 
-chdir(); ## let File::Temp clean up...
+chdir('/'); ## clean up temp files
 done_testing();

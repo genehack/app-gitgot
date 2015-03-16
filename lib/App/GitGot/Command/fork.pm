@@ -6,7 +6,7 @@ use 5.014;
 use autodie;
 use Class::Load       'try_load_class';
 use Cwd;
-use File::Slurp::Tiny 'read_lines';
+use Path::Tiny;
 use Types::Standard -types;
 
 use App::GitGot -command;
@@ -59,7 +59,7 @@ sub _parse_github_identity {
   -e $file or
     say STDERR "ERROR: Can't find $ENV{HOME}/.github-identity" and exit(1);
 
-  my @lines = read_lines( $file );
+  my @lines = path( $file )->lines;
 
   my %config;
   foreach ( @lines ) {

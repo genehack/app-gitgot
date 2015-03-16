@@ -32,12 +32,11 @@ sub _execute {
   my $cwd = getcwd
     or( say STDERR "ERROR: Couldn't determine path" and exit(1) );
 
-
   my $name = path( $repo )->basename;
   $name =~ s/.git$//;
 
   $path //= "$cwd/$name";
-  $path = File::Spec->rel2abs( $path );
+  $path = path( $path )->absolute;
 
   my $tags;
 
