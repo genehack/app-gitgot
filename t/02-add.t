@@ -38,7 +38,7 @@ Test::BASE::build_fake_git_repo();
         Add \s repository \s at \s '.*?'\? \s+ \(y\/n\) \s \[y\]: \s y \s+
         Name\? \s+ \[foo.git\]: \s+ foo.git \s+
         Tracking \s remote\? \s+  : \s+
-        Tags\? \s+  \[\]: 
+        Tags\? \s+  \[\]:
    /x, 'interaction auto-filled';
 
   my $err = $result->stderr;

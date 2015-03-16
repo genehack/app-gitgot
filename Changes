@@ -2,6 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Whitespace cleanup (John Anderson)
   * Clean up 'use' stanzas (John Anderson)
   * delete 'version' command [#48] (John Anderson)
 

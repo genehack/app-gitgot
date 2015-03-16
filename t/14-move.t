@@ -33,7 +33,7 @@ ok -d 'gamma', '...and replaced by gamma';
 $config = YAML::LoadFile( $config );
 
 is $config->[0]->{name} => 'alpha', 'right repo';
-like $config->[0]->{path} => qr#.*/gamma#, 'moved to its new location'; 
+like $config->[0]->{path} => qr#.*/gamma#, 'moved to its new location';
 
 chdir(); ## let File::Temp clean up...
 done_testing();

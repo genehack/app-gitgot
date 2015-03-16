@@ -56,6 +56,7 @@ has path => (
   is       => 'ro',
   isa      => Str,
   required => 1 ,
+  coerce   => sub { $_[0]->isa('Path::Tiny') ? "$_[0]" : $_[0] } ,
 );
 
 =attr repo
