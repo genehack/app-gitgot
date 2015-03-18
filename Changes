@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Maybe fix failing tests?
+
 1.24      2015-03-16 16:56:55-07:00 America/Los_Angeles
 
   * Update copyright to 2015 (John Anderson)
