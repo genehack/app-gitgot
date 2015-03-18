@@ -17,8 +17,10 @@ INIT {
 
 sub build_fake_git_repo {
   my $repo = shift || 'foo.git';
-  `mkdir $repo && cd $repo && git init && touch foo && git add foo && git commit -m"mu"`;
-  `cd $repo && touch bar && git add bar && git commit -m"mu2"`;
+  `mkdir $repo && cd $repo && git init && git config user.name "Boo" && git config user.email "radley\@example.com"`;
+  foreach my $x ( qw/ foo bar / ) {
+    `cd $repo && touch $x && git add $x && git commit -m"$x"`;
+  }
   chdir $repo;
 }
 
