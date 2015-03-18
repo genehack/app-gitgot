@@ -5,11 +5,12 @@ use 5.014;                      # strict, unicode_strings
 use warnings;
 
 use Carp;
+use File::Temp         qw/ tempdir tempfile /;
 use Path::Tiny;
 use YAML               qw/ DumpFile /;
 
 INIT {
-  my $config = Path::Tiny->tempfile();
+  my $config = tempfile(UNLINK => 1);
   $ENV{GIT_CONFIG} = $config;
   Test::Class->runtests;
 }
@@ -29,7 +30,7 @@ EOF
 }
 
 sub create_tempdir_and_chdir {
-  my $dir = Path::Tiny->tempdir(CLEANUP=>1);
+  my $dir = tempdir(CLEANUP=>1);
   chdir $dir;
   return $dir;
 }
@@ -64,7 +65,7 @@ sub write_fake_config {
   build_fake_git_repo( 'bar.git' );
   chdir('..');
 
-  my $name = Path::Tiny->tempfile();
+  my( undef , $name ) = tempfile(UNLINK=>1);
   DumpFile( $name , $config );
 
   return( $name , $dir );
