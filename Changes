@@ -2,7 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
-  * Maybe fix failing tests?
+  * Fix failing tests. (Thanks Travis CI!) (John Anderson)
 
 1.24      2015-03-16 16:56:55-07:00 America/Los_Angeles
 
