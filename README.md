@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.24
+version 1.24 [![CPAN version](https://badge.fury.io/pl/App-GitGot.svg)](http://badge.fury.io/pl/App-GitGot)
 
 # SYNOPSIS
 
