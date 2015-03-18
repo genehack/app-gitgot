@@ -4,7 +4,7 @@ got - A tool to make it easier to manage multiple code repositories using differ
 
 # VERSION
 
-version 1.24 [![CPAN version](https://badge.fury.io/pl/App-GitGot.svg)](http://badge.fury.io/pl/App-GitGot)
+version 1.25 [![CPAN version](https://badge.fury.io/pl/App-GitGot.svg)](http://badge.fury.io/pl/App-GitGot)
 [![Build Status](https://travis-ci.org/genehack/app-gitgot.svg?branch=master)](https://travis-ci.org/genehack/app-gitgot)
 [![Coverage Status](https://coveralls.io/repos/genehack/app-gitgot/badge.svg?branch=master)](https://coveralls.io/r/genehack/app-gitgot?branch=master)
 # SYNOPSIS

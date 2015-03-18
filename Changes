@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.25      2015-03-17 20:51:55-07:00 America/Los_Angeles
+
   * Fix failing tests. (Thanks Travis CI!) (John Anderson)
 
 1.24      2015-03-16 16:56:55-07:00 America/Los_Angeles
