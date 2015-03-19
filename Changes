@@ -2,6 +2,11 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.26      2015-03-18 22:04:39-07:00 America/Los_Angeles (TRIAL RELEASE)
+
+  * Lock Moo to version 2 or greater (John Anderson)
+  * Report Git version being used in test suite (John Anderson)
+
 1.25      2015-03-17 20:51:55-07:00 America/Los_Angeles
 
   * Fix failing tests. (Thanks Travis CI!) (John Anderson)
