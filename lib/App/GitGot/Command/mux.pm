@@ -3,6 +3,8 @@ package App::GitGot::Command::mux;
 # ABSTRACT: open a tmux window for a selected project
 use 5.014;
 
+use IO::Prompt::Simple;
+
 use App::GitGot -command;
 
 use Moo;
@@ -19,12 +21,20 @@ sub options {
   );
 }
 
+sub _use_io_page { 0 }
+
 sub _execute {
   my( $self, $opt, $args ) = @_;
 
   my @repos = $self->opt->dirty ? $self->_get_dirty_repos() : $self->active_repos();
 
   my $target = $self->opt->session ? 'session' : 'window';
+
+  if ( @repos >= 25 ) {
+    my $repo_count = scalar @repos;
+    return unless
+      prompt( "\nYou're about to open $repo_count ${target}s - you sure about that? ", { yn => 1, default => 'n' } );
+  }
 
  REPO: foreach my $repo ( @repos ) {
     # is it already opened?
