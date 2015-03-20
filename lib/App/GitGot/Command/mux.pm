@@ -15,12 +15,16 @@ sub options {
   my( $class , $app ) = @_;
   return (
     [ 'dirty|D'   => 'open session or window for all dirty repos' ] ,
+    [ 'exec|e=s'  => 'pass a command to the `tmux new-window` command (not valid in combination with -s option)'] ,
     [ 'session|s' => 'use tmux-sessions (default: tmux windows)' ] ,
   );
 }
 
 sub _execute {
   my( $self, $opt, $args ) = @_;
+
+  die "-e and -s are mutually exclusive"
+    if $self->opt->exec and $self->opt->session;
 
   my @repos = $self->opt->dirty ? $self->_get_dirty_repos() : $self->active_repos();
 
@@ -48,7 +52,9 @@ sub _execute {
       system 'tmux', 'new-session', '-d', '-s', $repo->name;
       system 'tmux', 'switch-client', '-t' => $repo->name;}
     else {
-      system 'tmux', 'new-window', '-n', $repo->name;
+      my @args = (qw/ tmux new-window -n / , $repo->name );
+      push( @args , $self->opt->exec ) if $self->opt->exec;
+      system @args;
     }
   }
 }
