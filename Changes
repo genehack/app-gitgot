@@ -3,6 +3,7 @@ Changes file for {{$dist->name}}
 {{$NEXT}}
 
   * Add some safety code to prevent mux from opening errything (John Anderson)
+  * Add '-e' flag to 'tmux' subcommand [#41] (John Anderson)
 
 1.26      2015-03-18 22:04:39-07:00 America/Los_Angeles (TRIAL RELEASE)
 
