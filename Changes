@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.27      2015-03-22 19:46:53-07:00 America/Los_Angeles (TRIAL RELEASE)
+
   * Add some safety code to prevent mux from opening errything (John Anderson)
   * Add '-e' flag to 'tmux' subcommand [#41] (John Anderson)
 
