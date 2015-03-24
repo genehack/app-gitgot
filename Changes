@@ -2,6 +2,10 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.28      2015-03-23 22:32:27-07:00 America/Los_Angeles (TRIAL RELEASE)
+
+  * Tweak missing directory error detection regex (John Anderson)
+
 1.27      2015-03-22 19:46:53-07:00 America/Los_Angeles (TRIAL RELEASE)
 
   * Add some safety code to prevent mux from opening errything (John Anderson)
