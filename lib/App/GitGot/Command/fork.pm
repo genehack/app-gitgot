@@ -37,17 +37,23 @@ sub _execute {
 
   my %gh_args = _parse_github_identity();
 
+  say "Forking '$owner/$repo_name'..." unless $self->quiet;
+
   my $resp = Net::GitHub->new( %gh_args )->repos->create_fork( $owner , $repo_name );
+
+  my $path = cwd() . "/$repo_name";
 
   my $new_repo = App::GitGot::Repo::Git->new({ entry => {
     name => $repo_name ,
-    path => cwd() . "/$repo_name" ,
+    path => $path ,
     repo => $resp->{ssh_url} ,
     type => 'git' ,
   }});
 
-  $new_repo->clone( $resp->{ssh_url} )
-    unless $self->opt->noclone;
+  if ( ! $self->opt->noclone ) {
+    say "Cloning into $path" unless $self->quiet;
+    $new_repo->clone( $resp->{ssh_url} );
+  }
 
   $self->add_repo( $new_repo );
   $self->write_config;

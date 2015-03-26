@@ -71,7 +71,7 @@ Test::BASE::create_github_identity_file();
 }
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config , '--noclone' ,
+  my $result = test_app( 'App::GitGot' => [ 'fork' , '-f' , $config , '--noclone' , '-q' ,
                                             'http://github.com/genehack/fake-git-repo.git' ]);
 
   is $result->stdout    , '' , 'no output';
