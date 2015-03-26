@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.29      2015-03-26 11:58:24-07:00 America/Los_Angeles (TRIAL RELEASE)
+
   * Docs for 'clone' and 'fork'. (John Anderson)
   * Be a bit more lenient in parsing GitHub URLs (John Anderson)
   * Make 'fork' more verbose [#51] (John Anderson)
