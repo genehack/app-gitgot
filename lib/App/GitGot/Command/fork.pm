@@ -99,4 +99,15 @@ sub _parse_github_url {
 
 1;
 
-## FIXME docs
+__END__
+
+=head1 SYNOPSIS
+
+    # fork repo on GitHub, then clone repository and add to got config
+    $ got fork github.com/owner/repo
+
+    # fork repo on GitHub, add to got config, but do _not_ clone locally
+    $ got fork -n github.com/owner/repo
+    $ got fork --noclone github.com/owner/repo
+
+=cut

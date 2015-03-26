@@ -65,4 +65,16 @@ sub _execute {
 
 1;
 
-### FIXME docs
+__END__
+
+=head1 SYNOPSIS
+
+    # clone repository and add to got config
+    $ got clone <git repo url>
+    # prompts for name, path, tags, etc.
+
+    # clone repository and add to got config
+    # using defaults for all prompts
+    $ got clone -D <git repo url>
+
+=cut

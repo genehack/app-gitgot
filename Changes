@@ -2,6 +2,7 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Docs for 'clone' and 'fork'. (John Anderson)
   * Be a bit more lenient in parsing GitHub URLs (John Anderson)
   * Make 'fork' more verbose [#51] (John Anderson)
   * Tweak 'clone' to be a bit better (John Anderson)

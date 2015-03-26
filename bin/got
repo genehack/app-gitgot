@@ -79,6 +79,13 @@ repositories.
     got tmux foo
     # N.b., 'tmux' will reuse an existing window if one is open
 
+    # checkout a local working copy of a repo and add it to your list of repos.
+    # will prompt for info on what to name repo, tags, etc.
+    got clone <git/http/ssh url>
+
+    # As above, but accept defaults for all options without prompting
+    got clone -D <git/http/ssh url>
+
     # fork a github repo, add it to your list of repos, and check it out in
     # the current working directory
     got fork https://github.com/somebodies/repo_name
