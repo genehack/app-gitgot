@@ -90,8 +90,9 @@ sub _parse_github_identity {
 sub _parse_github_url {
   my $url = shift;
 
-  my( $owner , $repo ) = $url =~ m|/github.com/([^/]+)/([^/]+).git$|
-    or say STDERR "ERROR: Can't parse '$url'" and exit(1);
+  my( $owner , $repo ) = $url =~ m|/github.com/([^/]+)/([^/]+?)(?:\.git)?$|
+    or say STDERR "ERROR: Can't parse '$url'.\nURL needs to be of the form 'github.com/OWNER/REPO'.\n"
+    and exit(1);
 
   return( $owner , $repo );
 }
