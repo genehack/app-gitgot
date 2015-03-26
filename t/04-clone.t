@@ -33,7 +33,7 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
 }
 
 {
-  my $result = test_app( 'App::GitGot' => [ 'clone' , '-f' , $config , '-D' ,
+  my $result = test_app( 'App::GitGot' => [ 'clone' , '-f' , $config , '-Dq' ,
                                             'http://genehack.org/fake-git-repo.git' ]);
 
   is $result->stdout    , '' , 'no output';

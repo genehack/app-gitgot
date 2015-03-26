@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Tweak 'clone' to be a bit better (John Anderson)
+
 1.28      2015-03-23 22:32:27-07:00 America/Los_Angeles (TRIAL RELEASE)
 
   * Tweak missing directory error detection regex (John Anderson)

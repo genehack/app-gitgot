@@ -18,9 +18,11 @@ use namespace::autoclean;
 sub options {
   my( $class , $app ) = @_;
   return (
-    [ 'defaults|D' => 'FIXME' ] ,
+    [ 'defaults|D' => 'use the default choices for all prompts' ] ,
   );
 }
+
+sub _use_io_page { 0 }
 
 sub _execute {
   my ( $self, $opt, $args ) = @_;
@@ -54,6 +56,7 @@ sub _execute {
   }});
   $new_entry->{tags} = $tags if $tags;
 
+  say "Cloning into '$path'..." unless $self->quiet;
   $new_entry->clone( $repo , $path );
 
   $self->add_repo( $new_entry );
