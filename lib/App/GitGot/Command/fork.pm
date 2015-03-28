@@ -19,7 +19,8 @@ use namespace::autoclean;
 sub options {
   my( $class , $app ) = @_;
   return (
-    [ 'noclone|n' => 'FIXME' ] ,
+    [ 'noclone|n'     => 'If set, do not check out a local working copy of the forked repo' ] ,
+    [ 'noremoteadd|N' => 'If set, do not add the forked repo as the "upstream" repo in the new working copy' ] ,
   );
 }
 
@@ -53,6 +54,12 @@ sub _execute {
   if ( ! $self->opt->noclone ) {
     say "Cloning into $path" unless $self->quiet;
     $new_repo->clone( $resp->{ssh_url} );
+
+    if ( ! $self->opt->noremoteadd ) {
+      say "Adding '$github_url' as remote 'upstream'..."
+        unless $self->quiet;
+      $new_repo->remote( add => upstream => $github_url );
+    }
   }
 
   $self->add_repo( $new_repo );
