@@ -4,6 +4,7 @@ Changes file for {{$dist->name}}
 
   * Make 'got fork' add the forked repo as remote 'upstream' unless
     -N/--noremoteadd option is given. (John Anderson)
+  * See also changes for dev releases v1.25 through v1.29
 
 1.29      2015-03-26 11:58:24-07:00 America/Los_Angeles (TRIAL RELEASE)
 
