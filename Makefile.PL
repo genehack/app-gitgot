@@ -33,7 +33,7 @@ my %WriteMakefileArgs = (
     "IO::Prompt::Simple" => 0,
     "List::AllUtils" => "0.09",
     "Moo" => "2.000000",
-    "MooX::HandlesVia" => 0,
+    "MooX::HandlesVia" => "0.001008",
     "Path::Tiny" => 0,
     "PerlX::Maybe" => 0,
     "Term::ANSIColor" => 0,
@@ -60,7 +60,7 @@ my %WriteMakefileArgs = (
     "lib" => 0,
     "parent" => 0
   },
-  "VERSION" => "1.30",
+  "VERSION" => "1.31",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -84,7 +84,7 @@ my %FallbackPrereqs = (
   "IO::Prompt::Simple" => 0,
   "List::AllUtils" => "0.09",
   "Moo" => "2.000000",
-  "MooX::HandlesVia" => 0,
+  "MooX::HandlesVia" => "0.001008",
   "Path::Tiny" => 0,
   "PerlX::Maybe" => 0,
   "Term::ANSIColor" => 0,
