@@ -2,6 +2,11 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Tweak some test code to maybe not blow up on Windows (John
+    Anderson)
+  * Set a minimum version of MooX::HandlesVia to avoid test failures
+    (John Anderson)
+
 1.30      2015-03-27 21:25:15-07:00 America/Los_Angeles
 
   * Make 'got fork' add the forked repo as remote 'upstream' unless
