@@ -5,6 +5,7 @@ use 5.014;                      # strict, unicode_strings
 use warnings;
 
 use Carp;
+use File::chdir;
 use File::Temp         qw/ tempdir tempfile /;
 use Path::Tiny;
 use YAML               qw/ DumpFile /;
@@ -17,9 +18,15 @@ INIT {
 
 sub build_fake_git_repo {
   my $repo = shift || 'foo.git';
-  `mkdir $repo && cd $repo && git init && git config user.name "Boo" && git config user.email "radley\@example.com"`;
+  path($repo)->mkpath;
+  $CWD = $repo;
+  `git init`;
+  `git config user.name "Boo"`;
+  `git config user.email "radley\@example.com"`;
   foreach my $x ( qw/ foo bar / ) {
-    `cd $repo && touch $x && git add $x && git commit -m"$x"`;
+    path($x)->touch;
+    `git add $x`;
+    `git commit -m"$x"`;
   }
   chdir $repo;
 }
