@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Replace ENV{HOME} with File::HomeDir everywhere
+
 1.31      2015-04-05 21:42:56-07:00 America/Los_Angeles (TRIAL RELEASE)
 
   * Tweak some test code to maybe not blow up on Windows (John

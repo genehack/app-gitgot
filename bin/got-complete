@@ -5,7 +5,8 @@
 use 5.014;     ## strict, unicode_strings
 use warnings;
 
-use YAML qw/ LoadFile /;
+use File::HomeDir;
+use YAML           qw/ LoadFile /;
 
 sub get_command_line {
   my $comp = substr $ENV{'COMP_LINE'}, 0, $ENV{'COMP_POINT'};
@@ -15,8 +16,10 @@ sub get_command_line {
 sub get_project_suggestion {
   my $word = shift;
 
-  my $config = LoadFile( $ENV{HOME} . '/'. '.gitgot' )
-    or die "~/.gitgot not found\n";
+  my $configfile = path( File::HomeDir->my_home() , '.gitgot' );
+
+  my $config = LoadFile( $configfile )
+    or die "$configfile not found\n";
 
   return grep { 0 == index $_, $word }
     map  { $_->{name} }

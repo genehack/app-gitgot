@@ -6,6 +6,7 @@ use 5.014;
 use autodie;
 use Class::Load       'try_load_class';
 use Cwd;
+use File::HomeDir;
 use Path::Tiny;
 use Types::Standard -types;
 
@@ -67,12 +68,12 @@ sub _execute {
 }
 
 sub _parse_github_identity {
-  my $file = "$ENV{HOME}/.github-identity";
+  my $file = path( File::HomeDir->my_home() , '.github-identity' );
 
-  -e $file or
-    say STDERR "ERROR: Can't find $ENV{HOME}/.github-identity" and exit(1);
+  $file->exists or
+    say STDERR "ERROR: Can't find $file" and exit(1);
 
-  my @lines = path( $file )->lines;
+  my @lines = $file->lines;
 
   my %config;
   foreach ( @lines ) {
