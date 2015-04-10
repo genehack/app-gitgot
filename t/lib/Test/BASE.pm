@@ -41,7 +41,7 @@ EOF
 sub create_tempdir_and_chdir {
   my $dir = tempdir(CLEANUP=>1);
   chdir $dir;
-  return $dir;
+  return path($dir)->realpath;
 }
 
 sub write_fake_config {
