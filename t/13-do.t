@@ -32,7 +32,9 @@ for my $repo ( qw/ alpha beta / ) {
     chdir '..';
 }
 
-@ARGV = ( qw/ do -f /, $config, qw/ --command ls --all / );
+my $cmd = $^O eq 'MSWin32' ? 'dir' : 'ls';
+
+@ARGV = ( qw/ do -f /, $config, '--command' , $cmd , '--all' );
 
 my( $stdout, $stderr, $exit ) = capture {
     App::GitGot->run;
