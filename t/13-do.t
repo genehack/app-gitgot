@@ -44,7 +44,7 @@ like $stdout  , qr/##.*alpha.*alpha\.txt/s, 'alpha is listed';
 like $stdout  , qr/##.*beta.*beta\.txt/s, 'beta is listed';
 is $stderr    , '' , 'nothing on stderr';
 
-@ARGV = ( qw/ do -f /, $config, qw/ --with_repo --command ls --all / );
+@ARGV = ( qw/ do -f /, $config, '--with_repo' , $cmd , '--all' );
 
 ( $stdout, $stderr, $exit ) = capture {
     App::GitGot->run;
