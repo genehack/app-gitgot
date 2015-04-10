@@ -11,7 +11,6 @@ use Test::More;
 
 use App::Cmd::Tester;
 use App::GitGot;
-use Cwd               qw/ abs_path /;
 use Path::Tiny;
 use YAML              qw/ LoadFile /;
 
@@ -44,9 +43,9 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
   file_exists_ok $config , 'now config exists';
 
   my $entry = LoadFile( $config );
-  is( $entry->[0]{name} , 'fake-git-repo'                  , 'expected name' );
-  is( $entry->[0]{type} , 'git'                            , 'expected type' );
-  is( $entry->[0]{path} , abs_path( "$dir/fake-git-repo" ) , 'expected path' );
+  is( $entry->[0]{name} , 'fake-git-repo'              , 'expected name' );
+  is( $entry->[0]{type} , 'git'                        , 'expected type' );
+  is( $entry->[0]{path} , path( "$dir/fake-git-repo" ) , 'expected path' );
 }
 
 chdir('/'); ## clean up temp files
