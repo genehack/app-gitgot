@@ -12,10 +12,11 @@ use Test::More;
 use App::Cmd::Tester;
 use App::GitGot;
 use Cwd               qw/ abs_path /;
+use Path::Tiny;
 use YAML              qw/ LoadFile /;
 
 my $dir    = Test::BASE::create_tempdir_and_chdir();
-my $config = abs_path( "$dir/gitgot" );
+my $config = path( "$dir/gitgot" );
 file_not_exists_ok $config , 'config does not exist';
 
 $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
