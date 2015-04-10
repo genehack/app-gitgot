@@ -50,7 +50,7 @@ is $stderr    , '' , 'nothing on stderr';
     App::GitGot->run;
 };
 
-like $stdout  , qr/alpha: alpha\.txt/, 'output preprended with repo name';
+like $stdout  , qr/alpha: .* alpha\.txt/, 'output preprended with repo name';
 
 
 chdir('/'); ## clean up temp files
