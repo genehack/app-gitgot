@@ -2,6 +2,9 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * No changes from last trial release.
+  * No new features since last stable release.
+
 1.32      2015-04-10 11:23:50-07:00 America/Los_Angeles (TRIAL RELEASE)
 
   * Update a number of tests to pass under Windows
