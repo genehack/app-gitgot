@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.330     2015-04-14 21:27:19-07:00 America/Los_Angeles
+
   * No changes from last trial release.
   * No new features since last stable release.
 
