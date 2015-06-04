@@ -3,7 +3,6 @@ package App::GitGot::Command::lib;
 # ABSTRACT: Generate a lib listing off a .gotlib file
 use 5.014;
 
-use List::AllUtils qw/ uniq /;
 use Path::Tiny;
 use Types::Standard -types;
 
@@ -11,7 +10,7 @@ use App::GitGot -command;
 
 use Moo;
 extends 'App::GitGot::Command';
-use namespace::autoclean;
+use namespace::autoclean -also => ['_uniq'];
 
 sub options {
   my( $class , $app ) = @_;
@@ -28,7 +27,7 @@ sub _execute {
   my @libs = map { $self->_expand_lib($_) } $self->_raw_libs( $args );
 
   no warnings; # $ENV{$self->opt->libvar} can be undefined
-  say join $self->opt->separator, uniq @libs, split ':', $ENV{$self->opt->libvar};
+  say join $self->opt->separator, _uniq(@libs, split ':', $ENV{$self->opt->libvar});
 
 }
 
@@ -58,6 +57,11 @@ sub _raw_libs {
     grep { $_ }
     map { s/^\s+|#.*|\s+$//gr }
     ( -f $file ) ? $file->lines({ chomp => 1 }) : ();
+}
+
+sub _uniq(@) {
+    my (%seen, $k, $seen_undef);
+    grep { defined $_ ? not $seen{ $k = $_ }++ : not $seen_undef++ } @_;
 }
 
 1;

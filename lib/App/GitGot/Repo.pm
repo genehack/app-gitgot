@@ -3,13 +3,12 @@ package App::GitGot::Repo;
 # ABSTRACT: Base repository objects
 use 5.014;
 
-use List::AllUtils qw/ uniq /;
 use Types::Standard -types;
 
 use App::GitGot::Types;
 
 use Moo;
-use namespace::autoclean;
+use namespace::autoclean -also => ['_uniq'];
 
 =attr label
 
@@ -131,7 +130,7 @@ Given a list of tags, add them to the current repo object.
 sub add_tags {
   my( $self, @tags ) = @_;
 
-  $self->tags( join ' ', uniq sort @tags, split ' ', $self->tags );
+  $self->tags( join ' ', _uniq(sort @tags, split ' ', $self->tags ));
 }
 
 =method in_writable_format
@@ -170,6 +169,11 @@ sub remove_tags {
   my %verboten = map { $_ => 1 } @tags;
 
   $self->tags( join ' ', grep { !$verboten{$_} } split ' ', $self->tags );
+}
+
+sub _uniq(@) {
+    my (%seen, $k, $seen_undef);
+    grep { defined $_ ? not $seen{ $k = $_ }++ : not $seen_undef++ } @_;
 }
 
 =for Pod::Coverage BUILDARGS
