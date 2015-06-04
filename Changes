@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * switch from using List::AllUtils to List::Util (Karen Etheridge)
+
 1.330     2015-04-14 21:27:19-07:00 America/Los_Angeles
 
   * No changes from last trial release.
