@@ -3,7 +3,7 @@ package App::GitGot::Command::remove;
 # ABSTRACT: remove a managed repository from your config
 use 5.014;
 
-use List::AllUtils qw/ any /;
+use List::Util 1.33 qw/ any /;
 
 use App::GitGot -command;
 
