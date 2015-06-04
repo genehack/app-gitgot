@@ -3,7 +3,7 @@ package App::GitGot::Repo;
 # ABSTRACT: Base repository objects
 use 5.014;
 
-use List::AllUtils qw/ uniq /;
+use List::Util qw/ uniq /;
 use Types::Standard -types;
 
 use App::GitGot::Types;
