@@ -6,6 +6,7 @@ use 5.014;     ## strict, unicode_strings
 use warnings;
 
 use File::HomeDir;
+use Path::Tiny;
 use YAML           qw/ LoadFile /;
 
 sub get_command_line {
