@@ -405,6 +405,9 @@ sub _git_status {
 
   $msg .= $self->_run_git_cherry( $entry )
     if $entry->current_remote_branch;
+  if ($self->opt->show_branch and defined $entry->current_branch) {
+      $msg .= '[' . $entry->current_branch . ']';
+  }
 
   return ( $self->verbose ) ? "$msg$verbose_msg" : $msg;
 }
