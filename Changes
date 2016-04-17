@@ -3,6 +3,7 @@ Changes file for {{$dist->name}}
 {{$NEXT}}
 
   * Fix Path::Tiny dep in got-complete. Thanks @perlpunk [#58]
+  * Add `--show-branch` option for `got status` [@perlpunk] [#59]
 
 1.331     2016-01-03 20:30:14-08:00 America/Los_Angeles (TRIAL RELEASE)
 
