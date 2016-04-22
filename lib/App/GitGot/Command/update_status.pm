@@ -9,6 +9,13 @@ use namespace::autoclean;
 
 sub command_names { qw/ update_status upst / }
 
+sub options {
+  my( $class , $app ) = @_;
+  return (
+    [ 'show-branch' => 'show which branch' => { default => 0 } ] ,
+  );
+}
+
 sub _execute {
   my ( $self, $opt, $args ) = @_;
 
