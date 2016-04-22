@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.333     2016-04-22 09:47:11-07:00 America/Los_Angeles
+
   * Add `--show-branch` option to `update-status` too
 
 1.332     2016-04-17 13:53:37-04:00 America/New_York
