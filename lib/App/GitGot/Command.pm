@@ -240,7 +240,7 @@ sub prompt_yn {
 
 =method search_repos
 
-Returns a L<App::GotGot::Repositories> object containing all repos managed by
+Returns a L<App::GitGot::Repositories> object containing all repos managed by
 Got.
 
 =cut
