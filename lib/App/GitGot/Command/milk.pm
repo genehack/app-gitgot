@@ -13,17 +13,9 @@ sub command_names { qw/ milk / }
 
 sub _execute {
 	# Doesn't use 'cowsay' in case it's not installed
-	
-print " 
-__________
-< got milk? >
- ----------
-        \\  ^__^
-         \\ (oo)\\________
-           (__)\\        )/
-                ||----w-|
-                ||     ||
-	";
+	print "__________\n< got milk? >\n ----------\n        \\  ^__^\n         \\ (oo)\\________\n           (__)\\        )/\n                ||----w-|\n                ||     ||\n";
 }
 
 1;
+
+## FIXME docs
