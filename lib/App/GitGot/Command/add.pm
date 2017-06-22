@@ -7,7 +7,7 @@ use Class::Load              qw/ try_load_class /;
 use Config::INI::Reader;
 use Cwd;
 use IO::Prompt::Simple;
-use List::AllUtils           qw/ any pairmap /;
+use List::Util               qw/ any pairmap /;
 use Path::Tiny;
 use PerlX::Maybe;
 use Types::Standard -types;

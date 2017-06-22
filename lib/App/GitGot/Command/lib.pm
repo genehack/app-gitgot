@@ -3,7 +3,7 @@ package App::GitGot::Command::lib;
 # ABSTRACT: Generate a lib listing off a .gotlib file
 use 5.014;
 
-use List::AllUtils qw/ uniq /;
+use List::Util qw/ uniq /;
 use Path::Tiny;
 use Types::Standard -types;
 
