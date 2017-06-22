@@ -20,6 +20,7 @@ has '_wrapper' => (
   is         => 'lazy' ,
   isa        => GitWrapper ,
   handles    => [ qw/
+                      checkout
                       cherry
                       clone
                       config
@@ -44,6 +45,7 @@ sub _build__wrapper {
                              remote symbolic_ref / ) {
       $mock->mock( $method => sub { return( '1' )});
     }
+    $mock->mock( 'checkout' => sub { } );
     $mock->mock( 'status' => sub { package
                                      MyFake; sub get { return () }; return bless {} , 'MyFake' } );
     $mock->mock( 'config' => sub { 0 });
