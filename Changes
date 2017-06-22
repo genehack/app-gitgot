@@ -3,6 +3,8 @@ Changes file for {{$dist->name}}
 {{$NEXT}}
   * switch from using List::AllUtils to List::Util (Karen Etheridge)
 
+  * Add `got milk` subcommand (Lucy Wyman)
+
 1.333     2016-04-22 09:47:11-07:00 America/Los_Angeles
 
   * Add `--show-branch` option to `update-status` too
