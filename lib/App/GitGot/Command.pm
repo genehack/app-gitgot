@@ -6,7 +6,7 @@ use 5.014;
 use App::Cmd::Setup -command;
 use Cwd;
 use File::HomeDir;
-use List::AllUtils          qw/ max first /;
+use List::Util              qw/ max first /;
 use Path::Tiny;
 use Try::Tiny;
 use Types::Standard -types;
