@@ -1,6 +1,8 @@
 Changes file for {{$dist->name}}
 
 {{$NEXT}}
+
+1.334     2017-11-05 11:55:34-08:00 America/Los_Angeles
   * switch from using List::AllUtils to List::Util (Karen Etheridge)
 
   * Add `got milk` subcommand (Lucy Wyman)
