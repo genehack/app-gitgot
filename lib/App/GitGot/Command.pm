@@ -421,7 +421,7 @@ sub _git_update {
       my( $msg , $entry ) = @_;
 
       my @o = $entry->pull;
-      if ( $o[0] eq 'Already up-to-date.' ) {
+      if ( $o[0] =~ /^Already up.to.date\./ ) {
         $msg .= $self->minor_change('Up to date') unless $self->quiet;
       }
       else {
