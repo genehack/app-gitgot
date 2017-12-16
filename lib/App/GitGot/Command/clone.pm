@@ -44,7 +44,11 @@ sub _execute {
 
   unless ( $self->opt->defaults ) {
     $name = prompt( 'Name: ' , $name );
-    $path = prompt( 'Path: ' , $path );
+    while() {
+        $path = prompt( 'Path: ' , $path );
+        last if not path($path)->exists;
+        say "can't clone into '$path': directory already exists";
+    }
     $tags = prompt( 'Tags: ' , $tags );
   }
 
