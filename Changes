@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.335     2018-03-19 21:10:19-07:00 America/Los_Angeles
+
   * Don't let the user pick a directory that already exists for
     got-clone; [#66] (Yanick)
 
