@@ -14,6 +14,7 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "App-GitGot",
   "EXE_FILES" => [
+    "bin/git-got",
     "bin/got",
     "bin/got-complete"
   ],
@@ -65,7 +66,7 @@ my %WriteMakefileArgs = (
     "parent" => 0,
     "strict" => 0
   },
-  "VERSION" => "1.335",
+  "VERSION" => "1.336",
   "test" => {
     "TESTS" => "t/*.t"
   }
