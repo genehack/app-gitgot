@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+1.336     2018-04-13 15:38:00-07:00 America/Los_Angeles
+
   * Add 'git-got' binary to allow running as `git got` (genehack)
 
 1.335     2018-03-19 21:10:19-07:00 America/Los_Angeles
