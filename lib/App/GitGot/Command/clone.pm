@@ -18,7 +18,8 @@ use namespace::autoclean;
 sub options {
   my( $class , $app ) = @_;
   return (
-    [ 'defaults|D' => 'use the default choices for all prompts' ] ,
+    [ 'defaults|D'  => 'use the default choices for all prompts' ] ,
+    [ 'recursive|r' => 'clone submodules recursively' ] ,
   );
 }
 
@@ -61,7 +62,10 @@ sub _execute {
   $new_entry->{tags} = $tags if $tags;
 
   say "Cloning into '$path'..." unless $self->quiet;
-  $new_entry->clone( $repo , $path );
+  $new_entry->clone(
+      ({ recursive => $self->opt->recursive }) x !!$self->opt->recursive,
+      $repo , $path
+  );
 
   $self->add_repo( $new_entry );
   $self->write_config;
@@ -80,5 +84,8 @@ __END__
     # clone repository and add to got config
     # using defaults for all prompts
     $ got clone -D <git repo url>
+
+    # recursively clone the submodules as well
+    $ got clone -r <git repo url>
 
 =cut
