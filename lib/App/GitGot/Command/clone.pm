@@ -63,7 +63,7 @@ sub _execute {
 
   say "Cloning into '$path'..." unless $self->quiet;
   $new_entry->clone(
-      ({ recursive => $self->opt->recursive }) x !!$self->opt->recursive,
+      { recursive => !!$self->opt->recursive },
       $repo , $path
   );
 
