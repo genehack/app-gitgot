@@ -198,6 +198,24 @@ sent me.
 
 =back
 
+=head2 Similar tools
+
+=over
+
+=item L<Git::Bunch>
+
+Allows to check the status and exec commands on a list of
+repository, as well as to sync the local machine's repositories with
+another via rsync. Can also manage (and rsync) regular directories.
+
+=item L<myrepos|http://myrepos.branchable.com/>
+
+Allows to run the main commands (C<update>,C<status>,etc) in all registered
+repos. Advertised as working with many versioning systems.
+Not on CPAN nor GitHub.
+
+=back
+
 =head1 LIMITATIONS
 
 Currently git is the only supported VCS.
