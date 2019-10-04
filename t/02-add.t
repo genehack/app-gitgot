@@ -7,7 +7,7 @@ use autodie;
 use lib 't/lib';
 use Test::BASE;
 use Test::File;
-use Test::More;
+use Test2::V0;
 
 use App::Cmd::Tester;
 use App::GitGot;
@@ -15,6 +15,7 @@ use App::GitGot::Command::add;
 use Class::Load                 qw/ try_load_class /;
 use Cwd;
 use YAML                        qw/ LoadFile /;
+
 
 my $dir = Test::BASE::create_tempdir_and_chdir();
 
@@ -84,7 +85,7 @@ subtest 'recursive behavior' => sub {
     $result->error
       and diag("App::GitGot add -f $config -D --recursive failed: " . $result->error);
 
-    is_deeply [ sort map { $_->{name} } @{ LoadFile($config) } ]  => [
+    is [ sort map { $_->{name} } @{ LoadFile($config) } ]  => [
         qw/ alpha beta /
     ], 'all repositores detected';
 

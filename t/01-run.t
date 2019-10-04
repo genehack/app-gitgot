@@ -2,7 +2,7 @@
 use 5.014;                      # strict, unicode_strings
 use warnings;
 use Test::Class::Load qw<t/lib>;
-use Test::More;
+use Test2::V0;
 
 use File::Temp qw/ tempdir /;
 use Git::Wrapper;

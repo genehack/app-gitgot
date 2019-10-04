@@ -7,7 +7,7 @@ use autodie;
 use lib 't/lib';
 use Test::BASE;
 use Test::File;
-use Test::More;
+use Test2::V0;
 
 use App::Cmd::Tester;
 use App::GitGot;
@@ -45,7 +45,7 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
   my $entry = LoadFile( $config );
   is( $entry->[0]{name} , 'fake-git-repo'              , 'expected name' );
   is( $entry->[0]{type} , 'git'                        , 'expected type' );
-  is( $entry->[0]{path} , path( "$dir/fake-git-repo" ) , 'expected path' );
+  is( $entry->[0]{path} , ''.path( "$dir/fake-git-repo" ) , 'expected path' );
 }
 
 chdir('/'); ## clean up temp files

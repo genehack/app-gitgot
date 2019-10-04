@@ -8,7 +8,7 @@ use lib 't/lib';
 use Test::BASE;
 use Test::File;
 use Test::MockObject;
-use Test::More;
+use Test2::V0;
 
 BEGIN {
   my $mock = Test::MockObject->new();
@@ -83,7 +83,7 @@ Test::BASE::create_github_identity_file();
   my $entry = LoadFile( $config );
   is( $entry->[0]{name} , 'fake-git-repo'              , 'expected name' );
   is( $entry->[0]{type} , 'git'                        , 'expected type' );
-  is( $entry->[0]{path} , path( "$dir/fake-git-repo" ) , 'expected path' );
+  is( $entry->[0]{path} , ''.path( "$dir/fake-git-repo" ) , 'expected path' );
 }
 
 chdir('/'); ## clean up temp files

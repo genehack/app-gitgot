@@ -7,7 +7,7 @@ use autodie;
 use lib 't/lib';
 use Test::BASE;
 use Test::File;
-use Test::More;
+use Test2::V0;
 
 use App::Cmd::Tester;
 

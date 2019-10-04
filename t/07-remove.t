@@ -6,7 +6,7 @@ use autodie;
 
 use lib 't/lib';
 use Test::BASE;
-use Test::More;
+use Test2::V0;
 
 use App::Cmd::Tester;
 use App::GitGot;
@@ -47,7 +47,7 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
     path => "$dir/xxx.git" ,
     type => 'git'
   }];
-  is_deeply( $config , $expected , 'deleted repo' );
+  is $config , $expected , 'deleted repo';
 }
 
 {
@@ -68,7 +68,7 @@ my( $config , $dir ) = Test::BASE::write_fake_config();
     path => "$dir/xxx.git" ,
     type => 'git'
   }];
-  is_deeply( $config , $expected , 'deleted repo' );
+  is $config , $expected , 'deleted repo';
 }
 
 chdir('/');  # clean up temp files
