@@ -22,7 +22,7 @@ Alternatively, if your CPAN shell is set up, you should just be able to do:
 ## Manual installation
 
 As a last resort, you can manually install it. Download the tarball, untar it,
-then build it:
+install configure prerequisites (see below), then build it:
 
     % perl Makefile.PL
     % make && make test
@@ -37,10 +37,29 @@ If your perl is system-managed, you can create a local::lib in your home
 directory to install modules to. For details, see the local::lib documentation:
 https://metacpan.org/pod/local::lib
 
-
 The prerequisites of this distribution will also have to be installed manually. The
 prerequisites are listed in one of the files: `MYMETA.yml` or `MYMETA.json` generated
 by running the manual build process described above.
+
+## Configure Prerequisites
+
+This distribution requires other modules to be installed before this
+distribution's installer can be run.  They can be found under the
+"configure_requires" key of META.yml or the
+"{prereqs}{configure}{requires}" key of META.json.
+
+## Other Prerequisites
+
+This distribution may require additional modules to be installed after running
+Makefile.PL.
+Look for prerequisites in the following phases:
+
+* to run make, PHASE = build
+* to use the module code itself, PHASE = runtime
+* to run tests, PHASE = test
+
+They can all be found in the "PHASE_requires" key of MYMETA.yml or the
+"{prereqs}{PHASE}{requires}" key of MYMETA.json.
 
 ## Documentation
 
@@ -48,5 +67,6 @@ App-GitGot documentation is available as POD.
 You can run `perldoc` from a shell to read the documentation:
 
     % perldoc App::GitGot
+
 For more information on installing Perl modules via CPAN, please see:
 https://www.cpan.org/modules/INSTALL.html
