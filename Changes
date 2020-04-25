@@ -5,6 +5,8 @@ Changes file for {{$dist->name}}
   * Add 'readd' command to update repo entries in ~/.gitgot based on
     what is in working trees (genehack)
   * Add .editorconfig (genehack)
+  * Add `--recursive` option to `clone` command (genehack,
+    reimplementing yanick's code from #69) [#68]
 
 1.336     2018-04-13 15:38:00-07:00 America/Los_Angeles
 
