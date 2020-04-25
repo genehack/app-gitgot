@@ -5,7 +5,7 @@ use 5.014;
 
 use App::Cmd::Setup -command;
 use Cwd;
-use File::HomeDir;
+use File::HomeDir::Tiny ();
 use List::Util              qw/ max first /;
 use Path::Tiny;
 use Try::Tiny;
@@ -27,7 +27,7 @@ sub opt_spec {
     [ 'all|a'            => 'use all available repositories' ] ,
     [ 'by_path|p'        => 'if set, output will be sorted by repo path (default: sort by repo name)' ] ,
     [ 'color_scheme|c=s' => 'name of color scheme to use' => { default => 'dark' } ] ,
-    [ 'configfile|f=s'   => 'path to config file' => { default => path( File::HomeDir->my_home() , '.gitgot') , required => 1 } ] ,
+    [ 'configfile|f=s'   => 'path to config file' => { default => path( File::HomeDir::Tiny::home() , '.gitgot') , required => 1 } ] ,
     [ 'no_color|C'       => 'do not use colored output' => { default => 0 } ] ,
     [ 'quiet|q'          => 'keep it down' ] ,
     [ 'skip_tags|T=s@'   => 'select repositories not tagged with these words' ] ,

@@ -6,7 +6,7 @@ use 5.014;
 use autodie;
 use Class::Load       'try_load_class';
 use Cwd;
-use File::HomeDir;
+use File::HomeDir::Tiny ();
 use Path::Tiny;
 use Types::Standard -types;
 
@@ -68,7 +68,7 @@ sub _execute {
 }
 
 sub _parse_github_identity {
-  my $file = path( File::HomeDir->my_home() , '.github-identity' );
+  my $file = path( File::HomeDir::Tiny::home() , '.github-identity' );
 
   $file->exists or
     say STDERR "ERROR: Can't find $file" and exit(1);
