@@ -7,7 +7,7 @@ use 5.014;
 use ExtUtils::MakeMaker;
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "A tool to make it easier to manage multiple git repositories.",
+  "ABSTRACT" => "A tool to make it easier to manage multiple code repositories using different VCSen",
   "AUTHOR" => "John SJ Anderson <john\@genehack.org>",
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => 0
