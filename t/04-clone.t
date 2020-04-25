@@ -42,10 +42,11 @@ $ENV{GITGOT_FAKE_GIT_WRAPPER} = 1;
 
   file_exists_ok $config , 'now config exists';
 
-  my $entry = LoadFile( $config );
-  is( $entry->[0]{name} , 'fake-git-repo'              , 'expected name' );
-  is( $entry->[0]{type} , 'git'                        , 'expected type' );
-  is( $entry->[0]{path} , ''.path( "$dir/fake-git-repo" ) , 'expected path' );
+  my $entry    = LoadFile( $config );
+  my $exp_path = path( "$dir/fake-git-repo" )->stringify;
+  is( $entry->[0]{name} , 'fake-git-repo' , 'expected name' );
+  is( $entry->[0]{type} , 'git'           , 'expected type' );
+  is( $entry->[0]{path} , $exp_path       , 'expected path' );
 }
 
 chdir('/'); ## clean up temp files
