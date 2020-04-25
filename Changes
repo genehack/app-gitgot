@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * Convert from `Test::More` to `Test2::V0` (yanick)
+
 1.336     2018-04-13 15:38:00-07:00 America/Los_Angeles
 
   * Add 'git-got' binary to allow running as `git got` (genehack)
