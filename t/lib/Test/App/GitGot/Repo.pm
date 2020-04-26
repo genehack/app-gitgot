@@ -7,8 +7,14 @@ use warnings;
 use App::GitGot::Repo;
 use File::Temp         qw/ tempdir /;
 use Path::Tiny;
-use Test::Exception;
-use Test::More;
+use Test2::V0;
+
+sub new_ok($$) {
+    my($class, $args, $title) = @_;
+    my $obj = $class->new(@$args);
+    isa_ok $obj, $class;
+    return $obj;
+}
 
 sub fixtures :Test(startup) {
   my $test = shift;
@@ -18,15 +24,15 @@ sub fixtures :Test(startup) {
   $test->make_base_fixtures;
 }
 
-sub test_constructor :Test(3) {
+sub test_constructor :Test(2) {
   my $test  = shift;
   my $lib   = $test->{lib};
   my $entry = $test->{entry};
 
   new_ok( $lib , [{ entry => $entry }] );
 
-  dies_ok { $lib->new({}) } 'has req args' ;
-  like( $@ , qr/Must provide entry/ , 'expected error message' );
+  like dies { $lib->new({}) },
+    qr/Must provide entry/ , 'expected error message' ;
 }
 
 sub test_accessors :Tests(8) {
@@ -62,7 +68,7 @@ sub test_in_writable_format :Tests(2) {
     };
     my $min   = $test->{min};
 
-    is_deeply( $min->in_writable_format , $entry , 'min serialized properly' );
+    is $min->in_writable_format , $entry , 'min serialized properly';
   }
   {
     my $entry = {
@@ -74,7 +80,7 @@ sub test_in_writable_format :Tests(2) {
     };
     my $full = $test->{full};
 
-    is_deeply( $full->in_writable_format , $entry , 'full serialized properly' );
+    is $full->in_writable_format , $entry , 'full serialized properly';
   }
 }
 
