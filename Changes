@@ -2,6 +2,8 @@ Changes file for {{$dist->name}}
 
 {{$NEXT}}
 
+  * switch JSON backend to JSON::MaybeXS
+
 1.337     2020-04-25 15:33:17-07:00 America/Los_Angeles
 
   * Add 'readd' command to update repo entries in ~/.gitgot based on
