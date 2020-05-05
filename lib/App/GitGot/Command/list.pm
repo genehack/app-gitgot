@@ -24,12 +24,12 @@ sub _execute {
   my( $self, $opt, $args ) = @_;
 
   if ( $self->opt->json ) {
-    try_load_class( 'JSON' )
-      or die "json serializing requires the module 'JSON' to be installed\n";
+    try_load_class( 'JSON::MaybeXS' )
+      or die "json serializing requires the module 'JSON::MaybeXS' to be installed\n";
 
     my @data = map { {%$_}  } $self->active_repos;
 
-    say JSON::to_json( \@data, { pretty => 1 } );
+    say JSON::MaybeXS->new(pretty => 1)->encode( \@data );
     return;
   }
 
