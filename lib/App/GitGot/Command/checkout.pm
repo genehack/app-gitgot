@@ -67,9 +67,9 @@ sub _git_checkout {
   my @err = try { @{ $entry->_wrapper->ERR } } catch { $_ };
 
   # Typically STDOUT will contain something similar to
-  # Your branch is up-to-date with 'origin/master'.
+  # Your branch is up-to-date with 'origin/main'.
   # or
-  # Your branch is ahead of 'origin/master' by 2 commits.
+  # Your branch is ahead of 'origin/main' by 2 commits.
 
   # Typically STDERR will contain something similar to
   # Switched to branch 'beta'

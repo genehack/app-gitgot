@@ -6,10 +6,9 @@ A tool to make it easier to manage multiple code repositories using different VC
 
 # BUILD INFO
 
-[![Build Status](https://travis-ci.org/genehack/app-gitgot.svg?branch=master)](https://travis-ci.org/genehack/app-gitgot)
-[![Coverage Status](https://coveralls.io/repos/genehack/app-gitgot/badge.svg?branch=master)](https://coveralls.io/r/genehack/app-gitgot?branch=master)
+[![Build Status](https://travis-ci.org/genehack/app-gitgot.svg?branch=main)](https://travis-ci.org/genehack/app-gitgot)
+[![Coverage Status](https://coveralls.io/repos/genehack/app-gitgot/badge.svg?branch=main)](https://coveralls.io/r/genehack/app-gitgot?branch=main)
 
 # USAGE
 
 See usage information [on CPAN](https://metacpan.org/pod/distribution/App-GitGot/bin/got)
-

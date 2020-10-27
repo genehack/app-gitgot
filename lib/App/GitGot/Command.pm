@@ -374,7 +374,7 @@ sub _git_fetch {
       # similar to:
       #
       #     From git://example.com/link-to-repo
-      #         SHA1___..SHA1___  master     -> origin/master
+      #         SHA1___..SHA1___  main     -> origin/main
       #
       # So search for /^From / in STDERR to see if anything was outputed
       if ( grep { /^From / } @err ) {
