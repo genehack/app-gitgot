@@ -109,7 +109,7 @@ sub make_base_fixtures {
 sub _make_git_repo {
   my $dir = tempdir(CLEANUP=>1);
   chdir( $dir );
-  `git -c init.defaultBranch="main" init`;
+  `git -c init.defaultBranch="master" init`;
   path('foo')->touch;
   `git add foo`;
   `git commit -m"mu"`;

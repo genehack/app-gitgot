@@ -23,7 +23,7 @@ sub test_current_branch :Tests(3) {
   dies_ok { $test->{full}->current_branch } 'will die';
   like( $@ , qr/(?:Can't locate|Failed to change) directory/ , 'expected error message' );
 
-  is( $test->{min}->current_branch , 'main' , 'expected answer' );
+  is( $test->{min}->current_branch , 'master' , 'expected answer' );
 }
 
 sub test_current_remote_branch :Tests(3) {
