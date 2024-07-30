@@ -333,8 +333,7 @@ sub _git_clone_or_callback {
   my( $self , $entry , $callback ) = @_
     or die "Need entry and callback";
 
-  my $msg = '';
-
+  my $msg  = '';
   my $path = $entry->path;
 
   if ( -d "$path/.git" ) {
@@ -356,7 +355,6 @@ sub _git_clone_or_callback {
   }
 
   return $msg;
-
 }
 
 sub _git_fetch {
