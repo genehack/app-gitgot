@@ -1,4 +1,9 @@
 .build
+blib
 extlib
+pm_to_blib
 App-GitGot-*
+Makefile
+Makefile.old
+MYMETA.*
 !releases/*.tar.gz

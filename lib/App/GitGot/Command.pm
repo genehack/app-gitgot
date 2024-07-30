@@ -333,28 +333,28 @@ sub _git_clone_or_callback {
   my( $self , $entry , $callback ) = @_
     or die "Need entry and callback";
 
-  my $msg = '';
-
+  my $msg  = '';
   my $path = $entry->path;
 
-  if ( !-d $path ) {
-    path($path)->mkpath;
-
-    try {
-      $entry->clone( $entry->repo , './' );
-      $msg .= $self->major_change('Checked out');
-    }
+  if ( -d "$path/.git" ) {
+    # repo already exists and is checked out, just call the callback
+      try {
+        $msg .= $callback->( $msg , $entry );
+      }
       catch { $msg .= $self->error('ERROR') . "\n$_" };
   }
-  elsif ( -d "$path/.git" ) {
+  else {
+    # if the directory exists and is non-empty, git will blow up, but that's
+    # okay. if the directory doesn't exist, git will handle creating it; it
+    # will also DTRT if the directory is empty and exists
     try {
-      $msg .= $callback->($msg , $entry);
+      $entry->clone( $entry->repo , $path );
+      $msg .= $self->major_change('Checked out');
     }
     catch { $msg .= $self->error('ERROR') . "\n$_" };
   }
 
   return $msg;
-
 }
 
 sub _git_fetch {
