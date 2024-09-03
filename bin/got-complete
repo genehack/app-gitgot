@@ -5,7 +5,6 @@
 use 5.014;     ## strict, unicode_strings
 use warnings;
 
-use File::HomeDir::Tiny ();
 use Path::Tiny;
 use YAML           qw/ LoadFile /;
 
@@ -17,7 +16,7 @@ sub get_command_line {
 sub get_project_suggestion {
   my $word = shift;
 
-  my $configfile = path( File::HomeDir::Tiny::home() , '.gitgot' );
+  my $configfile = path( '~/.gitgot' );
 
   my $config = LoadFile( $configfile )
     or die "$configfile not found\n";
